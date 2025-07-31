@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:samgyup_serve/admin/view/admin_page.dart';
 import 'package:samgyup_serve/home/view/home_screen.dart';
 import 'package:samgyup_serve/login/view/login_screen.dart';
 
