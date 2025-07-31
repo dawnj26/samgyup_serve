@@ -6,9 +6,11 @@ part 'app_state.dart';
 part 'app_bloc.freezed.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc() : super(_Initial()) {
-    on<AppEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+  AppBloc({
+    required AuthenticationRepository authenticationRepository,
+  }) : _authenticationRepository = authenticationRepository,
+
+  final AuthenticationRepository _authenticationRepository;
+
   }
 }
