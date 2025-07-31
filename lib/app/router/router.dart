@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:samgyup_serve/counter/view/counter_page.dart';
+import 'package:samgyup_serve/home/view/home_screen.dart';
+import 'package:samgyup_serve/login/view/login_screen.dart';
 
 part 'router.gr.dart';
 
@@ -10,7 +11,7 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: CounterRoute.page, initial: true),
+    AutoRoute(page: HomeRoute.page, initial: true),
   ];
 
   @override
