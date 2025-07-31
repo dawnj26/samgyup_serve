@@ -41,6 +41,9 @@ class _AppState extends State<App> {
     );
   }
 }
+
+class AppView extends StatelessWidget {
+  AppView({super.key});
   final _appRouter = AppRouter();
 
   @override
@@ -52,6 +55,28 @@ class _AppState extends State<App> {
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+    );
+  }
+}
+
+class AppWrapper extends StatelessWidget {
+  const AppWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return AutoRouter.declarative(
+          routes: (handler) {
+            return [
+              if (state is Initial || state is Unauthenticated)
+                const HomeRoute()
+              else if (state is Authenticated)
+                const AdminRoute(),
+            ];
+          },
+        );
+      },
     );
   }
 }
