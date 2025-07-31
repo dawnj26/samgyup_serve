@@ -12,10 +12,7 @@ class App extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: _appRouter.config(),
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
+        primarySwatch: Colors.red,
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
