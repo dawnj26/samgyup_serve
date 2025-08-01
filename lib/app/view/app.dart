@@ -59,22 +59,26 @@ class AppView extends StatelessWidget {
   }
 }
 
-class AppWrapper extends StatelessWidget {
-  const AppWrapper({super.key});
+@RoutePage()
+class AppWrapperPage extends StatelessWidget {
+  const AppWrapperPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
-        return AutoRouter.declarative(
-          routes: (handler) {
-            return [
-              if (state is Initial || state is Unauthenticated)
-                const HomeRoute()
-              else if (state is Authenticated)
-                const AdminRoute(),
-            ];
-          },
+        return PopScope(
+          canPop: false,
+          child: AutoRouter.declarative(
+            routes: (_) {
+              return [
+                if (state is Authenticated)
+                  const AdminRoute()
+                else
+                  const HomeShellRoute(),
+              ];
+            },
+          ),
         );
       },
     );
