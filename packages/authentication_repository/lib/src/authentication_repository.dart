@@ -13,6 +13,7 @@ class AuthenticationRepository {
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
 
+  /// Stream that emits the user whenever the authentication state changes.
   Stream<User> get user {
     return _firebaseAuth.authStateChanges().map((user) {
       if (user == null) {
@@ -26,6 +27,7 @@ class AuthenticationRepository {
     });
   }
 
+  /// Returns the current user or an empty User if not authenticated.
   User get currentUser {
     final user = _firebaseAuth.currentUser;
     if (user == null) {
@@ -38,6 +40,8 @@ class AuthenticationRepository {
     );
   }
 
+  /// Signs up a user with email and password.
+  /// Throws a [SignUpWithEmailAndPasswordFailure] if the sign up fails.
   Future<void> signUpWithEmailAndPassword({
     required String email,
     required String password,
@@ -54,6 +58,8 @@ class AuthenticationRepository {
     }
   }
 
+  /// Logs in a user with email and password.
+  /// Throws a [LogInWithEmailAndPasswordFailure] if the login fails.
   Future<void> logInWithEmailAndPassword({
     required String email,
     required String password,
@@ -70,6 +76,8 @@ class AuthenticationRepository {
     }
   }
 
+  /// Logs out the current user.
+  /// Throws a [LogoutException] if the logout fails.
   Future<void> logOut() async {
     try {
       await Future.wait([
