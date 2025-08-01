@@ -67,12 +67,12 @@ android {
         }
         create("staging") {
             dimension = "default"
-            applicationIdSuffix = ".stg"
+            applicationIdSuffix = ""
             manifestPlaceholders["appName"] = "[STG] Samgyup Serve"
         }
         create("development") {
             dimension = "default"
-            applicationIdSuffix = ".dev"
+            applicationIdSuffix = ""
             manifestPlaceholders["appName"] = "[DEV] Samgyup Serve"
         }
     }
