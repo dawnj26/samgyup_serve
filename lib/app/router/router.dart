@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:samgyup_serve/admin/view/admin_page.dart';
-import 'package:samgyup_serve/home/view/home_screen.dart';
-import 'package:samgyup_serve/login/view/login_screen.dart';
+import 'package:samgyup_serve/admin/admin.dart';
+import 'package:samgyup_serve/app/app.dart';
+import 'package:samgyup_serve/home/home.dart';
+import 'package:samgyup_serve/home/shell/home_shell_page.dart';
+import 'package:samgyup_serve/login/login.dart';
 
 part 'router.gr.dart';
 
@@ -12,11 +14,21 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: HomeRoute.page, initial: true),
-  ];
-
-  @override
-  List<AutoRouteGuard> get guards => [
-    // optionally add root guards here
+    AutoRoute(
+      page: AppWrapperRoute.page,
+      initial: true,
+      children: [
+        AutoRoute(
+          page: HomeShellRoute.page,
+          children: [
+            AutoRoute(page: LoginRoute.page),
+            AutoRoute(page: HomeRoute.page, initial: true),
+          ],
+        ),
+        AutoRoute(
+          page: AdminRoute.page,
+        ),
+      ],
+    ),
   ];
 }
