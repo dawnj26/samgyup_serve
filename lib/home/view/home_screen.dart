@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:samgyup_serve/app/router/router.dart';
+import 'package:samgyup_serve/components/components.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -7,18 +9,35 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: const Center(
-        child: Text('Welcome to the Home Screen!'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Action when button is pressed
-        },
-        child: const Icon(Icons.add),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: AppLogo(
+                  size: screenWidth * 0.6,
+                ),
+              ),
+              const SizedBox(height: 16),
+              PrimaryButton(
+                label: 'Start Serving',
+                onPressed: () {},
+              ),
+              TextButton(
+                onPressed: () {
+                  context.router.push(const LoginRoute());
+                },
+                child: const Text('Login as admin'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

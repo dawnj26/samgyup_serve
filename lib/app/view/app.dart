@@ -15,9 +15,11 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
+  late final AppRouter _router;
 
   @override
   void initState() {
+    _router = AppRouter();
     _authenticationRepository = AuthenticationRepository();
 
     super.initState();
@@ -36,22 +38,24 @@ class _AppState extends State<App> {
                 AppBloc(authenticationRepository: _authenticationRepository),
           ),
         ],
-        child: AppView(),
+        child: AppView(
+          router: _router,
+        ),
       ),
     );
   }
 }
 
 class AppView extends StatelessWidget {
-  AppView({super.key});
-  final _appRouter = AppRouter();
+  const AppView({required this.router, super.key});
+  final AppRouter router;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _appRouter.config(),
+      routerConfig: router.config(),
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        colorSchemeSeed: Colors.red,
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -59,22 +63,26 @@ class AppView extends StatelessWidget {
   }
 }
 
-class AppWrapper extends StatelessWidget {
-  const AppWrapper({super.key});
+@RoutePage()
+class AppWrapperPage extends StatelessWidget {
+  const AppWrapperPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
-        return AutoRouter.declarative(
-          routes: (handler) {
-            return [
-              if (state is Initial || state is Unauthenticated)
-                const HomeRoute()
-              else if (state is Authenticated)
-                const AdminRoute(),
-            ];
-          },
+        return PopScope(
+          canPop: false,
+          child: AutoRouter.declarative(
+            routes: (_) {
+              return [
+                if (state is Authenticated)
+                  const AdminShellRoute()
+                else
+                  const HomeShellRoute(),
+              ];
+            },
+          ),
         );
       },
     );

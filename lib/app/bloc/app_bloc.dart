@@ -20,15 +20,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     return emit.onEach(
       _authenticationRepository.user,
       onData: (user) {
+        if (user == User.empty()) {
+          return emit(const Unauthenticated());
+        }
+
         emit(Authenticated(user: user));
       },
-      onError: (error, stackTrace) {
-        emit(
-          Unauthenticated(
-            errorMessage: error.toString(),
-          ),
-        );
-      },
+      onError: addError,
     );
   }
 }

@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.example.verygoodcore.samgyup_serve"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -35,7 +35,7 @@ android {
         applicationId = "com.example.verygoodcore.samgyup_serve"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -67,12 +67,12 @@ android {
         }
         create("staging") {
             dimension = "default"
-            applicationIdSuffix = ".stg"
+            applicationIdSuffix = ""
             manifestPlaceholders["appName"] = "[STG] Samgyup Serve"
         }
         create("development") {
             dimension = "default"
-            applicationIdSuffix = ".dev"
+            applicationIdSuffix = ""
             manifestPlaceholders["appName"] = "[DEV] Samgyup Serve"
         }
     }
