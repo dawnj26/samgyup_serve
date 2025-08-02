@@ -15,9 +15,11 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
+  late final AppRouter _router;
 
   @override
   void initState() {
+    _router = AppRouter();
     _authenticationRepository = AuthenticationRepository();
 
     super.initState();
@@ -36,20 +38,22 @@ class _AppState extends State<App> {
                 AppBloc(authenticationRepository: _authenticationRepository),
           ),
         ],
-        child: AppView(),
+        child: AppView(
+          router: _router,
+        ),
       ),
     );
   }
 }
 
 class AppView extends StatelessWidget {
-  AppView({super.key});
-  final _appRouter = AppRouter();
+  const AppView({required this.router, super.key});
+  final AppRouter router;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _appRouter.config(),
+      routerConfig: router.config(),
       theme: ThemeData(
         colorSchemeSeed: Colors.red,
       ),
@@ -73,7 +77,7 @@ class AppWrapperPage extends StatelessWidget {
             routes: (_) {
               return [
                 if (state is Authenticated)
-                  const AdminRoute()
+                  const AdminShellRoute()
                 else
                   const HomeShellRoute(),
               ];
