@@ -17,7 +17,7 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
 
   build:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    uses: ./.github/workflows/build.yaml
     with:
       flutter_channel: stable
       setup: |
@@ -39,7 +39,7 @@ jobs:
           done < <(find "$PACKAGES_DIR" -type f -name "pubspec.yaml" -print0)
         done < <(find . -type d -name "packages" -print0)
         echo "✅ All builds completed."
-      analyze: lib test packages
+      analyze_directories: lib test packages
 
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
