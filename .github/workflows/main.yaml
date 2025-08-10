@@ -20,6 +20,25 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_channel: stable
+      setup: |
+        set -euo pipefail
+        flutter pub run build_runner build --delete-conflicting-outputs
+        # Find all 'packages' directories (any depth)
+        while IFS= read -r -d '' PACKAGES_DIR; do
+          echo "== Scanning $PACKAGES_DIR =="
+          # Find all pubspec.yaml under this packages dir
+          while IFS= read -r -d '' PUBSPEC; do
+            DIR=$(dirname "$PUBSPEC")
+            # Check if the package actually has build_runner as a dependency
+            if grep -qE '^[[:space:]]*build_runner[[:space:]]*:' "$PUBSPEC"; then
+              echo "--- Running build_runner in $DIR ---"
+              (cd "$DIR" && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs)
+            else
+              echo "--- Skipping $DIR (no build_runner dependency) ---"
+            fi
+          done < <(find "$PACKAGES_DIR" -type f -name "pubspec.yaml" -print0)
+        done < <(find . -type d -name "packages" -print0)
+        echo "✅ All builds completed."
 
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
