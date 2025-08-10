@@ -14,17 +14,20 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     AutoRoute(
+      path: '/',
       page: AppWrapperRoute.page,
       initial: true,
       children: [
         AutoRoute(
+          path: 'home',
           page: HomeShellRoute.page,
           children: [
             AutoRoute(page: HomeRoute.page, initial: true),
-            AutoRoute(page: LoginRoute.page),
+            AutoRoute(path: 'login', page: LoginRoute.page),
           ],
         ),
         AutoRoute(
+          path: 'admin',
           page: AdminShellRoute.page,
           children: [
             AutoRoute(page: AdminRoute.page, initial: true),
