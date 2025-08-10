@@ -35,7 +35,8 @@ class _AppState extends State<App> {
         providers: [
           BlocProvider(
             create: (context) =>
-                AppBloc(authenticationRepository: _authenticationRepository),
+                AppBloc(authenticationRepository: _authenticationRepository)
+                  ..add(const AppEvent.started()),
           ),
         ],
         child: AppView(

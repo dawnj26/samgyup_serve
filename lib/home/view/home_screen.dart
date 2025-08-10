@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               PrimaryButton(
-                label: 'Start Serving',
+                child: const Text('Start Ordering'),
                 onPressed: () {},
               ),
               TextButton(

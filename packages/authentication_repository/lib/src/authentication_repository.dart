@@ -53,7 +53,7 @@ class AuthenticationRepository {
       );
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
+    } on Exception catch (_) {
       throw const SignUpWithEmailAndPasswordFailure('Something went wrong.');
     }
   }
@@ -71,7 +71,7 @@ class AuthenticationRepository {
       );
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
+    } on Exception catch (_) {
       throw const LogInWithEmailAndPasswordFailure();
     }
   }
@@ -83,7 +83,7 @@ class AuthenticationRepository {
       await Future.wait([
         _firebaseAuth.signOut(),
       ]);
-    } catch (_) {
+    } on Exception catch (_) {
       throw LogoutException();
     }
   }
