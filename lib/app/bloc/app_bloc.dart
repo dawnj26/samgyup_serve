@@ -12,6 +12,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }) : _authenticationRepository = authenticationRepository,
        super(const Initial()) {
     on<_Started>(_onStarted);
+    on<_Logout>(_onLogout);
   }
 
   final AuthenticationRepository _authenticationRepository;
@@ -28,5 +29,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
       onError: addError,
     );
+  }
+
+  Future<void> _onLogout(_Logout event, Emitter<AppState> emit) async {
+    if (state is Unauthenticated || state is Unauthenticating) return;
+
+    emit(Unauthenticating(user: (state as Authenticated).user));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+
+    await _authenticationRepository.logOut();
   }
 }
