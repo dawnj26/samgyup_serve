@@ -32,7 +32,7 @@ jobs:
             # Check if the package actually has build_runner as a dependency
             if grep -qE '^[[:space:]]*build_runner[[:space:]]*:' "$PUBSPEC"; then
               echo "--- Running build_runner in $DIR ---"
-              (cd "$DIR" && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs)
+              (cd "$DIR" && flutter pub run build_runner build --delete-conflicting-outputs)
             else
               echo "--- Skipping $DIR (no build_runner dependency) ---"
             fi
