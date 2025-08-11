@@ -76,11 +76,17 @@ class AppWrapperPage extends StatelessWidget {
           canPop: false,
           child: AutoRouter.declarative(
             routes: (_) {
+              final loadingMessage = state is Unauthenticating
+                  ? 'Logging out...'
+                  : 'Loading...';
+
               return [
                 if (state is Authenticated)
                   const AdminShellRoute()
+                else if (state is Unauthenticated)
+                  const HomeShellRoute()
                 else
-                  const HomeShellRoute(),
+                  LoadingRoute(message: loadingMessage),
               ];
             },
           ),

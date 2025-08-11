@@ -15,6 +15,7 @@ class LoginButton extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         final isLoading = state is LoginLoading;
+        final primaryColor = Theme.of(context).colorScheme.primary;
 
         return PrimaryButton(
           onPressed: !isLoading ? () => _onPressed(context) : null,
@@ -24,11 +25,11 @@ class LoginButton extends StatelessWidget {
               const Text('Login'),
               if (isLoading) ...[
                 const SizedBox(width: 8),
-                const SizedBox(
+                SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: primaryColor,
                     strokeWidth: 2,
                   ),
                 ),

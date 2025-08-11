@@ -12,31 +12,33 @@ class HomeScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: AppLogo(
-                  size: screenWidth * 0.6,
-                ),
-              ),
-              const SizedBox(height: 16),
-              PrimaryButton(
-                child: const Text('Start Ordering'),
-                onPressed: () {},
-              ),
-              TextButton(
-                onPressed: () {
-                  context.router.push(const LoginRoute());
-                },
-                child: const Text('Login as admin'),
-              ),
-            ],
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              context.router.push(const LoginRoute());
+            },
           ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: AppLogo(
+                size: screenWidth * 0.6,
+              ),
+            ),
+            const SizedBox(height: 16),
+            PrimaryButton(
+              child: const Text('Tap to start ordering'),
+              onPressed: () {},
+            ),
+          ],
         ),
       ),
     );
