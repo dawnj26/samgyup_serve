@@ -51,7 +51,7 @@ class AppwriteRepository {
     final inst = _instance;
     if (inst == null) {
       throw StateError(
-        'AppwriteRepository has not been initialized. Call AppwriteRepository.initialize(...) first.',
+        'AppwriteRepository has not been initialized.',
       );
     }
     return inst;
