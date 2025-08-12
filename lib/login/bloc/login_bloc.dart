@@ -82,6 +82,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: state.email.value,
         password: state.password.value,
       );
+
+      final user = await _authenticationRepository.currentUser;
+
+      emit(
+        LoginSuccess(
+          email: state.email,
+          password: state.password,
+          isValid: state.isValid,
+          user: user,
+        ),
+      );
     } on LogInWithEmailAndPasswordFailure catch (e) {
       emit(
         LoginFailure(
