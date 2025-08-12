@@ -8,8 +8,9 @@ environment:
   flutter: ^3.32.0
 
 dependencies:
-  firebase_auth: ^6.0.0
-  firebase_core: ^4.0.0
+  appwrite: 17.0.0
+  appwrite_repository:
+    path: ../appwrite_repository
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0
