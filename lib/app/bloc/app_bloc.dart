@@ -18,17 +18,19 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthenticationRepository _authenticationRepository;
 
   Future<void> _onStarted(_Started event, Emitter<AppState> emit) async {
-    return emit.onEach(
-      _authenticationRepository.user,
-      onData: (user) {
-        if (user == User.empty()) {
-          return emit(const Unauthenticated());
-        }
+    if (state is Authenticated) return;
 
+    try {
+      final user = await _authenticationRepository.currentUser;
+
+      if (user == User.empty()) {
+        emit(const Unauthenticated());
+      } else {
         emit(Authenticated(user: user));
-      },
-      onError: addError,
-    );
+      }
+    } on Exception catch (_) {
+      emit(const Unauthenticated());
+    }
   }
 
   Future<void> _onLogout(_Logout event, Emitter<AppState> emit) async {
