@@ -1,6 +1,7 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:authentication_repository/src/exceptions/exceptions.dart';
 import 'package:authentication_repository/src/models/models.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 /// {@template authentication_repository}
 /// Repository which manages user authentication.
@@ -8,36 +9,24 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 class AuthenticationRepository {
   /// {@macro authentication_repository}
   AuthenticationRepository({
-    firebase_auth.FirebaseAuth? firebaseAuth,
-  }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
+    AppwriteRepository? firebaseAuth,
+  }) : _appwrite = firebaseAuth ?? AppwriteRepository.instance;
 
-  final firebase_auth.FirebaseAuth _firebaseAuth;
-
-  /// Stream that emits the user whenever the authentication state changes.
-  Stream<User> get user {
-    return _firebaseAuth.authStateChanges().map((user) {
-      if (user == null) {
-        return User.empty();
-      }
-      return User(
-        id: user.uid,
-        email: user.email,
-        name: user.displayName,
-      );
-    });
-  }
+  final AppwriteRepository _appwrite;
 
   /// Returns the current user or an empty User if not authenticated.
-  User get currentUser {
-    final user = _firebaseAuth.currentUser;
-    if (user == null) {
+  Future<User> get currentUser async {
+    try {
+      final user = await _appwrite.account.get();
+
+      return User(
+        id: user.$id,
+        email: user.email,
+        name: user.name,
+      );
+    } on Exception catch (_) {
       return User.empty();
     }
-    return User(
-      id: user.uid,
-      email: user.email,
-      name: user.displayName,
-    );
   }
 
   /// Signs up a user with email and password.
@@ -47,12 +36,11 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      await _appwrite.account.create(
+        userId: ID.unique(),
         email: email,
         password: password,
       );
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     } on Exception catch (_) {
       throw const SignUpWithEmailAndPasswordFailure('Something went wrong.');
     }
@@ -65,12 +53,10 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      await _appwrite.account.createEmailPasswordSession(
         email: email,
         password: password,
       );
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
     } on Exception catch (_) {
       throw const LogInWithEmailAndPasswordFailure();
     }
@@ -80,9 +66,7 @@ class AuthenticationRepository {
   /// Throws a [LogoutException] if the logout fails.
   Future<void> logOut() async {
     try {
-      await Future.wait([
-        _firebaseAuth.signOut(),
-      ]);
+      await _appwrite.account.deleteSession(sessionId: 'current');
     } on Exception catch (_) {
       throw LogoutException();
     }

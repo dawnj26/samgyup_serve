@@ -7,13 +7,11 @@ abstract class LoginState with _$LoginState {
     @Default(Password.pure()) Password password,
     @Default(true) bool isValid,
   }) = LoginInitial;
-
   const factory LoginState.dirty({
     required Email email,
     required Password password,
     required bool isValid,
   }) = LoginDirty;
-
   const factory LoginState.loading({
     required Email email,
     required Password password,
@@ -25,4 +23,10 @@ abstract class LoginState with _$LoginState {
     required String message,
     required bool isValid,
   }) = LoginFailure;
+  const factory LoginState.success({
+    required Email email,
+    required Password password,
+    required bool isValid,
+    required User user,
+  }) = LoginSuccess;
 }
