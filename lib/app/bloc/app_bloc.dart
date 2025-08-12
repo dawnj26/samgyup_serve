@@ -45,6 +45,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(Unauthenticating(user: (state as Authenticated).user));
     await Future<void>.delayed(const Duration(milliseconds: 500));
 
-    await _authenticationRepository.logOut();
+    try {
+      await _authenticationRepository.logOut();
+
+      emit(const Unauthenticated());
+    } on Exception catch (_) {
+      emit(const Unauthenticated());
+    }
   }
 }
