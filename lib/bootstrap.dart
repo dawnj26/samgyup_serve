@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
-import 'package:samgyup_serve/firebase_options.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -31,8 +30,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   Bloc.observer = const AppBlocObserver();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await AppwriteRepository.initialize(
+    environment: const Environment(
+      appwritePublicEndpoint: 'https://syd.cloud.appwrite.io/v1',
+      appwriteProjectId: '689ae709000e4caab4c5',
+      appwriteProjectName: 'Samgyup Serve',
+    ),
   );
 
   runApp(await builder());
