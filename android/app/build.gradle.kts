@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -12,6 +12,7 @@ plugins {
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
@@ -26,12 +27,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
+    kotlinOptions { jvmTarget = JavaVersion.VERSION_11.toString() }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // TODO: Specify your own unique Application ID
+        // (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.verygoodcore.samgyup_serve"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -48,7 +48,6 @@ android {
                 keyAlias = System.getenv("ANDROID_KEYSTORE_ALIAS")
                 keyPassword = System.getenv("ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
                 storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
-                
             } else {
                 keyAlias = keystoreProperties["keyAlias"] as String?
                 keyPassword = keystoreProperties["keyPassword"] as String?
@@ -81,21 +80,12 @@ android {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
-        getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
-        }
+        getByName("debug") { signingConfig = signingConfigs.getByName("debug") }
     }
 }
 
-flutter {
-    source = "../.."
-}
+flutter { source = "../.." }
 
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20")
-}
+dependencies { implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20") }
