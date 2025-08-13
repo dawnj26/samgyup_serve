@@ -22,6 +22,8 @@ class EmailInput extends StatelessWidget {
 
         return OutlinedTextField(
           onChanged: (value) {
+            if (value == email.value) return;
+
             context.read<LoginBloc>().add(
               LoginEvent.emailChanged(email: value),
             );
@@ -30,6 +32,7 @@ class EmailInput extends StatelessWidget {
           key: const Key('loginForm_emailInput_textField'),
           labelText: 'Email address',
           errorText: errorText,
+          hintText: 'email@example.com',
         );
       },
     );

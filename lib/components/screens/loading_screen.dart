@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 @RoutePage()
 class LoadingScreen extends StatelessWidget {
@@ -11,8 +12,8 @@ class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        body: SafeArea(
+      child: FScaffold(
+        child: SafeArea(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

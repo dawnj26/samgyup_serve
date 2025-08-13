@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forui/forui.dart';
 import 'package:samgyup_serve/app/bloc/app_bloc.dart';
 import 'package:samgyup_serve/app/router/router.dart';
 import 'package:samgyup_serve/l10n/l10n.dart';
@@ -53,11 +54,11 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FThemes.red.light;
+
     return MaterialApp.router(
       routerConfig: router.config(),
-      theme: ThemeData(
-        colorSchemeSeed: Colors.red,
-      ),
+      builder: (_, child) => FTheme(data: theme, child: child!),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     );

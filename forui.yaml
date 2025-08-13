@@ -1,0 +1,9 @@
+cli:
+  # The default file or directory to output generated snippets.
+  snippet-output: lib/components/snippets
+
+  # The default file or directory to output generated widget styles.
+  style-output: lib/theme
+  
+  # The default file or directory to output generated themes.
+  theme-output: lib/theme/theme.dart

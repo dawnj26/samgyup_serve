@@ -19,6 +19,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   formz: ^0.8.0
+  forui: ^0.14.1
   freezed_annotation: ^3.1.0
   intl: ^0.20.2
   json_annotation: ^4.9.0

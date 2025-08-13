@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forui/forui.dart';
+import 'package:forui/widgets/button.dart';
 import 'package:samgyup_serve/components/outlined_text_field.dart';
 import 'package:samgyup_serve/login/bloc/login_bloc.dart';
 import 'package:samgyup_serve/shared/form/password.dart';
@@ -27,19 +29,25 @@ class _PasswordInputState extends State<PasswordInput> {
 
         return OutlinedTextField(
           onChanged: (value) {
+            if (value == password.value) return;
+
             context.read<LoginBloc>().add(
               LoginEvent.passwordChanged(password: value),
             );
           },
           key: const Key('loginForm_passwordInput_textField'),
           labelText: 'Password',
+          hintText: 'Enter your password',
           errorText: errorText,
           obscureText: _obscureText,
-          suffixIcon: IconButton(
-            icon: Icon(
-              _obscureText ? Icons.visibility_off : Icons.visibility,
+          suffixIcon: FButton(
+            mainAxisSize: MainAxisSize.min,
+            style: FButtonStyle.ghost(),
+            child: Icon(
+              _obscureText ? FIcons.eyeClosed : FIcons.eye,
+              size: 16,
             ),
-            onPressed: () {
+            onPress: () {
               setState(() {
                 _obscureText = !_obscureText;
               });

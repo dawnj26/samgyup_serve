@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/widgets/button.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({required this.child, super.key, this.onPressed});
@@ -8,8 +9,8 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
+    return FButton(
+      onPress: onPressed,
       child: child,
     );
   }

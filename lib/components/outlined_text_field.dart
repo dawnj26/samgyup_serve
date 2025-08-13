@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 class OutlinedTextField extends StatelessWidget {
   const OutlinedTextField({
@@ -9,6 +10,7 @@ class OutlinedTextField extends StatelessWidget {
     this.errorText,
     this.obscureText = false,
     this.suffixIcon,
+    this.hintText,
   });
 
   final String? labelText;
@@ -17,19 +19,20 @@ class OutlinedTextField extends StatelessWidget {
   final String? errorText;
   final bool obscureText;
   final Widget? suffixIcon;
+  final String? hintText;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      onChanged: onChanged,
+    return FTextField(
+      onChange: onChanged,
       keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: const OutlineInputBorder(),
-        errorText: errorText,
-        suffixIcon: suffixIcon,
-      ),
+      label: labelText != null ? Text(labelText ?? '') : null,
+      hint: hintText,
+      error: errorText != null ? Text(errorText ?? '') : null,
       obscureText: obscureText,
+      suffixBuilder: suffixIcon != null
+          ? (context, value, child) => suffixIcon!
+          : null,
     );
   }
 }
