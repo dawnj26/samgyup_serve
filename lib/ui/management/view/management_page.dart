@@ -1,6 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/management/view/management_screen.dart';
+import 'package:samgyup_serve/ui/management/view/management_screen.dart';
 
 @RoutePage()
 class ManagementPage extends StatelessWidget {

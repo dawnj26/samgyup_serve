@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/components/buttons/primary_button.dart';
-import 'package:samgyup_serve/login/bloc/login_bloc.dart';
+import 'package:samgyup_serve/ui/login/bloc/login_bloc.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});

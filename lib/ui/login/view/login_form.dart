@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/login/view/components/email_input.dart';
-import 'package:samgyup_serve/login/view/components/login_button.dart';
-import 'package:samgyup_serve/login/view/components/password_input.dart';
+import 'package:samgyup_serve/ui/login/view/components/email_input.dart';
+import 'package:samgyup_serve/ui/login/view/components/login_button.dart';
+import 'package:samgyup_serve/ui/login/view/components/password_input.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});

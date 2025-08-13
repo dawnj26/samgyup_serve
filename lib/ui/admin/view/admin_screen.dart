@@ -39,8 +39,8 @@ class AdminScreen extends StatelessWidget {
           destinations: const [
             NavigationDestination(
               label: 'Home',
-              icon: Icon(Icons.dashboard_outlined),
-              selectedIcon: Icon(Icons.dashboard),
+              icon: Icon(Icons.space_dashboard_outlined),
+              selectedIcon: Icon(Icons.space_dashboard),
             ),
             NavigationDestination(
               label: 'Management',
