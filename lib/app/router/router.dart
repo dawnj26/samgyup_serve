@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:samgyup_serve/admin/admin.dart';
 import 'package:samgyup_serve/app/app.dart';
 import 'package:samgyup_serve/components/screens/loading_screen.dart';
+import 'package:samgyup_serve/dashboard/dashboard.dart';
 import 'package:samgyup_serve/home/home.dart';
 import 'package:samgyup_serve/login/login.dart';
+import 'package:samgyup_serve/management/management.dart';
 
 part 'router.gr.dart';
 
@@ -30,9 +32,10 @@ class AppRouter extends RootStackRouter {
         ),
         AutoRoute(
           path: 'admin',
-          page: AdminShellRoute.page,
+          page: AdminRoute.page,
           children: [
-            AutoRoute(page: AdminRoute.page, initial: true),
+            AutoRoute(page: DashboardRoute.page, initial: true),
+            AutoRoute(page: ManagementRoute.page),
           ],
         ),
         CustomRoute<void>(
