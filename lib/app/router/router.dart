@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/admin/admin.dart';
+import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/app/app.dart';
 import 'package:samgyup_serve/components/screens/loading_screen.dart';
-import 'package:samgyup_serve/dashboard/dashboard.dart';
-import 'package:samgyup_serve/home/home.dart';
-import 'package:samgyup_serve/login/login.dart';
-import 'package:samgyup_serve/management/management.dart';
+import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
+import 'package:samgyup_serve/ui/home/home.dart';
+import 'package:samgyup_serve/ui/login/login.dart';
+import 'package:samgyup_serve/ui/management/management.dart';
 
 part 'router.gr.dart';
 
