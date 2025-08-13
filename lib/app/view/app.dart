@@ -82,7 +82,7 @@ class AppWrapperPage extends StatelessWidget {
 
               return [
                 if (state is Authenticated)
-                  const AdminShellRoute()
+                  const AdminRoute()
                 else if (state is Unauthenticated)
                   const HomeShellRoute()
                 else

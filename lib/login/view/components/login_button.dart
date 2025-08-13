@@ -22,7 +22,7 @@ class LoginButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Login'),
+              const Text('Log in'),
               if (isLoading) ...[
                 const SizedBox(width: 8),
                 SizedBox(
