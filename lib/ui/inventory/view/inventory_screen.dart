@@ -11,6 +11,7 @@ class InventoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     final statuses = InventoryStatus(
       all: InventoryStatusItem(
@@ -55,8 +56,38 @@ class InventoryScreen extends StatelessWidget {
                 child: StatusSection(status: statuses),
               ),
             ),
-          ),
-        ],
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Categories',
+                  style: textTheme.titleMedium,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final category = InventoryCategory.values[index];
+
+                    return CategoryCard(
+                      category: category,
+                    );
+                  },
+                  childCount: InventoryCategory.values.length,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Handle add new item action
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
