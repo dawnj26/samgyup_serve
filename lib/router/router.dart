@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/app/app.dart';
-import 'package:samgyup_serve/components/screens/app_loading_screen.dart';
-import 'package:samgyup_serve/components/screens/loading_screen.dart';
 import 'package:samgyup_serve/ui/admin/admin.dart';
+import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
+import 'package:samgyup_serve/ui/components/screens/loading_screen.dart';
 import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
-import 'package:samgyup_serve/ui/inventory/view/inventory_page.dart';
+import 'package:samgyup_serve/ui/inventory/inventory.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 
@@ -44,7 +44,12 @@ class AppRouter extends RootStackRouter {
               ],
               initial: true,
             ),
-            AutoRoute(page: InventoryRoute.page),
+            AutoRoute(
+              page: InventoryShellRoute.page,
+              children: [
+                AutoRoute(page: InventoryRoute.page, initial: true),
+              ],
+            ),
           ],
         ),
         CustomRoute<void>(
