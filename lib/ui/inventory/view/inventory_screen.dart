@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/data/models/inventory_status.dart';
+import 'package:samgyup_serve/ui/inventory/components/category_card.dart';
 import 'package:samgyup_serve/ui/inventory/components/status_section.dart';
 
 class InventoryScreen extends StatelessWidget {
