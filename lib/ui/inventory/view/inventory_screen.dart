@@ -46,28 +46,13 @@ class InventoryScreen extends StatelessWidget {
         title: const Text('Inventory'),
         backgroundColor: colorTheme.primaryContainer,
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverToBoxAdapter(child: StatusSection(status: statuses)),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  // Placeholder for inventory items
-                  return ListTile(
-                    title: Text('Inventory Item $index'),
-                    subtitle: Text('Details about item $index'),
-                    leading: const Icon(Icons.inventory),
-                    onTap: () {
-                      // Handle item tap
-                    },
-                  );
-                },
-                childCount: 20, // Example item count
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+              sliver: SliverToBoxAdapter(
+                child: StatusSection(status: statuses),
               ),
             ),
           ),
