@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        generate_for:
+          # Only run `json_serializable` on source under `lib/models`.
+          - lib/models/**/*.dart  # Fixed to match comment
+      freezed:
+        generate_for:
+          # Only run `freezed` on source under `lib/bloc`.
+          - lib/bloc/**/*.dart
+        options:  
+          format: false
+      auto_route_generator:auto_route_generator:
+        generate_for:
+          - lib/ui/**/*.dart
+          - lib/app/**/*.dart
