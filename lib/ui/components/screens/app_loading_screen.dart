@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/components/app_logo_icon.dart';
+import 'package:samgyup_serve/ui/components/app_logo_icon.dart';
 
 @RoutePage()
 class AppLoadingScreen extends StatelessWidget {
