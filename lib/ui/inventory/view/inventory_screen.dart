@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/components/components.dart';
 import 'package:samgyup_serve/data/models/inventory_status.dart';
+import 'package:samgyup_serve/ui/inventory/components/status_section.dart';
 
 class InventoryScreen extends StatelessWidget {
   const InventoryScreen({super.key});
@@ -41,33 +41,24 @@ class InventoryScreen extends StatelessWidget {
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.all(16),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatusCard(
-                          status: statuses.all,
-                          onTap: () {},
-                        ),
-                      ),
-                      Expanded(
-                        child: StatusCard(status: statuses.inStock),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatusCard(status: statuses.lowStock),
-                      ),
-                      Expanded(
-                        child: StatusCard(status: statuses.outOfStock),
-                      ),
-                    ],
-                  ),
-                ],
+            sliver: SliverToBoxAdapter(child: StatusSection(status: statuses)),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  // Placeholder for inventory items
+                  return ListTile(
+                    title: Text('Inventory Item $index'),
+                    subtitle: Text('Details about item $index'),
+                    leading: const Icon(Icons.inventory),
+                    onTap: () {
+                      // Handle item tap
+                    },
+                  );
+                },
+                childCount: 20, // Example item count
               ),
             ),
           ),
