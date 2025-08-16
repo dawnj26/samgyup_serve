@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/components/components.dart';
 import 'package:samgyup_serve/data/management.dart';
@@ -16,7 +17,11 @@ class ManagementScreen extends StatelessWidget {
           return ActionCard(
             title: item.title,
             leading: Icon(item.icon),
-            onTap: () {},
+            onTap: () {
+              if (item.route == null) return;
+
+              context.router.push(item.route!);
+            },
           );
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
