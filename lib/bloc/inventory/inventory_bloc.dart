@@ -6,9 +6,9 @@ part 'inventory_state.dart';
 part 'inventory_bloc.freezed.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
-  InventoryBloc() : super(_Initial()) {
+  InventoryBloc() : super(const _Initial()) {
     on<InventoryEvent>((event, emit) {
-      // TODO: implement event handler
+      // TODO(event): implement event handler
     });
   }
 }
