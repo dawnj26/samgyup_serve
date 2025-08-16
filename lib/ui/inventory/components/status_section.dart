@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/components/components.dart';
 import 'package:samgyup_serve/data/models/inventory_status.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 
 class StatusSection extends StatelessWidget {
   const StatusSection({required this.status, super.key});

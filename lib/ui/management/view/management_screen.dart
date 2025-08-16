@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/components/components.dart';
 import 'package:samgyup_serve/data/management.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 
 class ManagementScreen extends StatelessWidget {
   const ManagementScreen({super.key});

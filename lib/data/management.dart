@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/app/router/router.dart';
 import 'package:samgyup_serve/data/models/management_item.dart';
+import 'package:samgyup_serve/router/router.dart';
 
 final List<ManagementItem> managementItems = [
   const ManagementItem(

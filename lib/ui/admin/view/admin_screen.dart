@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samgyup_serve/app/bloc/app_bloc.dart';
-import 'package:samgyup_serve/app/router/router.dart';
-import 'package:samgyup_serve/components/components.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
