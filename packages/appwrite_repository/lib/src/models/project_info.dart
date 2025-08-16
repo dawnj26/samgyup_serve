@@ -5,6 +5,8 @@ class ProjectInfo {
     required this.endpoint,
     required this.projectId,
     required this.projectName,
+    required this.databaseId,
+    required this.inventoryCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -15,4 +17,10 @@ class ProjectInfo {
 
   /// The name of the Appwrite project.
   final String projectName;
+
+  /// The ID of the database.
+  final String databaseId;
+
+  /// The ID of the inventory collection.
+  final String inventoryCollectionId;
 }

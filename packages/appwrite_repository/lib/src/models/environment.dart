@@ -8,6 +8,8 @@ class Environment {
     required this.appwritePublicEndpoint,
     required this.appwriteProjectId,
     required this.appwriteProjectName,
+    required this.databaseId,
+    required this.inventoryCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -18,4 +20,10 @@ class Environment {
 
   /// The name of the Appwrite project.
   final String appwriteProjectName;
+
+  /// The ID of database
+  final String databaseId;
+
+  /// The ID of inventory collection.
+  final String inventoryCollectionId;
 }

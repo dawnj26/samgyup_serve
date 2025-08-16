@@ -63,6 +63,8 @@ class AppwriteRepository {
       endpoint: environment.appwritePublicEndpoint,
       projectId: environment.appwriteProjectId,
       projectName: environment.appwriteProjectName,
+      inventoryCollectionId: environment.inventoryCollectionId,
+      databaseId: environment.databaseId,
     );
   }
 
