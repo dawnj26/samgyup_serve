@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/app/app.dart';
+import 'package:samgyup_serve/components/screens/app_loading_screen.dart';
 import 'package:samgyup_serve/components/screens/loading_screen.dart';
+import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
@@ -42,6 +43,7 @@ class AppRouter extends RootStackRouter {
           page: LoadingRoute.page,
           transitionsBuilder: TransitionsBuilders.slideLeft,
         ),
+        AutoRoute(page: AppLoadingRoute.page),
       ],
     ),
   ];
