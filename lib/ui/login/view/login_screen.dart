@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/app/bloc/app_bloc.dart';
+import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/login/bloc/login_bloc.dart';
 import 'package:samgyup_serve/ui/login/view/login_form.dart';
-import 'package:samgyup_serve/shared/snackbar.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
