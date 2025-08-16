@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as appwrite_models;
 import 'package:appwrite_repository/src/models/models.dart';
 import 'package:intl/intl.dart';
 
@@ -98,5 +99,15 @@ class AppwriteRepository {
   /// @return [String] A formatted date.
   String _getCurrentDate() {
     return DateFormat('MMM dd, HH:mm').format(DateTime.now());
+  }
+
+  /// Converts a [appwrite_models.Document] to a JSON map.
+  Map<String, dynamic> documentToJson(appwrite_models.Document document) {
+    return {
+      'id': document.$id,
+      'createdAt': document.$createdAt,
+      'updatedAt': document.$updatedAt,
+      ...document.data,
+    };
   }
 }
