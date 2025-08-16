@@ -22,7 +22,10 @@ enum InventoryCategory {
   consumables,
 
   /// Storage containers and packaging materials
-  storage;
+  storage,
+
+  /// Unknown category, used as a fallback
+  unknown;
 
   /// Returns the human-readable display label for this category.
   String get label {
@@ -41,6 +44,8 @@ enum InventoryCategory {
         return 'Non-food Consumables';
       case InventoryCategory.storage:
         return 'Storage & Packaging';
+      case InventoryCategory.unknown:
+        return 'Others';
     }
   }
 }
