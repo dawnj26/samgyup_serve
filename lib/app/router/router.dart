@@ -6,6 +6,7 @@ import 'package:samgyup_serve/components/screens/loading_screen.dart';
 import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
+import 'package:samgyup_serve/ui/inventory/view/inventory_page.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 
@@ -33,10 +34,17 @@ class AppRouter extends RootStackRouter {
         ),
         AutoRoute(
           path: 'admin',
-          page: AdminRoute.page,
+          page: AdminShellRoute.page,
           children: [
-            AutoRoute(page: DashboardRoute.page, initial: true),
-            AutoRoute(page: ManagementRoute.page),
+            AutoRoute(
+              page: AdminRoute.page,
+              children: [
+                AutoRoute(page: DashboardRoute.page, initial: true),
+                AutoRoute(page: ManagementRoute.page),
+              ],
+              initial: true,
+            ),
+            AutoRoute(page: InventoryRoute.page),
           ],
         ),
         CustomRoute<void>(
