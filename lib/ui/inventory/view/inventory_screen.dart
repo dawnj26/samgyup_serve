@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/data/models/inventory_status.dart';
@@ -36,6 +37,12 @@ class InventoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.router.back();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: const Text('Inventory'),
         backgroundColor: colorTheme.primaryContainer,
       ),
