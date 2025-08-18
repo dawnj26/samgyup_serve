@@ -109,7 +109,7 @@ extension UnitExtension on MeasurementUnit {
       case MeasurementUnit.dozen:
         return 'dozen';
       case MeasurementUnit.unknown:
-        return 'unknown';
+        return 'other';
     }
   }
 
