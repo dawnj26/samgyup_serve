@@ -1,4 +1,4 @@
-package com.example.verygoodcore.samgyup_serve
+package com.dawn.samgyup_serve
 
 import io.flutter.embedding.android.FlutterActivity
 

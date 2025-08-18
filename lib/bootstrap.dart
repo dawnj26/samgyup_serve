@@ -35,6 +35,8 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       appwritePublicEndpoint: 'https://syd.cloud.appwrite.io/v1',
       appwriteProjectId: '689ae709000e4caab4c5',
       appwriteProjectName: 'Samgyup Serve',
+      databaseId: '689b1bd20018b604c958',
+      inventoryCollectionId: '68a0142300285aedc1e0',
     ),
   );
 

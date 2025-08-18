@@ -8,9 +8,8 @@ import 'package:authentication_repository/src/models/models.dart';
 /// {@endtemplate}
 class AuthenticationRepository {
   /// {@macro authentication_repository}
-  AuthenticationRepository({
-    AppwriteRepository? firebaseAuth,
-  }) : _appwrite = firebaseAuth ?? AppwriteRepository.instance;
+  AuthenticationRepository({AppwriteRepository? appwrite})
+    : _appwrite = appwrite ?? AppwriteRepository.instance;
 
   final AppwriteRepository _appwrite;
 
