@@ -9,6 +9,14 @@ class OutlinedTextField extends StatelessWidget {
     this.errorText,
     this.obscureText = false,
     this.suffixIcon,
+    this.prefixIcon,
+    this.maxLines = 1,
+    this.minLines,
+    this.hintText,
+    this.helperText,
+    this.maxLength,
+    this.buildCounter,
+    this.enabled,
   });
 
   final String? labelText;
@@ -17,6 +25,20 @@ class OutlinedTextField extends StatelessWidget {
   final String? errorText;
   final bool obscureText;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final int? maxLines;
+  final int? minLines;
+  final String? hintText;
+  final String? helperText;
+  final int? maxLength;
+  final Widget? Function(
+    BuildContext, {
+    required int currentLength,
+    required bool isFocused,
+    required int? maxLength,
+  })?
+  buildCounter;
+  final bool? enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +50,16 @@ class OutlinedTextField extends StatelessWidget {
         border: const OutlineInputBorder(),
         errorText: errorText,
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
+        hintText: hintText,
+        helperText: helperText,
       ),
       obscureText: obscureText,
+      maxLines: maxLines,
+      minLines: minLines,
+      maxLength: maxLength,
+      buildCounter: buildCounter,
+      enabled: enabled,
     );
   }
 }
