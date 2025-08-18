@@ -3,9 +3,9 @@ targets:
     builders:
       json_serializable:
         generate_for:
-          - lib/src/models/**/*.dart
+          - lib/src/models/*.dart
       freezed:
         generate_for:
-          - lib/src/models/**/*.dart
+          - lib/src/models/*.dart
         options:  
           format: false
