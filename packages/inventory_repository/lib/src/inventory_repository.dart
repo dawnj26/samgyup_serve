@@ -25,8 +25,7 @@ class InventoryRepository {
       );
 
       return documents.documents.map((doc) {
-        final json = _appwrite.documentToJson(doc);
-        return InventoryItem.fromJson(json);
+        return InventoryItem.fromJson(doc.data);
       }).toList();
     } on AppwriteException catch (e) {
       throw Exception('Failed to fetch inventory items: ${e.message}');
@@ -36,16 +35,16 @@ class InventoryRepository {
   /// Adds a new inventory item.
   Future<InventoryItem> addInventoryItem(InventoryItem item) async {
     try {
+      final documentId = ID.unique();
+
       final document = await _appwrite.databases.createDocument(
         databaseId: _projectInfo.databaseId,
         collectionId: _projectInfo.inventoryCollectionId,
-        documentId: ID.unique(),
-        data: item.toJson(),
+        documentId: documentId,
+        data: item.copyWith(id: documentId).toJson(),
       );
 
-      final json = _appwrite.documentToJson(document);
-
-      return InventoryItem.fromJson(json);
+      return InventoryItem.fromJson(document.data);
     } on AppwriteException catch (e) {
       throw Exception('Failed to add inventory item: ${e.message}');
     }
