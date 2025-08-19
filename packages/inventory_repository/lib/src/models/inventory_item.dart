@@ -20,6 +20,7 @@ abstract class InventoryItem with _$InventoryItem {
     required double stock,
     required double lowStockThreshold,
     required DateTime createdAt,
+    @Default(InventoryItemStatus.inStock) InventoryItemStatus status,
     DateTime? updatedAt,
     DateTime? expirationDate,
     double? price,
