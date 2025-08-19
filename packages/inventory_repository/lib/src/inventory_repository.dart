@@ -16,19 +16,82 @@ class InventoryRepository {
   final AppwriteRepository _appwrite;
   late final ProjectInfo _projectInfo;
 
-  /// Fetches all inventory items.
-  Future<List<InventoryItem>> fetchInventoryItems() async {
+  /// Fetches a list of inventory items.
+  ///
+  /// This method retrieves all inventory items from the database.
+  /// It supports pagination by allowing a [lastDocumentId] to fetch items
+  /// after a specific document, and a [limit] to control the number of items
+  /// returned in a single call.
+  ///
+  /// Returns a list of [InventoryItem] objects.
+  Future<List<InventoryItem>> fetchInventoryItems({
+    String? lastDocumentId,
+    int? limit,
+    InventoryItemStatus? status,
+  }) async {
     try {
+      String? statusQuery;
+      if (status != null) {
+        if (status == InventoryItemStatus.expired) {
+          statusQuery = Query.lessThanEqual(
+            'expirationDate',
+            DateTime.now().toIso8601String(),
+          );
+        } else {
+          statusQuery = Query.equal('status', status.name);
+        }
+      }
+
+      final queries = [
+        if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
+        if (statusQuery != null) statusQuery,
+        Query.limit(limit ?? 500),
+      ];
       final documents = await _appwrite.databases.listDocuments(
         databaseId: _projectInfo.databaseId,
         collectionId: _projectInfo.inventoryCollectionId,
+        queries: queries.isEmpty ? null : queries,
       );
 
       return documents.documents.map((doc) {
-        return InventoryItem.fromJson(doc.data);
+        final json = _appwrite.documentToJson(doc);
+        return InventoryItem.fromJson(json);
       }).toList();
     } on AppwriteException catch (e) {
-      throw Exception('Failed to fetch inventory items: ${e.message}');
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch inventory items: $e');
+    }
+  }
+
+  /// Fetches a list of expired inventory items.
+  Future<List<InventoryItem>> fetchExpiredItems({
+    String? lastDocumentId,
+    int? limit,
+  }) async {
+    try {
+      final queries = [
+        if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
+        Query.greaterThanEqual(
+          'expirationDate',
+          DateTime.now().toIso8601String(),
+        ),
+        Query.limit(limit ?? 500),
+      ];
+      final documents = await _appwrite.databases.listDocuments(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.inventoryCollectionId,
+        queries: queries.isEmpty ? null : queries,
+      );
+
+      return documents.documents.map((doc) {
+        final json = _appwrite.documentToJson(doc);
+        return InventoryItem.fromJson(json);
+      }).toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch expired items: $e');
     }
   }
 
