@@ -8,6 +8,16 @@ class InventoryStatus {
     required this.outOfStock,
   });
 
+  factory InventoryStatus.empty() {
+    return const InventoryStatus(
+      all: InventoryStatusItem(title: 'All', count: 0),
+      inStock: InventoryStatusItem(title: 'In Stock', count: 0),
+      lowStock: InventoryStatusItem(title: 'Low Stock', count: 0),
+      outOfStock: InventoryStatusItem(title: 'Out of Stock', count: 0),
+      expired: InventoryStatusItem(title: 'Expired', count: 0),
+    );
+  }
+
   final InventoryStatusItem all;
   final InventoryStatusItem inStock;
   final InventoryStatusItem lowStock;
