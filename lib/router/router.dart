@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/app/app.dart';
 import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
@@ -49,6 +50,7 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: InventoryRoute.page, initial: true),
                 AutoRoute(page: InventoryAddRoute.page),
+                AutoRoute(page: InventoryStatusListRoute.page),
               ],
             ),
           ],
