@@ -29,11 +29,11 @@ class InventoryStatus {
 class InventoryStatusItem {
   const InventoryStatusItem({
     required this.title,
-    required this.count,
+    this.count,
     this.color,
   });
 
   final String title;
-  final int count;
+  final int? count;
   final Color? color;
 }
