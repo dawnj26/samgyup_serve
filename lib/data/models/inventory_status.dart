@@ -6,6 +6,7 @@ class InventoryStatus {
     required this.inStock,
     required this.lowStock,
     required this.outOfStock,
+    required this.expired,
   });
 
   factory InventoryStatus.empty() {
@@ -22,6 +23,7 @@ class InventoryStatus {
   final InventoryStatusItem inStock;
   final InventoryStatusItem lowStock;
   final InventoryStatusItem outOfStock;
+  final InventoryStatusItem expired;
 }
 
 class InventoryStatusItem {
