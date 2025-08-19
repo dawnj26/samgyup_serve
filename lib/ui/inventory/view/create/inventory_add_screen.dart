@@ -21,7 +21,8 @@ class InventoryAddScreen extends StatelessWidget {
       listener: (context, state) {
         switch (state) {
           case InventoryCreateSuccess():
-            context.router.pop();
+            showSnackBar(context, 'Item added successfully');
+            context.router.pop(true);
           case InventoryCreateFailure(:final message):
             showSnackBar(context, message);
         }
