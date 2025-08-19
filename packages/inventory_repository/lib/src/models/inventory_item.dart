@@ -27,6 +27,10 @@ abstract class InventoryItem with _$InventoryItem {
     String? description,
   }) = _InventoryItem;
 
+  /// Converts a JSON map to an [InventoryItem] instance.
+  factory InventoryItem.fromJson(Map<String, dynamic> json) =>
+      _$InventoryItemFromJson(json);
+
   /// Creates an empty [InventoryItem] instance with default values.
   factory InventoryItem.empty() => InventoryItem(
     id: '',
@@ -38,7 +42,15 @@ abstract class InventoryItem with _$InventoryItem {
     createdAt: DateTime.now(),
   );
 
-  /// Converts a JSON map to an [InventoryItem] instance.
-  factory InventoryItem.fromJson(Map<String, dynamic> json) =>
-      _$InventoryItemFromJson(json);
+  const InventoryItem._();
+
+  /// Checks if the item is in stock
+  bool get isLowStock => stock <= lowStockThreshold;
+
+  /// Checks if the item is out of stock
+  bool get isOutOfStock => stock <= 0;
+
+  /// Checks if the item is expired
+  bool get isExpired =>
+      expirationDate != null && expirationDate!.isBefore(DateTime.now());
 }
