@@ -99,12 +99,18 @@ class InventoryRepository {
   Future<InventoryItem> addInventoryItem(InventoryItem item) async {
     try {
       final documentId = ID.unique();
+      final status = _getInventoryStatus(item);
 
       final document = await _appwrite.databases.createDocument(
         databaseId: _projectInfo.databaseId,
         collectionId: _projectInfo.inventoryCollectionId,
         documentId: documentId,
-        data: item.copyWith(id: documentId).toJson(),
+        data: item
+            .copyWith(
+              id: documentId,
+              status: status,
+            )
+            .toJson(),
       );
 
       return InventoryItem.fromJson(document.data);
