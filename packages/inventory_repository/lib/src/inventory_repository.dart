@@ -1,5 +1,8 @@
+import 'dart:isolate';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:inventory_repository/src/enums/enums.dart';
 import 'package:inventory_repository/src/models/models.dart';
 
 /// {@template inventory_repository}
@@ -113,9 +116,69 @@ class InventoryRepository {
             .toJson(),
       );
 
-      return InventoryItem.fromJson(document.data);
+      final json = _appwrite.documentToJson(document);
+
+      return InventoryItem.fromJson(json);
     } on AppwriteException catch (e) {
-      throw Exception('Failed to add inventory item: ${e.message}');
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to add inventory item: $e');
+    }
+  }
+
+  /// Gets inventory information such as total items, in-stock items,
+  /// low-stock items, out-of-stock items, and expired items.
+  ///
+  /// Returns an [InventoryInfo] object containing the inventory statistics.
+  Future<InventoryInfo> getInventoryInfo() async {
+    try {
+      final documents = await fetchInventoryItems();
+
+      if (documents.length > 1000) {
+        return Isolate.run(() {
+          return _queryInventoryInfo(documents);
+        });
+      } else {
+        return _queryInventoryInfo(documents);
+      }
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to get inventory info: $e');
+    }
+  }
+
+  InventoryInfo _queryInventoryInfo(List<InventoryItem> items) {
+    final totalItems = items.length;
+    final inStockItems = items
+        .where(
+          (item) => item.status == InventoryItemStatus.inStock,
+        )
+        .length;
+    final lowStockItems = items
+        .where((item) => item.status == InventoryItemStatus.lowStock)
+        .length;
+    final outOfStockItems = items
+        .where((item) => item.status == InventoryItemStatus.outOfStock)
+        .length;
+    final expiredItems = items.where((item) => item.isExpired).length;
+
+    return InventoryInfo(
+      totalItems: totalItems,
+      inStockItems: inStockItems,
+      lowStockItems: lowStockItems,
+      outOfStockItems: outOfStockItems,
+      expiredItems: expiredItems,
+    );
+  }
+
+  InventoryItemStatus _getInventoryStatus(InventoryItem item) {
+    if (item.isOutOfStock) {
+      return InventoryItemStatus.outOfStock;
+    } else if (item.isLowStock) {
+      return InventoryItemStatus.lowStock;
+    } else {
+      return InventoryItemStatus.inStock;
     }
   }
 }
