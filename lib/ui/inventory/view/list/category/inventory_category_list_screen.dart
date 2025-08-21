@@ -1,0 +1,112 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/category/inventory_category_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
+import 'package:samgyup_serve/shared/snackbar.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:samgyup_serve/ui/inventory/components/category_list_app_bar.dart';
+import 'package:samgyup_serve/ui/inventory/components/inventory_item_list.dart';
+
+class InventoryCategoryListScreen extends StatefulWidget {
+  const InventoryCategoryListScreen({super.key});
+
+  @override
+  State<InventoryCategoryListScreen> createState() =>
+      _InventoryCategoryListScreenState();
+}
+
+class _InventoryCategoryListScreenState
+    extends State<InventoryCategoryListScreen> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<InventoryCategoryBloc>().add(
+        const InventoryCategoryEvent.loadMore(),
+      );
+    }
+  }
+
+  void _handleListener(BuildContext context, InventoryDeleteState state) {
+    switch (state) {
+      case InventoryDeleteLoading():
+        showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          useRootNavigator: false,
+          builder: (ctx) {
+            return const LoadingDialog(
+              message: 'Deleting...',
+            );
+          },
+        );
+      case InventoryDeleteSuccess(:final item):
+        context.router.pop();
+        showSnackBar(context, 'Item deleted successfully.');
+        context.read<InventoryCategoryBloc>().add(
+          InventoryCategoryEvent.itemRemoved(
+            item: item,
+          ),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
+      listener: _handleListener,
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            const CategoryListAppBar(),
+            BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
+              builder: (context, state) {
+                switch (state) {
+                  case InventoryCategoryLoaded(:final items):
+                    return InventoryItemList(
+                      key: const Key('inventory_status_list'),
+                      items: items,
+                      hasReachedMax: state.hasReachedMax,
+                    );
+                  case InventoryCategoryError(:final message):
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Text(message),
+                      ),
+                    );
+                  default:
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
