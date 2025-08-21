@@ -18,7 +18,7 @@ class InventoryEditPage extends StatelessWidget {
         inventoryRepository: context.read(),
         item: item,
       ),
-      child: const InventoryEditScreen(),
+      child: InventoryEditScreen(item: item),
     );
   }
 }
