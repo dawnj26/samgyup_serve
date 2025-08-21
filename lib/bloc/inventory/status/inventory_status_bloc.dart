@@ -27,6 +27,7 @@ class InventoryStatusBloc
     );
     on<_Reload>(_onReload);
     on<_ItemRemoved>(_onItemRemoved);
+    on<_ItemChanged>(_onItemChanged);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -116,6 +117,22 @@ class InventoryStatusBloc
     final items = state.items
         .where((item) => item.id != event.item.id)
         .toList();
+    emit(
+      InventoryStatusLoaded(
+        items: items,
+        hasReachedMax: state.hasReachedMax,
+        status: state.status,
+      ),
+    );
+  }
+
+  Future<void> _onItemChanged(
+    _ItemChanged event,
+    Emitter<InventoryStatusState> emit,
+  ) async {
+    final items = state.items.map((item) {
+      return item.id == event.item.id ? event.item : item;
+    }).toList();
     emit(
       InventoryStatusLoaded(
         items: items,
