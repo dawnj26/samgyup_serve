@@ -51,6 +51,7 @@ enum DateTimePickerMode {
 
 class _DateTimePickerState extends State<DateTimePicker> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode(canRequestFocus: false);
   late final DateFormat _formatter;
   late DateTime? _value;
 
@@ -65,6 +66,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -175,8 +177,9 @@ class _DateTimePickerState extends State<DateTimePicker> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return TextFormField(
+    return TextField(
       controller: _controller,
+      focusNode: _focusNode,
       readOnly: true,
       enabled: widget.enabled,
       style: widget.textStyle ?? theme.textTheme.bodyLarge,

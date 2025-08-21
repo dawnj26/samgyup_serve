@@ -4,7 +4,7 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.9.0
 
 dependencies:
   appwrite_repository:
@@ -13,6 +13,7 @@ dependencies:
     path: packages/authentication_repository
   auto_route: ^10.1.0+1
   bloc: ^9.0.0
+  bloc_concurrency: ^0.3.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
@@ -25,6 +26,7 @@ dependencies:
     path: packages/inventory_repository
   json_annotation: ^4.9.0
   shared_preferences: ^2.5.3
+  stream_transform: ^2.1.1
 
 dev_dependencies:
   auto_route_generator: ^10.1.0

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:samgyup_serve/data/models/inventory_status.dart';
 
 class StatusCard extends StatelessWidget {
-  const StatusCard({required this.status, this.onTap, super.key});
+  const StatusCard({
+    required this.status,
+    this.onTap,
+    super.key,
+  });
 
   final InventoryStatusItem status;
   final void Function()? onTap;
@@ -40,7 +44,10 @@ class StatusCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              Text('${status.count}', style: textTheme.headlineSmall),
+              Text(
+                status.count?.toString() ?? '-',
+                style: textTheme.headlineSmall,
+              ),
             ],
           ),
         ),
