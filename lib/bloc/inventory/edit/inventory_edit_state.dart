@@ -39,6 +39,16 @@ abstract class InventoryEditState with _$InventoryEditState {
     @Default(Description.pure()) Description description,
   }) = InventoryEditSuccess;
 
+  const factory InventoryEditState.noChanges({
+    DateTime? expiration,
+    @Default(m.MeasurementUnit.pure()) m.MeasurementUnit measurementUnit,
+    @Default(Category.pure()) Category category,
+    @Default(Name.pure()) Name name,
+    @Default(Stock.pure()) Stock stock,
+    @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
+    @Default(Description.pure()) Description description,
+  }) = InventoryEditNoChanges;
+
   const factory InventoryEditState.failure({
     required m.MeasurementUnit measurementUnit,
     required Category category,
