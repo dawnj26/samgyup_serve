@@ -17,12 +17,7 @@ class InventoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            context.router.parent()?.pop();
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
+        leading: const AutoLeadingButton(),
         title: const Text('Inventory'),
         backgroundColor: colorTheme.primaryContainer,
       ),
