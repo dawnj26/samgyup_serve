@@ -31,9 +31,9 @@ class InventoryEditScreen extends StatelessWidget {
     return BlocListener<InventoryEditBloc, InventoryEditState>(
       listener: (context, state) {
         switch (state) {
-          case InventoryEditSuccess():
-            showSnackBar(context, 'Item added successfully');
-            context.router.pop(true);
+          case InventoryEditSuccess(:final item):
+            showSnackBar(context, 'Item saved successfully');
+            context.router.pop(item);
           case InventoryEditFailure(:final message):
             showSnackBar(context, message);
         }
