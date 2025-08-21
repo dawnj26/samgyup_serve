@@ -53,8 +53,8 @@ class _AppLogoBounceState extends State<AppLogoBounce>
         return Transform(
           alignment: Alignment.center,
           transform: Matrix4.identity()
-            ..translate(0.0, dy)
-            ..scale(sx, sy),
+            ..translateByDouble(0, dy, 0, 1)
+            ..scaleByDouble(sx, sy, sx, 1),
           child: const AppLogoIcon(size: 72),
         );
       },
