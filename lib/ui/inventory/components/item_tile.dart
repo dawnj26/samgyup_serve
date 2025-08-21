@@ -20,6 +20,8 @@ class ItemTile extends StatelessWidget {
       ),
       title: Text(item.name),
       subtitle: Text(
+        // Description of the item, including stock and category.
+        // ignore: lines_longer_than_80_chars
         '${item.stock.toStringAsFixed(0)} ${item.unit.value} · ${item.category.label}',
       ),
       trailing: ItemMoreOptionButton(
