@@ -48,6 +48,7 @@ class InventoryRepository {
       final queries = [
         if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
         if (statusQuery != null) statusQuery,
+        if (category != null) Query.equal('category', category.name),
         Query.limit(limit ?? 500),
       ];
       final documents = await _appwrite.databases.listDocuments(
