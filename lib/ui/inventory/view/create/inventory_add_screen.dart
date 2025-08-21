@@ -4,19 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/create/inventory_create_bloc.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
-import 'package:samgyup_serve/shared/form/inventory/expiration.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
 import 'package:samgyup_serve/shared/form/inventory/name.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
+import 'package:samgyup_serve/ui/inventory/components/add_button.dart';
 import 'package:samgyup_serve/ui/inventory/components/category_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/description_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/expiration_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/low_stock_threshold_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/measurement_unit_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/name_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/add_button.dart';
 import 'package:samgyup_serve/ui/inventory/components/stock_input.dart';
 
 class InventoryAddScreen extends StatelessWidget {
@@ -226,9 +225,6 @@ class _LowStockThresholdInputField extends StatelessWidget {
             LowStockThresholdValidationError.negative) {
           errorText = 'Low stock threshold cannot be negative';
         } else if (lowStockThreshold.displayError ==
-            LowStockThresholdValidationError.tooHigh) {
-          errorText = 'Low stock threshold must be less than or equal to stock';
-        } else if (lowStockThreshold.displayError ==
             LowStockThresholdValidationError.invalid) {
           errorText = 'Low stock threshold must be a valid number';
         }
@@ -286,18 +282,10 @@ class _ExpirationInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
-      buildWhen: (p, c) =>
-          p.expiration.value != c.expiration.value ||
-          p.expiration.isPure != c.expiration.isPure,
+      buildWhen: (p, c) => p.expiration != c.expiration,
       builder: (context, state) {
-        final expiration = state.expiration;
-        String? errorText;
-        if (expiration.displayError == ExpirationValidationError.pastDate) {
-          errorText = 'Expiration date cannot be in the past';
-        }
         return ExpirationInput(
           key: const Key('inventoryCreate_expirationInput_datePicker'),
-          errorText: errorText,
           onChanged: (date) {
             context.read<InventoryCreateBloc>().add(
               InventoryCreateEvent.expirationChanged(expiration: date),
