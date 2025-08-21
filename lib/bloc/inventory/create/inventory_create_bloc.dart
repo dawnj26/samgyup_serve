@@ -88,7 +88,7 @@ class InventoryCreateBloc
       final parsedStock = double.tryParse(stock.value);
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
 
-      await _inventoryRepository.addInventoryItem(
+      await _inventoryRepository.addItem(
         i.InventoryItem(
           id: '',
           name: name.value,
