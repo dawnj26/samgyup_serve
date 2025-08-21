@@ -9,6 +9,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Stock stock,
     required LowStockThreshold lowStockThreshold,
     required Description description,
+    DateTime? expiration,
   }) = InventoryEditInitial;
 
   const factory InventoryEditState.dirty({
@@ -18,6 +19,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Stock stock,
     required LowStockThreshold lowStockThreshold,
     required Description description,
+    DateTime? expiration,
   }) = InventoryEditDirty;
 
   const factory InventoryEditState.loading({
@@ -27,6 +29,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Stock stock,
     required LowStockThreshold lowStockThreshold,
     required Description description,
+    DateTime? expiration,
   }) = InventoryEditLoading;
 
   const factory InventoryEditState.success({
@@ -37,6 +40,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     @Default(Stock.pure()) Stock stock,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
+    DateTime? expiration,
   }) = InventoryEditSuccess;
 
   const factory InventoryEditState.noChanges({
@@ -57,5 +61,6 @@ abstract class InventoryEditState with _$InventoryEditState {
     required LowStockThreshold lowStockThreshold,
     required Description description,
     required String message,
+    DateTime? expiration,
   }) = InventoryEditFailure;
 }

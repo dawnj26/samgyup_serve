@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
-import 'package:samgyup_serve/shared/form/inventory/expiration.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as m;
 import 'package:samgyup_serve/shared/form/inventory/name.dart';
@@ -55,7 +54,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final category = Category.dirty(state.category.value);
     final stock = Stock.dirty(state.stock.value);
     final lowStockThreshold = LowStockThreshold.dirty(
-      double.tryParse(state.stock.value) ?? -1,
       state.lowStockThreshold.value,
     );
     final measurementUnit = m.MeasurementUnit.dirty(
@@ -69,13 +67,12 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       stock,
       lowStockThreshold,
       measurementUnit,
-      expiration,
     ]);
 
     if (!isValid) {
       emit(
         InventoryEditDirty(
-          expiration: expiration,
+          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -89,7 +86,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
 
     emit(
       InventoryEditLoading(
-        expiration: expiration,
+        expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: category,
         name: name,
@@ -102,27 +99,28 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     try {
       final parsedStock = double.tryParse(stock.value);
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
-
-      await _inventoryRepository.addItem(
-        i.InventoryItem(
-          id: '',
-          name: name.value,
-          description: description.value,
-          category: category.value!,
-          stock: parsedStock ?? 0,
-          lowStockThreshold: parsedLowStockThreshold ?? 0,
-          unit: measurementUnit.value!,
-          expirationDate: expiration.value,
-          createdAt: DateTime.now(),
-        ),
+      final updatedItem = _item.copyWith(
+        name: name.value,
+        description: description.value,
+        category: category.value!,
+        stock: parsedStock ?? 0,
+        lowStockThreshold: parsedLowStockThreshold ?? 0,
+        unit: measurementUnit.value!,
+        expirationDate: state.expiration,
       );
+
+      if (updatedItem == _item) {
+        return emit(const InventoryEditNoChanges());
+      }
+
+      await _inventoryRepository.updateItem(updatedItem);
       emit(
-        const InventoryEditSuccess(),
+        InventoryEditSuccess(item: updatedItem),
       );
     } on Exception catch (e) {
       emit(
         InventoryEditFailure(
-          expiration: expiration,
+          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -209,7 +207,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     Emitter<InventoryEditState> emit,
   ) {
     final lowStockThreshold = LowStockThreshold.dirty(
-      double.tryParse(state.stock.value) ?? -1,
       event.lowStockThreshold,
     );
     emit(
@@ -247,7 +244,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     _ExpirationChanged event,
     Emitter<InventoryEditState> emit,
   ) {
-    final expiration = Expiration.dirty(event.expiration);
+    final expiration = event.expiration;
     emit(
       InventoryEditDirty(
         expiration: expiration,
