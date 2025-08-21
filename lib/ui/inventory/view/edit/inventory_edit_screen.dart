@@ -258,9 +258,6 @@ class _LowStockThresholdInputField extends StatelessWidget {
             LowStockThresholdValidationError.negative) {
           errorText = 'Low stock threshold cannot be negative';
         } else if (lowStockThreshold.displayError ==
-            LowStockThresholdValidationError.tooHigh) {
-          errorText = 'Low stock threshold must be less than or equal to stock';
-        } else if (lowStockThreshold.displayError ==
             LowStockThresholdValidationError.invalid) {
           errorText = 'Low stock threshold must be a valid number';
         }
@@ -324,19 +321,11 @@ class _ExpirationInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<InventoryEditBloc, InventoryEditState>(
-      buildWhen: (p, c) =>
-          p.expiration.value != c.expiration.value ||
-          p.expiration.isPure != c.expiration.isPure,
+      buildWhen: (p, c) => p.expiration != c.expiration,
       builder: (context, state) {
-        final expiration = state.expiration;
-        String? errorText;
-        if (expiration.displayError == ExpirationValidationError.pastDate) {
-          errorText = 'Expiration date cannot be in the past';
-        }
         return ExpirationInput(
           key: const Key('InventoryEdit_expirationInput_datePicker'),
           initialValue: initialValue,
-          errorText: errorText,
           onChanged: (date) {
             context.read<InventoryEditBloc>().add(
               InventoryEditEvent.expirationChanged(expiration: date),
