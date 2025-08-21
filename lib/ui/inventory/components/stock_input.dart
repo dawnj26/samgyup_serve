@@ -6,14 +6,17 @@ class StockInput extends StatelessWidget {
     super.key,
     this.errorText,
     this.onChanged,
+    this.initialValue,
   });
 
   final String? errorText;
   final ValueChanged<String>? onChanged;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
     return OutlinedTextField(
+      initialValue: initialValue,
       labelText: 'Stock',
       onChanged: onChanged,
       keyboardType: TextInputType.number,

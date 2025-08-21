@@ -16,6 +16,7 @@ class NameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedTextField(
+      initialValue: initialValue,
       labelText: 'Item Name',
       onChanged: onNameChanged,
       keyboardType: TextInputType.text,
