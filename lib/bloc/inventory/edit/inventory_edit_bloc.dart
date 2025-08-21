@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inventory_repository/inventory_repository.dart' as i;
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/expiration.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
-import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
+import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as m;
 import 'package:samgyup_serve/shared/form/inventory/name.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 
@@ -16,14 +16,14 @@ part 'inventory_edit_bloc.freezed.dart';
 
 class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
   InventoryEditBloc({
-    required i.InventoryRepository inventoryRepository,
-    required i.InventoryItem item,
+    required InventoryRepository inventoryRepository,
+    required InventoryItem item,
   }) : _inventoryRepository = inventoryRepository,
        _item = item,
        super(
          InventoryEditInitial(
-           expiration: Expiration.pure(item.expirationDate),
-           measurementUnit: MeasurementUnit.pure(item.unit),
+           expiration: item.expirationDate,
+           measurementUnit: m.MeasurementUnit.pure(item.unit),
            category: Category.pure(item.category),
            name: Name.pure(item.name),
            stock: Stock.pure(item.stock.toString()),
@@ -43,8 +43,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     on<_Saved>(_onSaved);
   }
 
-  final i.InventoryRepository _inventoryRepository;
-  final i.InventoryItem _item;
+  final InventoryRepository _inventoryRepository;
+  final InventoryItem _item;
 
   Future<void> _onSaved(
     _Saved event,
@@ -58,8 +58,9 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       double.tryParse(state.stock.value) ?? -1,
       state.lowStockThreshold.value,
     );
-    final measurementUnit = MeasurementUnit.dirty(state.measurementUnit.value);
-    final expiration = Expiration.dirty(state.expiration.value);
+    final measurementUnit = m.MeasurementUnit.dirty(
+      state.measurementUnit.value,
+    );
 
     final isValid = Formz.validate([
       name,
@@ -228,7 +229,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     _MeasurementUnitChanged event,
     Emitter<InventoryEditState> emit,
   ) {
-    final measurementUnit = MeasurementUnit.dirty(event.measurementUnit);
+    final measurementUnit = m.MeasurementUnit.dirty(event.measurementUnit);
     emit(
       InventoryEditDirty(
         expiration: state.expiration,

@@ -3,8 +3,7 @@ part of 'inventory_edit_bloc.dart';
 @freezed
 abstract class InventoryEditState with _$InventoryEditState {
   const factory InventoryEditState.initial({
-    required Expiration expiration,
-    required MeasurementUnit measurementUnit,
+    required m.MeasurementUnit measurementUnit,
     required Category category,
     required Name name,
     required Stock stock,
@@ -13,8 +12,7 @@ abstract class InventoryEditState with _$InventoryEditState {
   }) = InventoryEditInitial;
 
   const factory InventoryEditState.dirty({
-    required Expiration expiration,
-    required MeasurementUnit measurementUnit,
+    required m.MeasurementUnit measurementUnit,
     required Category category,
     required Name name,
     required Stock stock,
@@ -23,8 +21,7 @@ abstract class InventoryEditState with _$InventoryEditState {
   }) = InventoryEditDirty;
 
   const factory InventoryEditState.loading({
-    required Expiration expiration,
-    required MeasurementUnit measurementUnit,
+    required m.MeasurementUnit measurementUnit,
     required Category category,
     required Name name,
     required Stock stock,
@@ -33,8 +30,8 @@ abstract class InventoryEditState with _$InventoryEditState {
   }) = InventoryEditLoading;
 
   const factory InventoryEditState.success({
-    @Default(Expiration.pure()) Expiration expiration,
-    @Default(MeasurementUnit.pure()) MeasurementUnit measurementUnit,
+    required InventoryItem item,
+    @Default(m.MeasurementUnit.pure()) m.MeasurementUnit measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
     @Default(Stock.pure()) Stock stock,
@@ -43,8 +40,7 @@ abstract class InventoryEditState with _$InventoryEditState {
   }) = InventoryEditSuccess;
 
   const factory InventoryEditState.failure({
-    required Expiration expiration,
-    required MeasurementUnit measurementUnit,
+    required m.MeasurementUnit measurementUnit,
     required Category category,
     required Name name,
     required Stock stock,
