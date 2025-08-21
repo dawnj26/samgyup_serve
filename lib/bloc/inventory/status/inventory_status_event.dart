@@ -8,4 +8,7 @@ class InventoryStatusEvent with _$InventoryStatusEvent {
   const factory InventoryStatusEvent.itemRemoved({
     required InventoryItem item,
   }) = _ItemRemoved;
+  const factory InventoryStatusEvent.itemChanged({
+    required InventoryItem item,
+  }) = _ItemChanged;
 }

@@ -8,9 +8,11 @@ class InventoryItemList extends StatelessWidget {
     required this.items,
     required this.hasReachedMax,
     super.key,
+    this.onEdit,
   });
 
   final List<InventoryItem> items;
+  final void Function(InventoryItem item)? onEdit;
   final bool hasReachedMax;
 
   @override
@@ -19,7 +21,10 @@ class InventoryItemList extends StatelessWidget {
       itemBuilder: (ctx, index) {
         return index >= items.length
             ? const BottomLoader()
-            : ItemTile(item: items[index]);
+            : ItemTile(
+                item: items[index],
+                onEdit: () => onEdit?.call(items[index]),
+              );
       },
       itemCount: hasReachedMax ? items.length : items.length + 1,
     );

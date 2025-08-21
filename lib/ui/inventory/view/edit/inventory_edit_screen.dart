@@ -1,36 +1,42 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samgyup_serve/bloc/inventory/create/inventory_create_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
+import 'package:samgyup_serve/bloc/inventory/edit/inventory_edit_bloc.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
-import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
+import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart'
+    hide MeasurementUnit;
 import 'package:samgyup_serve/shared/form/inventory/name.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
-import 'package:samgyup_serve/ui/inventory/components/add_button.dart';
 import 'package:samgyup_serve/ui/inventory/components/category_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/description_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/expiration_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/low_stock_threshold_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/measurement_unit_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/name_input.dart';
+import 'package:samgyup_serve/ui/inventory/components/save_button.dart';
 import 'package:samgyup_serve/ui/inventory/components/stock_input.dart';
 
-class InventoryAddScreen extends StatelessWidget {
-  const InventoryAddScreen({super.key});
+class InventoryEditScreen extends StatelessWidget {
+  const InventoryEditScreen({required this.item, super.key});
+
+  final InventoryItem item;
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<InventoryCreateBloc, InventoryCreateState>(
+    return BlocListener<InventoryEditBloc, InventoryEditState>(
       listener: (context, state) {
         switch (state) {
-          case InventoryCreateSuccess():
-            showSnackBar(context, 'Item added successfully');
-            context.router.pop(true);
-          case InventoryCreateFailure(:final message):
+          case InventoryEditSuccess(:final item):
+            showSnackBar(context, 'Item saved successfully');
+            context.router.pop(item);
+          case InventoryEditFailure(:final message):
             showSnackBar(context, message);
+          case InventoryEditNoChanges():
+            context.router.pop();
         }
       },
       child: Scaffold(
@@ -41,7 +47,7 @@ class InventoryAddScreen extends StatelessWidget {
                 pinned: true,
                 expandedHeight: 200,
                 flexibleSpace: FlexibleSpaceBar(
-                  title: Text('Add Item'),
+                  title: Text('Edit Item'),
                 ),
               ),
               SliverPadding(
@@ -49,21 +55,35 @@ class InventoryAddScreen extends StatelessWidget {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      const _NameInputField(),
+                      _NameInputField(
+                        item.name,
+                      ),
                       const SizedBox(height: 16),
-                      const _DescriptionInputField(),
+                      _DescriptionInputField(
+                        item.description,
+                      ),
                       const SizedBox(height: 16),
-                      const _CategoryInputField(),
+                      _CategoryInputField(
+                        item.category,
+                      ),
                       const SizedBox(height: 16),
-                      const _StockInputField(),
+                      _StockInputField(
+                        item.stock.toString(),
+                      ),
                       const SizedBox(height: 16),
-                      const _LowStockThresholdInputField(),
+                      _LowStockThresholdInputField(
+                        item.lowStockThreshold.toString(),
+                      ),
                       const SizedBox(height: 16),
-                      const _MeasurementUnitInputField(),
+                      _MeasurementUnitInputField(
+                        item.unit,
+                      ),
                       const SizedBox(height: 16),
-                      const _ExpirationInputField(),
+                      _ExpirationInputField(
+                        item.expirationDate,
+                      ),
                       const SizedBox(height: 16),
-                      const AddButton(),
+                      const SaveButton(),
                     ],
                   ),
                 ),
@@ -77,11 +97,13 @@ class InventoryAddScreen extends StatelessWidget {
 }
 
 class _NameInputField extends StatelessWidget {
-  const _NameInputField();
+  const _NameInputField(this.initialValue);
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (previous, current) {
         final prev = previous.name;
         final curr = current.name;
@@ -99,10 +121,11 @@ class _NameInputField extends StatelessWidget {
         }
 
         return NameInput(
-          key: const Key('inventoryCreate_nameInput_textField'),
+          initialValue: initialValue,
+          key: const Key('InventoryEdit_nameInput_textField'),
           onNameChanged: (name) {
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.nameChanged(name: name),
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.nameChanged(name: name),
             );
           },
           errorText: errorText,
@@ -113,11 +136,13 @@ class _NameInputField extends StatelessWidget {
 }
 
 class _DescriptionInputField extends StatelessWidget {
-  const _DescriptionInputField();
+  const _DescriptionInputField(this.initialValue);
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (p, c) =>
           p.description.value != c.description.value ||
           p.description.isPure != c.description.isPure,
@@ -128,11 +153,12 @@ class _DescriptionInputField extends StatelessWidget {
           errorText = 'Description must be at most 500 characters';
         }
         return DescriptionInput(
-          key: const Key('inventoryCreate_descriptionInput_textField'),
+          key: const Key('InventoryEdit_descriptionInput_textField'),
+          initialValue: initialValue,
           errorText: errorText,
           onChanged: (value) {
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.descriptionChanged(description: value),
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.descriptionChanged(description: value),
             );
           },
         );
@@ -142,11 +168,13 @@ class _DescriptionInputField extends StatelessWidget {
 }
 
 class _CategoryInputField extends StatelessWidget {
-  const _CategoryInputField();
+  const _CategoryInputField(this.value);
+
+  final InventoryCategory? value;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (p, c) =>
           p.category.value != c.category.value ||
           p.category.isPure != c.category.isPure,
@@ -157,12 +185,13 @@ class _CategoryInputField extends StatelessWidget {
           errorText = 'Category is required';
         }
         return CategoryInput(
-          key: const Key('inventoryCreate_categoryInput_dropdown'),
+          key: const Key('InventoryEdit_categoryInput_dropdown'),
+          value: value,
           errorText: errorText,
           onSelected: (value) {
             if (value == null) return;
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.categoryChanged(category: value),
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.categoryChanged(category: value),
             );
           },
         );
@@ -172,11 +201,13 @@ class _CategoryInputField extends StatelessWidget {
 }
 
 class _StockInputField extends StatelessWidget {
-  const _StockInputField();
+  const _StockInputField(this.initialValue);
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (p, c) =>
           p.stock.value != c.stock.value || p.stock.isPure != c.stock.isPure,
       builder: (context, state) {
@@ -190,11 +221,12 @@ class _StockInputField extends StatelessWidget {
           errorText = 'Stock must be a valid number';
         }
         return StockInput(
-          key: const Key('inventoryCreate_stockInput_textField'),
+          initialValue: initialValue,
+          key: const Key('InventoryEdit_stockInput_textField'),
           errorText: errorText,
           onChanged: (value) {
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.stockChanged(stock: value),
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.stockChanged(stock: value),
             );
           },
         );
@@ -204,11 +236,13 @@ class _StockInputField extends StatelessWidget {
 }
 
 class _LowStockThresholdInputField extends StatelessWidget {
-  const _LowStockThresholdInputField();
+  const _LowStockThresholdInputField(this.initialValue);
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (p, c) =>
           p.lowStockThreshold.value != c.lowStockThreshold.value ||
           p.lowStockThreshold.isPure != c.lowStockThreshold.isPure ||
@@ -228,13 +262,15 @@ class _LowStockThresholdInputField extends StatelessWidget {
             LowStockThresholdValidationError.invalid) {
           errorText = 'Low stock threshold must be a valid number';
         }
+
         return LowStockThresholdInput(
-          key: const Key('inventoryCreate_lowStockThresholdInput_textField'),
+          key: const Key('InventoryEdit_lowStockThresholdInput_textField'),
+          initialValue: initialValue,
           enabled: enabled,
           errorText: errorText,
           onChanged: (value) {
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.lowStockThresholdChanged(
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.lowStockThresholdChanged(
                 lowStockThreshold: value,
               ),
             );
@@ -246,11 +282,13 @@ class _LowStockThresholdInputField extends StatelessWidget {
 }
 
 class _MeasurementUnitInputField extends StatelessWidget {
-  const _MeasurementUnitInputField();
+  const _MeasurementUnitInputField(this.value);
+
+  final MeasurementUnit? value;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (p, c) =>
           p.measurementUnit.value != c.measurementUnit.value ||
           p.measurementUnit.isPure != c.measurementUnit.isPure,
@@ -261,13 +299,13 @@ class _MeasurementUnitInputField extends StatelessWidget {
           errorText = 'Measurement unit is required';
         }
         return MeasurementUnitInput(
-          key: const Key('inventoryCreate_measurementUnitInput_dropdown'),
-          value: unit.value,
+          key: const Key('InventoryEdit_measurementUnitInput_dropdown'),
+          value: value,
           errorText: errorText,
           onSelected: (value) {
             if (value == null) return;
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.unitChanged(measurementUnit: value),
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.unitChanged(measurementUnit: value),
             );
           },
         );
@@ -277,18 +315,21 @@ class _MeasurementUnitInputField extends StatelessWidget {
 }
 
 class _ExpirationInputField extends StatelessWidget {
-  const _ExpirationInputField();
+  const _ExpirationInputField(this.initialValue);
+
+  final DateTime? initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
       buildWhen: (p, c) => p.expiration != c.expiration,
       builder: (context, state) {
         return ExpirationInput(
-          key: const Key('inventoryCreate_expirationInput_datePicker'),
+          key: const Key('InventoryEdit_expirationInput_datePicker'),
+          initialValue: initialValue,
           onChanged: (date) {
-            context.read<InventoryCreateBloc>().add(
-              InventoryCreateEvent.expirationChanged(expiration: date),
+            context.read<InventoryEditBloc>().add(
+              InventoryEditEvent.expirationChanged(expiration: date),
             );
           },
         );

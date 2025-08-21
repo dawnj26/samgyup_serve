@@ -7,7 +7,7 @@ enum MeasurementUnitValidationError {
 
 class MeasurementUnit
     extends FormzInput<i.MeasurementUnit?, MeasurementUnitValidationError> {
-  const MeasurementUnit.pure() : super.pure(null);
+  const MeasurementUnit.pure([super.value]) : super.pure();
   const MeasurementUnit.dirty([super.value]) : super.dirty();
 
   @override

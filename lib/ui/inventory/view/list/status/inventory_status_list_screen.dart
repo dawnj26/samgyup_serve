@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/status/inventory_status_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/dialogs/loading_dialog.dart';
 import 'package:samgyup_serve/ui/inventory/components/inventory_item_list.dart';
@@ -87,6 +91,20 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
                       key: const Key('inventory_status_list'),
                       items: items,
                       hasReachedMax: state.hasReachedMax,
+                      onEdit: (item) async {
+                        final updatedItem = await context.router
+                            .push<InventoryItem>(
+                              InventoryEditRoute(
+                                item: item,
+                              ),
+                            );
+
+                        if (!context.mounted || updatedItem == null) return;
+                        log('Item changed: ${item.name}');
+                        context.read<InventoryStatusBloc>().add(
+                          InventoryStatusEvent.itemChanged(item: updatedItem),
+                        );
+                      },
                     );
                   case InventoryStatusError(:final message):
                     return SliverFillRemaining(

@@ -4,15 +4,12 @@ enum LowStockThresholdValidationError {
   empty,
   negative,
   invalid,
-  tooHigh,
 }
 
 class LowStockThreshold
     extends FormzInput<String, LowStockThresholdValidationError> {
-  const LowStockThreshold.pure([this.stock = -1]) : super.pure('');
-  const LowStockThreshold.dirty(this.stock, [super.value = '']) : super.dirty();
-
-  final double stock;
+  const LowStockThreshold.pure([super.value = '']) : super.pure();
+  const LowStockThreshold.dirty([super.value = '']) : super.dirty();
 
   @override
   LowStockThresholdValidationError? validator(String? value) {
@@ -28,9 +25,6 @@ class LowStockThreshold
       return LowStockThresholdValidationError.negative;
     }
 
-    if (parsedValue > stock) {
-      return LowStockThresholdValidationError.tooHigh;
-    }
     return null;
   }
 }

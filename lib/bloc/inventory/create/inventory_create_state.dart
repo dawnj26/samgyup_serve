@@ -3,7 +3,7 @@ part of 'inventory_create_bloc.dart';
 @freezed
 abstract class InventoryCreateState with _$InventoryCreateState {
   const factory InventoryCreateState.initial({
-    @Default(Expiration.pure()) Expiration expiration,
+    DateTime? expiration,
     @Default(MeasurementUnit.pure()) MeasurementUnit measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
@@ -13,7 +13,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
   }) = InventoryCreateInitial;
 
   const factory InventoryCreateState.dirty({
-    required Expiration expiration,
+    required DateTime? expiration,
     required MeasurementUnit measurementUnit,
     required Category category,
     required Name name,
@@ -23,7 +23,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
   }) = InventoryCreateDirty;
 
   const factory InventoryCreateState.loading({
-    required Expiration expiration,
+    required DateTime? expiration,
     required MeasurementUnit measurementUnit,
     required Category category,
     required Name name,
@@ -33,7 +33,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
   }) = InventoryCreateLoading;
 
   const factory InventoryCreateState.success({
-    @Default(Expiration.pure()) Expiration expiration,
+    DateTime? expiration,
     @Default(MeasurementUnit.pure()) MeasurementUnit measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
@@ -43,7 +43,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
   }) = InventoryCreateSuccess;
 
   const factory InventoryCreateState.failure({
-    required Expiration expiration,
+    required DateTime? expiration,
     required MeasurementUnit measurementUnit,
     required Category category,
     required Name name,

@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samgyup_serve/bloc/inventory/edit/inventory_edit_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/create/inventory_create_bloc.dart';
 import 'package:samgyup_serve/ui/components/buttons/primary_button.dart';
 
-class SaveButton extends StatelessWidget {
-  const SaveButton({super.key});
+class AddButton extends StatelessWidget {
+  const AddButton({super.key});
 
   void _onPressed(BuildContext context) {
-    context.read<InventoryEditBloc>().add(const InventoryEditEvent.saved());
+    context.read<InventoryCreateBloc>().add(const InventoryCreateEvent.saved());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
+    return BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
       builder: (context, state) {
-        final isLoading = state is InventoryEditLoading;
+        final isLoading = state is InventoryCreateLoading;
         final primaryColor = Theme.of(context).colorScheme.primary;
 
         return PrimaryButton(
-          key: const Key('inventoryEditScreen_saveButton'),
+          key: const Key('inventoryAddScreen_addButton'),
           onPressed: !isLoading ? () => _onPressed(context) : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Save'),
+              const Text('Add'),
               if (isLoading) ...[
                 const SizedBox(width: 8),
                 SizedBox(

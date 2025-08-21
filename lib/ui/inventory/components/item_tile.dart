@@ -7,9 +7,10 @@ import 'package:samgyup_serve/ui/inventory/components/delete_dialog.dart';
 import 'package:samgyup_serve/ui/inventory/components/item_more_option_button.dart';
 
 class ItemTile extends StatelessWidget {
-  const ItemTile({required this.item, super.key});
+  const ItemTile({required this.item, super.key, this.onEdit});
 
   final InventoryItem item;
+  final void Function()? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +29,7 @@ class ItemTile extends StatelessWidget {
         onSelected: (option) {
           switch (option) {
             case InventoryItemOption.edit:
-              // TODO(item): Implement edit action
-              break;
+              onEdit?.call();
             case InventoryItemOption.delete:
               showDialog<void>(
                 context: context,

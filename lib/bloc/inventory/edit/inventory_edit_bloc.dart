@@ -1,24 +1,37 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inventory_repository/inventory_repository.dart' as i;
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
-import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
+import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as m;
 import 'package:samgyup_serve/shared/form/inventory/name.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 
-part 'inventory_create_event.dart';
-part 'inventory_create_state.dart';
-part 'inventory_create_bloc.freezed.dart';
+part 'inventory_edit_event.dart';
+part 'inventory_edit_state.dart';
+part 'inventory_edit_bloc.freezed.dart';
 
-class InventoryCreateBloc
-    extends Bloc<InventoryCreateEvent, InventoryCreateState> {
-  InventoryCreateBloc({
-    required i.InventoryRepository inventoryRepository,
+class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
+  InventoryEditBloc({
+    required InventoryRepository inventoryRepository,
+    required InventoryItem item,
   }) : _inventoryRepository = inventoryRepository,
-       super(const InventoryCreateInitial()) {
+       _item = item,
+       super(
+         InventoryEditInitial(
+           expiration: item.expirationDate,
+           measurementUnit: m.MeasurementUnit.pure(item.unit),
+           category: Category.pure(item.category),
+           name: Name.pure(item.name),
+           stock: Stock.pure(item.stock.toString()),
+           lowStockThreshold: LowStockThreshold.pure(
+             item.lowStockThreshold.toString(),
+           ),
+           description: Description.pure(item.description ?? ''),
+         ),
+       ) {
     on<_NameChanged>(_onNameChanged);
     on<_DescriptionChanged>(_onDescriptionChanged);
     on<_CategoryChanged>(_onCategoryChanged);
@@ -29,11 +42,12 @@ class InventoryCreateBloc
     on<_Saved>(_onSaved);
   }
 
-  final i.InventoryRepository _inventoryRepository;
+  final InventoryRepository _inventoryRepository;
+  final InventoryItem _item;
 
   Future<void> _onSaved(
     _Saved event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) async {
     final name = Name.dirty(state.name.value);
     final description = Description.dirty(state.description.value);
@@ -42,7 +56,9 @@ class InventoryCreateBloc
     final lowStockThreshold = LowStockThreshold.dirty(
       state.lowStockThreshold.value,
     );
-    final measurementUnit = MeasurementUnit.dirty(state.measurementUnit.value);
+    final measurementUnit = m.MeasurementUnit.dirty(
+      state.measurementUnit.value,
+    );
 
     final isValid = Formz.validate([
       name,
@@ -55,7 +71,7 @@ class InventoryCreateBloc
 
     if (!isValid) {
       emit(
-        InventoryCreateDirty(
+        InventoryEditDirty(
           expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
@@ -69,7 +85,7 @@ class InventoryCreateBloc
     }
 
     emit(
-      InventoryCreateLoading(
+      InventoryEditLoading(
         expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: category,
@@ -83,26 +99,27 @@ class InventoryCreateBloc
     try {
       final parsedStock = double.tryParse(stock.value);
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
-
-      await _inventoryRepository.addItem(
-        i.InventoryItem(
-          id: '',
-          name: name.value,
-          description: description.value,
-          category: category.value!,
-          stock: parsedStock ?? 0,
-          lowStockThreshold: parsedLowStockThreshold ?? 0,
-          unit: measurementUnit.value!,
-          expirationDate: state.expiration,
-          createdAt: DateTime.now(),
-        ),
+      final updatedItem = _item.copyWith(
+        name: name.value,
+        description: description.value,
+        category: category.value!,
+        stock: parsedStock ?? 0,
+        lowStockThreshold: parsedLowStockThreshold ?? 0,
+        unit: measurementUnit.value!,
+        expirationDate: state.expiration,
       );
+
+      if (updatedItem == _item) {
+        return emit(const InventoryEditNoChanges());
+      }
+
+      await _inventoryRepository.updateItem(updatedItem);
       emit(
-        const InventoryCreateSuccess(),
+        InventoryEditSuccess(item: updatedItem),
       );
     } on Exception catch (e) {
       emit(
-        InventoryCreateFailure(
+        InventoryEditFailure(
           expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
@@ -116,10 +133,10 @@ class InventoryCreateBloc
     }
   }
 
-  void _onNameChanged(_NameChanged event, Emitter<InventoryCreateState> emit) {
+  void _onNameChanged(_NameChanged event, Emitter<InventoryEditState> emit) {
     final name = Name.dirty(event.name);
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
@@ -133,11 +150,11 @@ class InventoryCreateBloc
 
   void _onDescriptionChanged(
     _DescriptionChanged event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) {
     final description = Description.dirty(event.description);
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
@@ -151,11 +168,11 @@ class InventoryCreateBloc
 
   void _onCategoryChanged(
     _CategoryChanged event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) {
     final category = Category.dirty(event.category);
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: category,
@@ -169,11 +186,11 @@ class InventoryCreateBloc
 
   void _onStockChanged(
     _StockChanged event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) {
     final stock = Stock.dirty(event.stock);
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
@@ -187,13 +204,13 @@ class InventoryCreateBloc
 
   void _onLowStockThresholdChanged(
     _LowStockThresholdChanged event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) {
     final lowStockThreshold = LowStockThreshold.dirty(
       event.lowStockThreshold,
     );
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
@@ -207,11 +224,11 @@ class InventoryCreateBloc
 
   void _onMeasurementUnitChanged(
     _MeasurementUnitChanged event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) {
-    final measurementUnit = MeasurementUnit.dirty(event.measurementUnit);
+    final measurementUnit = m.MeasurementUnit.dirty(event.measurementUnit);
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: state.category,
@@ -225,11 +242,11 @@ class InventoryCreateBloc
 
   void _onExpirationChanged(
     _ExpirationChanged event,
-    Emitter<InventoryCreateState> emit,
+    Emitter<InventoryEditState> emit,
   ) {
     final expiration = event.expiration;
     emit(
-      InventoryCreateDirty(
+      InventoryEditDirty(
         expiration: expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,

@@ -7,7 +7,7 @@ enum StockValidationError {
 }
 
 class Stock extends FormzInput<String, StockValidationError> {
-  const Stock.pure() : super.pure('');
+  const Stock.pure([super.value = '']) : super.pure();
   const Stock.dirty([super.value = '']) : super.dirty();
 
   @override

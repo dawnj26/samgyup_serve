@@ -165,6 +165,28 @@ class InventoryRepository {
     }
   }
 
+  /// Updates an existing inventory item.
+  Future<InventoryItem> updateItem(InventoryItem item) async {
+    try {
+      final status = _getInventoryStatus(item);
+
+      final document = await _appwrite.databases.updateDocument(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.inventoryCollectionId,
+        documentId: item.id,
+        data: item.copyWith(status: status).toJson(),
+      );
+
+      final json = _appwrite.documentToJson(document);
+
+      return InventoryItem.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to update inventory item: $e');
+    }
+  }
+
   InventoryInfo _queryInventoryInfo(List<InventoryItem> items) {
     final totalItems = items.length;
     final inStockItems = items

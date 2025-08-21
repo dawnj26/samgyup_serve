@@ -17,6 +17,7 @@ class OutlinedTextField extends StatelessWidget {
     this.maxLength,
     this.buildCounter,
     this.enabled,
+    this.initialValue,
   });
 
   final String? labelText;
@@ -39,10 +40,12 @@ class OutlinedTextField extends StatelessWidget {
   })?
   buildCounter;
   final bool? enabled;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      initialValue: initialValue,
       onChanged: onChanged,
       keyboardType: keyboardType,
       decoration: InputDecoration(
