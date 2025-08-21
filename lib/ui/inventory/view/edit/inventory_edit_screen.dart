@@ -5,7 +5,6 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/edit/inventory_edit_bloc.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
-import 'package:samgyup_serve/shared/form/inventory/expiration.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart'
     hide MeasurementUnit;
@@ -36,6 +35,8 @@ class InventoryEditScreen extends StatelessWidget {
             context.router.pop(item);
           case InventoryEditFailure(:final message):
             showSnackBar(context, message);
+          case InventoryEditNoChanges():
+            context.router.pop();
         }
       },
       child: Scaffold(
