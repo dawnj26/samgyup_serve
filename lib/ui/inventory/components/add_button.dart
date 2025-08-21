@@ -18,11 +18,12 @@ class AddButton extends StatelessWidget {
         final primaryColor = Theme.of(context).colorScheme.primary;
 
         return PrimaryButton(
+          key: const Key('inventoryAddScreen_addButton'),
           onPressed: !isLoading ? () => _onPressed(context) : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Save'),
+              const Text('Add'),
               if (isLoading) ...[
                 const SizedBox(width: 8),
                 SizedBox(
