@@ -27,7 +27,7 @@ class InventoryRepository {
   /// returned in a single call.
   ///
   /// Returns a list of [InventoryItem] objects.
-  Future<List<InventoryItem>> fetchInventoryItems({
+  Future<List<InventoryItem>> fetchItems({
     String? lastDocumentId,
     int? limit,
     InventoryItemStatus? status,
@@ -99,7 +99,7 @@ class InventoryRepository {
   }
 
   /// Adds a new inventory item.
-  Future<InventoryItem> addInventoryItem(InventoryItem item) async {
+  Future<InventoryItem> addItem(InventoryItem item) async {
     try {
       final documentId = ID.unique();
       final status = _getInventoryStatus(item);
@@ -132,7 +132,7 @@ class InventoryRepository {
   /// Returns an [InventoryInfo] object containing the inventory statistics.
   Future<InventoryInfo> getInventoryInfo() async {
     try {
-      final documents = await fetchInventoryItems();
+      final documents = await fetchItems();
 
       if (documents.length > 1000) {
         return Isolate.run(() {
