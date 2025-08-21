@@ -3,12 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/inventory_bloc.dart';
+import 'package:samgyup_serve/data/enums/status_color.dart';
 import 'package:samgyup_serve/data/models/inventory_status.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
 class StatusSection extends StatelessWidget {
   const StatusSection({super.key});
+
+  Future<void> _handleNavigation(
+    BuildContext context, [
+    InventoryItemStatus? status,
+  ]) async {
+    final triggerReload =
+        (await context.router.push<bool>(
+          InventoryStatusListRoute(status: status),
+        )) ??
+        false;
+    if (!context.mounted || !triggerReload) return;
+
+    context.read<InventoryBloc>().add(
+      const InventoryEvent.reload(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +45,7 @@ class StatusSection extends StatelessWidget {
                       count: isLoading ? null : inventoryInfo.totalItems,
                       color: Colors.blue.shade100,
                     ),
-                    onTap: () {
-                      context.router.push(InventoryStatusListRoute());
-                    },
+                    onTap: () => _handleNavigation(context),
                   ),
                 ),
                 Expanded(
@@ -38,15 +53,12 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'In Stock',
                       count: isLoading ? null : inventoryInfo.inStockItems,
-                      color: Colors.green.shade100,
+                      color: InventoryItemStatus.inStock.color,
                     ),
-                    onTap: () {
-                      context.router.push(
-                        InventoryStatusListRoute(
-                          status: InventoryItemStatus.inStock,
-                        ),
-                      );
-                    },
+                    onTap: () => _handleNavigation(
+                      context,
+                      InventoryItemStatus.inStock,
+                    ),
                   ),
                 ),
               ],
@@ -58,15 +70,12 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'Low Stock',
                       count: isLoading ? null : inventoryInfo.lowStockItems,
-                      color: Colors.orange.shade100,
+                      color: InventoryItemStatus.lowStock.color,
                     ),
-                    onTap: () {
-                      context.router.push(
-                        InventoryStatusListRoute(
-                          status: InventoryItemStatus.lowStock,
-                        ),
-                      );
-                    },
+                    onTap: () => _handleNavigation(
+                      context,
+                      InventoryItemStatus.lowStock,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -74,12 +83,11 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'Out of Stock',
                       count: isLoading ? null : inventoryInfo.outOfStockItems,
-                      color: Colors.red.shade100,
+                      color: InventoryItemStatus.outOfStock.color,
                     ),
-                    onTap: () => context.router.push(
-                      InventoryStatusListRoute(
-                        status: InventoryItemStatus.outOfStock,
-                      ),
+                    onTap: () => _handleNavigation(
+                      context,
+                      InventoryItemStatus.outOfStock,
                     ),
                   ),
                 ),
@@ -92,12 +100,11 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'Expired',
                       count: isLoading ? null : inventoryInfo.expiredItems,
-                      color: Colors.grey.shade200,
+                      color: InventoryItemStatus.expired.color,
                     ),
-                    onTap: () => context.router.push(
-                      InventoryStatusListRoute(
-                        status: InventoryItemStatus.expired,
-                      ),
+                    onTap: () => _handleNavigation(
+                      context,
+                      InventoryItemStatus.expired,
                     ),
                   ),
                 ),
