@@ -5,7 +5,7 @@ enum DescriptionValidationError {
 }
 
 class Description extends FormzInput<String, DescriptionValidationError> {
-  const Description.pure() : super.pure('');
+  const Description.pure([super.value = '']) : super.pure();
   const Description.dirty([super.value = '']) : super.dirty();
 
   static const int _maxLength = 200;

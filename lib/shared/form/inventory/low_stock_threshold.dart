@@ -9,7 +9,8 @@ enum LowStockThresholdValidationError {
 
 class LowStockThreshold
     extends FormzInput<String, LowStockThresholdValidationError> {
-  const LowStockThreshold.pure([this.stock = -1]) : super.pure('');
+  const LowStockThreshold.pure([super.value = '', this.stock = -1])
+    : super.pure();
   const LowStockThreshold.dirty(this.stock, [super.value = '']) : super.dirty();
 
   final double stock;

@@ -6,7 +6,7 @@ enum CategoryValidationError {
 }
 
 class Category extends FormzInput<InventoryCategory?, CategoryValidationError> {
-  const Category.pure() : super.pure(null);
+  const Category.pure([super.value]) : super.pure();
   const Category.dirty([super.value]) : super.dirty();
 
   @override

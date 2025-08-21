@@ -5,7 +5,7 @@ enum ExpirationValidationError {
 }
 
 class Expiration extends FormzInput<DateTime?, ExpirationValidationError> {
-  const Expiration.pure() : super.pure(null);
+  const Expiration.pure([super.value]) : super.pure();
   const Expiration.dirty([super.value]) : super.dirty();
 
   @override
