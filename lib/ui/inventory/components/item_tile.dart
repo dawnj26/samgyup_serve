@@ -1,17 +1,16 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/data/enums/inventory_item_option.dart';
-import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/inventory/components/delete_dialog.dart';
 import 'package:samgyup_serve/ui/inventory/components/item_more_option_button.dart';
 
 class ItemTile extends StatelessWidget {
-  const ItemTile({required this.item, super.key});
+  const ItemTile({required this.item, super.key, this.onEdit});
 
   final InventoryItem item;
+  final void Function()? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class ItemTile extends StatelessWidget {
         onSelected: (option) {
           switch (option) {
             case InventoryItemOption.edit:
-              context.router.push(InventoryEditRoute(item: item));
+              onEdit?.call();
             case InventoryItemOption.delete:
               showDialog<void>(
                 context: context,
