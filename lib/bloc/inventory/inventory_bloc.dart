@@ -42,8 +42,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     _Reload event,
     Emitter<InventoryState> emit,
   ) async {
-    emit(InventoryInitial(inventoryInfo: state.inventoryInfo));
-
     try {
       final inventoryInfo = await _inventoryRepository.getInventoryInfo();
       emit(InventoryLoaded(inventoryInfo: inventoryInfo));
