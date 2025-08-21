@@ -16,7 +16,7 @@ import 'package:samgyup_serve/ui/inventory/components/expiration_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/low_stock_threshold_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/measurement_unit_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/name_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/save_button.dart';
+import 'package:samgyup_serve/ui/inventory/components/add_button.dart';
 import 'package:samgyup_serve/ui/inventory/components/stock_input.dart';
 
 class InventoryAddScreen extends StatelessWidget {
@@ -64,7 +64,7 @@ class InventoryAddScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       const _ExpirationInputField(),
                       const SizedBox(height: 16),
-                      const SaveButton(),
+                      const AddButton(),
                     ],
                   ),
                 ),
