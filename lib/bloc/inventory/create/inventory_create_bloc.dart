@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart' as i;
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
-import 'package:samgyup_serve/shared/form/inventory/expiration.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
 import 'package:samgyup_serve/shared/form/inventory/name.dart';
@@ -41,11 +40,9 @@ class InventoryCreateBloc
     final category = Category.dirty(state.category.value);
     final stock = Stock.dirty(state.stock.value);
     final lowStockThreshold = LowStockThreshold.dirty(
-      double.tryParse(state.stock.value) ?? -1,
       state.lowStockThreshold.value,
     );
     final measurementUnit = MeasurementUnit.dirty(state.measurementUnit.value);
-    final expiration = Expiration.dirty(state.expiration.value);
 
     final isValid = Formz.validate([
       name,
@@ -54,13 +51,12 @@ class InventoryCreateBloc
       stock,
       lowStockThreshold,
       measurementUnit,
-      expiration,
     ]);
 
     if (!isValid) {
       emit(
         InventoryCreateDirty(
-          expiration: expiration,
+          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -74,7 +70,7 @@ class InventoryCreateBloc
 
     emit(
       InventoryCreateLoading(
-        expiration: expiration,
+        expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: category,
         name: name,
@@ -97,7 +93,7 @@ class InventoryCreateBloc
           stock: parsedStock ?? 0,
           lowStockThreshold: parsedLowStockThreshold ?? 0,
           unit: measurementUnit.value!,
-          expirationDate: expiration.value,
+          expirationDate: state.expiration,
           createdAt: DateTime.now(),
         ),
       );
@@ -107,7 +103,7 @@ class InventoryCreateBloc
     } on Exception catch (e) {
       emit(
         InventoryCreateFailure(
-          expiration: expiration,
+          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -194,7 +190,6 @@ class InventoryCreateBloc
     Emitter<InventoryCreateState> emit,
   ) {
     final lowStockThreshold = LowStockThreshold.dirty(
-      double.tryParse(state.stock.value) ?? -1,
       event.lowStockThreshold,
     );
     emit(
@@ -232,7 +227,7 @@ class InventoryCreateBloc
     _ExpirationChanged event,
     Emitter<InventoryCreateState> emit,
   ) {
-    final expiration = Expiration.dirty(event.expiration);
+    final expiration = event.expiration;
     emit(
       InventoryCreateDirty(
         expiration: expiration,
