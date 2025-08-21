@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/create/inventory_create_bloc.dart';
 import 'package:samgyup_serve/ui/components/buttons/primary_button.dart';
 
-class SaveButton extends StatelessWidget {
-  const SaveButton({super.key});
+class AddButton extends StatelessWidget {
+  const AddButton({super.key});
 
   void _onPressed(BuildContext context) {
     context.read<InventoryCreateBloc>().add(const InventoryCreateEvent.saved());
