@@ -31,6 +31,7 @@ class InventoryRepository {
     String? lastDocumentId,
     int? limit,
     InventoryItemStatus? status,
+    InventoryCategory? category,
   }) async {
     try {
       String? statusQuery;
@@ -146,6 +147,21 @@ class InventoryRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
       throw Exception('Failed to get inventory info: $e');
+    }
+  }
+
+  /// Deletes an inventory item by its ID.
+  Future<void> deleteItem(String itemId) async {
+    try {
+      await _appwrite.databases.deleteDocument(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.inventoryCollectionId,
+        documentId: itemId,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to delete inventory item: $e');
     }
   }
 
