@@ -26,6 +26,7 @@ class InventoryStatusBloc
       ),
     );
     on<_Reload>(_onReload);
+    on<_ItemRemoved>(_onItemRemoved);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -44,7 +45,7 @@ class InventoryStatusBloc
     );
 
     try {
-      final items = await _inventoryRepository.fetchInventoryItems(
+      final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
         status: state.status,
       );
@@ -76,7 +77,7 @@ class InventoryStatusBloc
 
     try {
       final lastItem = state.items.isNotEmpty ? state.items.last : null;
-      final items = await _inventoryRepository.fetchInventoryItems(
+      final items = await _inventoryRepository.fetchItems(
         lastDocumentId: lastItem?.id,
         status: state.status,
         limit: _pageSize,
@@ -106,5 +107,21 @@ class InventoryStatusBloc
     Emitter<InventoryStatusState> emit,
   ) async {
     // TODO(reload): Implement reload logic if needed.
+  }
+
+  Future<void> _onItemRemoved(
+    _ItemRemoved event,
+    Emitter<InventoryStatusState> emit,
+  ) async {
+    final items = state.items
+        .where((item) => item.id != event.item.id)
+        .toList();
+    emit(
+      InventoryStatusLoaded(
+        items: items,
+        hasReachedMax: state.hasReachedMax,
+        status: state.status,
+      ),
+    );
   }
 }
