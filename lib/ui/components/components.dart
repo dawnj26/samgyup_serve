@@ -2,6 +2,7 @@ export 'action_card.dart';
 export 'app_logo.dart';
 export 'app_logo_bounce.dart';
 export 'app_logo_icon.dart';
+export 'badge_indicator.dart';
 export 'bottom_loader.dart';
 export 'buttons/buttons.dart';
 export 'datetime_picker.dart';
