@@ -7,10 +7,11 @@ import 'package:samgyup_serve/ui/inventory/components/delete_dialog.dart';
 import 'package:samgyup_serve/ui/inventory/components/item_more_option_button.dart';
 
 class ItemTile extends StatelessWidget {
-  const ItemTile({required this.item, super.key, this.onEdit});
+  const ItemTile({required this.item, super.key, this.onEdit, this.onTap});
 
   final InventoryItem item;
   final void Function()? onEdit;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +46,7 @@ class ItemTile extends StatelessWidget {
           }
         },
       ),
-      onTap: () {
-        // TODO(item): Implement item tap action
-      },
+      onTap: onTap,
     );
   }
 }
