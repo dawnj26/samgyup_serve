@@ -53,7 +53,7 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'In Stock',
                       count: isLoading ? null : inventoryInfo.inStockItems,
-                      color: InventoryItemStatus.inStock.color,
+                      color: InventoryItemStatus.inStock.color.shade100,
                     ),
                     onTap: () => _handleNavigation(
                       context,
@@ -70,7 +70,7 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'Low Stock',
                       count: isLoading ? null : inventoryInfo.lowStockItems,
-                      color: InventoryItemStatus.lowStock.color,
+                      color: InventoryItemStatus.lowStock.color.shade100,
                     ),
                     onTap: () => _handleNavigation(
                       context,
@@ -83,7 +83,7 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'Out of Stock',
                       count: isLoading ? null : inventoryInfo.outOfStockItems,
-                      color: InventoryItemStatus.outOfStock.color,
+                      color: InventoryItemStatus.outOfStock.color.shade100,
                     ),
                     onTap: () => _handleNavigation(
                       context,
@@ -100,7 +100,7 @@ class StatusSection extends StatelessWidget {
                     status: InventoryStatusItem(
                       title: 'Expired',
                       count: isLoading ? null : inventoryInfo.expiredItems,
-                      color: InventoryItemStatus.expired.color,
+                      color: InventoryItemStatus.expired.color.shade200,
                     ),
                     onTap: () => _handleNavigation(
                       context,

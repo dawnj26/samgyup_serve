@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +7,7 @@ import 'package:samgyup_serve/bloc/inventory/status/inventory_status_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/dialogs/loading_dialog.dart';
+import 'package:samgyup_serve/ui/inventory/components/detail_drawer.dart';
 import 'package:samgyup_serve/ui/inventory/components/inventory_item_list.dart';
 import 'package:samgyup_serve/ui/inventory/components/status_list_app_bar.dart';
 
@@ -22,6 +21,8 @@ class InventoryStatusListScreen extends StatefulWidget {
 
 class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
   final _scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  InventoryItem _selectedItem = InventoryItem.empty();
 
   @override
   void initState() {
@@ -33,6 +34,52 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
+      listener: _handleListener,
+      child: Scaffold(
+        key: scaffoldKey,
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            const StatusListAppBar(),
+            BlocBuilder<InventoryStatusBloc, InventoryStatusState>(
+              builder: (context, state) {
+                switch (state) {
+                  case InventoryStatusLoaded(:final items):
+                    return InventoryItemList(
+                      key: const Key('inventory_status_list'),
+                      items: items,
+                      hasReachedMax: state.hasReachedMax,
+                      onEdit: _handleEdit,
+                      onTap: _handleTap,
+                    );
+                  case InventoryStatusError(:final message):
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Text(message),
+                      ),
+                    );
+                  default:
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                }
+              },
+            ),
+          ],
+        ),
+        endDrawer: DetailDrawer(
+          item: _selectedItem,
+        ),
+        endDrawerEnableOpenDragGesture: false,
+      ),
+    );
   }
 
   bool get _isBottom {
@@ -74,56 +121,24 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
-      listener: _handleListener,
-      child: Scaffold(
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            const StatusListAppBar(),
-            BlocBuilder<InventoryStatusBloc, InventoryStatusState>(
-              builder: (context, state) {
-                switch (state) {
-                  case InventoryStatusLoaded(:final items):
-                    return InventoryItemList(
-                      key: const Key('inventory_status_list'),
-                      items: items,
-                      hasReachedMax: state.hasReachedMax,
-                      onEdit: (item) async {
-                        final updatedItem = await context.router
-                            .push<InventoryItem>(
-                              InventoryEditRoute(
-                                item: item,
-                              ),
-                            );
-
-                        if (!context.mounted || updatedItem == null) return;
-                        log('Item changed: ${item.name}');
-                        context.read<InventoryStatusBloc>().add(
-                          InventoryStatusEvent.itemChanged(item: updatedItem),
-                        );
-                      },
-                    );
-                  case InventoryStatusError(:final message):
-                    return SliverFillRemaining(
-                      child: Center(
-                        child: Text(message),
-                      ),
-                    );
-                  default:
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                }
-              },
-            ),
-          ],
-        ),
+  Future<void> _handleEdit(InventoryItem item) async {
+    final updatedItem = await context.router.push<InventoryItem>(
+      InventoryEditRoute(
+        item: item,
       ),
     );
+
+    if (!mounted || updatedItem == null) return;
+    context.read<InventoryStatusBloc>().add(
+      InventoryStatusEvent.itemChanged(item: updatedItem),
+    );
+  }
+
+  void _handleTap(InventoryItem item) {
+    setState(() {
+      _selectedItem = item;
+    });
+
+    scaffoldKey.currentState!.openEndDrawer();
   }
 }

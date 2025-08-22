@@ -34,10 +34,13 @@ class StatusListAppBar extends StatelessWidget {
           ),
           pinned: true,
           expandedHeight: 200,
-          backgroundColor: status == null ? Colors.blue.shade200 : status.color,
+          backgroundColor: status == null
+              ? Colors.blue.shade200
+              : status.color.shade200,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(title),
           ),
+          actions: const [SizedBox.shrink()],
         );
       },
     );
