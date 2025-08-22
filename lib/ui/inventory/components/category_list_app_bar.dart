@@ -31,6 +31,7 @@ class CategoryListAppBar extends StatelessWidget {
           flexibleSpace: FlexibleSpaceBar(
             title: Text(category.label),
           ),
+          actions: const [SizedBox.shrink()],
         );
       },
     );
