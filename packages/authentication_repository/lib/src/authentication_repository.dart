@@ -40,8 +40,10 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
     } on Exception catch (_) {
-      throw const SignUpWithEmailAndPasswordFailure('Something went wrong.');
+      throw const ResponseException('Unknown error occurred during sign up.');
     }
   }
 
@@ -56,8 +58,10 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
     } on Exception catch (_) {
-      throw const LogInWithEmailAndPasswordFailure();
+      throw const ResponseException('Unknown error occurred during login.');
     }
   }
 
@@ -66,8 +70,10 @@ class AuthenticationRepository {
   Future<void> logOut() async {
     try {
       await _appwrite.account.deleteSession(sessionId: 'current');
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
     } on Exception catch (_) {
-      throw LogoutException();
+      throw const ResponseException('Unknown error occurred during logout.');
     }
   }
 }

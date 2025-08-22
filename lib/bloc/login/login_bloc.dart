@@ -1,3 +1,4 @@
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
@@ -93,7 +94,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           user: user,
         ),
       );
-    } on LogInWithEmailAndPasswordFailure catch (e) {
+    } on ResponseException catch (e) {
       emit(
         LoginFailure(
           email: state.email,
