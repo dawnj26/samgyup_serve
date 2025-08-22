@@ -40,8 +40,10 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
-    } on Exception catch (_) {
-      throw const SignUpWithEmailAndPasswordFailure('Something went wrong.');
+    } on AppwriteException catch (e) {
+      throw SignUpWithEmailAndPasswordFailure(
+        e.message ?? 'Something went wrong.',
+      );
     }
   }
 
@@ -56,6 +58,10 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
+    } on AppwriteException catch (e) {
+      throw LogInWithEmailAndPasswordFailure(
+        e.message ?? 'Something went wrong.',
+      );
     } on Exception catch (_) {
       throw const LogInWithEmailAndPasswordFailure();
     }
@@ -66,8 +72,8 @@ class AuthenticationRepository {
   Future<void> logOut() async {
     try {
       await _appwrite.account.deleteSession(sessionId: 'current');
-    } on Exception catch (_) {
-      throw LogoutException();
+    } on AppwriteException catch (e) {
+      throw LogoutException(e.message ?? 'Something went wrong.');
     }
   }
 }
