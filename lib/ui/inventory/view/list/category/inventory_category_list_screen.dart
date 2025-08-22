@@ -8,6 +8,7 @@ import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/category_list_app_bar.dart';
+import 'package:samgyup_serve/ui/inventory/components/detail_drawer.dart';
 import 'package:samgyup_serve/ui/inventory/components/inventory_item_list.dart';
 
 class InventoryCategoryListScreen extends StatefulWidget {
@@ -21,6 +22,8 @@ class InventoryCategoryListScreen extends StatefulWidget {
 class _InventoryCategoryListScreenState
     extends State<InventoryCategoryListScreen> {
   final _scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  InventoryItem _selectedItem = InventoryItem.empty();
 
   @override
   void initState() {
@@ -32,6 +35,52 @@ class _InventoryCategoryListScreenState
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
+      listener: _handleListener,
+      child: Scaffold(
+        key: scaffoldKey,
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            const CategoryListAppBar(),
+            BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
+              builder: (context, state) {
+                switch (state) {
+                  case InventoryCategoryLoaded(:final items):
+                    return InventoryItemList(
+                      key: const Key('inventory_category_list'),
+                      items: items,
+                      hasReachedMax: state.hasReachedMax,
+                      onEdit: _handleEdit,
+                      onTap: _handleTap,
+                    );
+                  case InventoryCategoryError(:final message):
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Text(message),
+                      ),
+                    );
+                  default:
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                }
+              },
+            ),
+          ],
+        ),
+        endDrawer: DetailDrawer(
+          item: _selectedItem,
+        ),
+        endDrawerEnableOpenDragGesture: false,
+      ),
+    );
   }
 
   bool get _isBottom {
@@ -73,56 +122,25 @@ class _InventoryCategoryListScreenState
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
-      listener: _handleListener,
-      child: Scaffold(
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            const CategoryListAppBar(),
-            BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
-              builder: (context, state) {
-                switch (state) {
-                  case InventoryCategoryLoaded(:final items):
-                    return InventoryItemList(
-                      key: const Key('inventory_category_list'),
-                      items: items,
-                      hasReachedMax: state.hasReachedMax,
-                      onEdit: (item) async {
-                        final updatedItem = await context.router
-                            .push<InventoryItem>(
-                              InventoryEditRoute(
-                                item: item,
-                              ),
-                            );
-
-                        if (!context.mounted || updatedItem == null) return;
-
-                        context.read<InventoryCategoryBloc>().add(
-                          InventoryCategoryEvent.itemChanged(item: updatedItem),
-                        );
-                      },
-                    );
-                  case InventoryCategoryError(:final message):
-                    return SliverFillRemaining(
-                      child: Center(
-                        child: Text(message),
-                      ),
-                    );
-                  default:
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                }
-              },
-            ),
-          ],
-        ),
+  Future<void> _handleEdit(InventoryItem item) async {
+    final updatedItem = await context.router.push<InventoryItem>(
+      InventoryEditRoute(
+        item: item,
       ),
     );
+
+    if (!mounted || updatedItem == null) return;
+
+    context.read<InventoryCategoryBloc>().add(
+      InventoryCategoryEvent.itemChanged(item: updatedItem),
+    );
+  }
+
+  void _handleTap(InventoryItem item) {
+    setState(() {
+      _selectedItem = item;
+    });
+
+    scaffoldKey.currentState!.openEndDrawer();
   }
 }
