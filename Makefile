@@ -6,36 +6,42 @@ PACKAGES := $(PACKAGE_PUBS:%/pubspec.yaml=%)
 ROOT_HAS_BUILD_RUNNER := $(shell grep -E '^[[:space:]]*[^#].*build_runner:' pubspec.yaml >/dev/null 2>&1 && echo 1 || echo 0)
 BUILD_RUNNER_PACKAGES := $(shell for p in $(PACKAGES); do grep -E '^[[:space:]]*[^#].*build_runner:' $$p/pubspec.yaml >/dev/null 2>&1 && echo $$p; done)
 
+FLUTTER ?= flutter
 DART ?= dart
 
-.PHONY: help deps generate _deps_root _deps_packages _gen_root _gen_packages
+.PHONY: help deps generate generate-only release _deps_root _deps_packages _gen_root _gen_packages
 
 help:
 	@echo "Targets:"
-	@echo "  deps      - Run 'dart pub get' in root and all packages"
-	@echo "  generate  - Run build_runner build in root (if needed) and in packages needing it"
+	@echo "  deps         - Run 'flutter pub get' in root and all packages"
+	@echo "  generate     - Run build_runner build in root (if needed) and in packages needing it"
+	@echo "  generate-only - Run build_runner build without fetching dependencies first"
+	@echo "  release      - Generate code and build production APK with ABI splits"
 	@echo ""
 	@echo "Variables:"
+	@echo "  FLUTTER=<flutter executable> (default: flutter)"
 	@echo "  DART=<dart executable> (default: dart)"
 
 deps: _deps_root _deps_packages
 
 _deps_root:
 	@echo "==> Getting dependencies (root)"
-	@$(DART) pub get
+	@$(FLUTTER) pub get
 
 _deps_packages:
 ifneq ($(PACKAGES),)
 	@echo "==> Getting dependencies (packages)"
 	@set -e; for p in $(PACKAGES); do \
 		echo "--> $$p"; \
-		( cd $$p && $(DART) pub get ); \
+		( cd $$p && $(FLUTTER) pub get ); \
 	done
 else
 	@echo "No packages/ subpackages detected."
 endif
 
 generate: deps _gen_root _gen_packages
+
+generate-only: _gen_root _gen_packages
 
 _gen_root:
 ifneq ($(ROOT_HAS_BUILD_RUNNER),0)
@@ -55,3 +61,13 @@ ifneq ($(BUILD_RUNNER_PACKAGES),)
 else
 	@echo "No packages with build_runner dependency found."
 endif
+
+release-prod: generate
+	@echo "==> Building production APK"
+	@$(FLUTTER) build apk --flavor production --split-per-abi -t lib/main_production.dart
+
+release-stg: generate
+	@echo "==> Building production APK"
+	@$(FLUTTER) build apk --flavor staging --split-per-abi -t lib/main_staging.dart
+
+
