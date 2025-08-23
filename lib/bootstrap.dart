@@ -37,6 +37,8 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       appwriteProjectName: 'Samgyup Serve',
       databaseId: '689b1bd20018b604c958',
       inventoryCollectionId: '68a0142300285aedc1e0',
+      menuCollectionId: '68a9869d001723644444',
+      menuIngredientsCollectionId: '68a9a529003b46dde3f2',
     ),
   );
 

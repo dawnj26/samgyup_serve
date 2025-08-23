@@ -66,6 +66,8 @@ class AppwriteRepository {
       projectName: environment.appwriteProjectName,
       inventoryCollectionId: environment.inventoryCollectionId,
       databaseId: environment.databaseId,
+      menuCollectionId: environment.menuCollectionId,
+      menuIngredientsCollectionId: environment.menuIngredientsCollectionId,
     );
   }
 
