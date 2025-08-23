@@ -36,11 +36,11 @@ class StatusCard extends StatelessWidget {
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  Icon(
-                    Icons.chevron_right,
-                    color: colorScheme.onSurfaceVariant,
-                    size: 20,
-                  ),
+                  if (onTap != null)
+                    Icon(
+                      Icons.chevron_right,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                 ],
               ),
               const SizedBox(height: 8),
