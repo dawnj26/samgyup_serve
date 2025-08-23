@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:samgyup_serve/data/models/inventory_status.dart';
 
 class StatusCard extends StatelessWidget {
   const StatusCard({
-    required this.status,
+    required this.title,
+    required this.color,
     this.onTap,
+    this.count,
     super.key,
   });
 
-  final InventoryStatusItem status;
+  final String title;
+  final Color color;
+  final int? count;
   final void Function()? onTap;
 
   @override
@@ -17,7 +20,7 @@ class StatusCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Card(
-      color: status.color,
+      color: color,
       elevation: 0,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -31,7 +34,7 @@ class StatusCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    status.title,
+                    title,
                     style: textTheme.titleSmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -45,7 +48,7 @@ class StatusCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                status.count?.toString() ?? '-',
+                count?.toString() ?? '-',
                 style: textTheme.headlineSmall,
               ),
             ],
