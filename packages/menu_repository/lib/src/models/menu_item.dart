@@ -20,6 +20,7 @@ abstract class MenuItem with _$MenuItem {
     @Default(true) bool isAvailable,
     @Default('') String id,
     DateTime? updatedAt,
+    String? imageId,
   }) = _MenuItem;
 
   /// Creates an empty [MenuItem] instance.
