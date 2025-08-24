@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:mime/mime.dart';
+import 'package:path_provider/path_provider.dart';
+
 /// {@template cache_repository}
 /// Represents the cache repository.
 /// {@endtemplate}
@@ -23,6 +28,11 @@ class CacheRepository {
       );
     }
     return inst;
+  }
+
+  Future<String> get _tempPath async {
+    final directory = await getTemporaryDirectory();
+    return directory.path;
   }
 
 }
