@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:cache_repository/cache_repository.dart';
 
 /// {@template menu_repository}
 /// Repository package for managing menu data.
@@ -7,10 +11,11 @@ class MenuRepository {
   /// {@macro menu_repository}
   MenuRepository({
     AppwriteRepository? appwrite,
-  }) : _appwrite = appwrite ?? AppwriteRepository.instance {
-    _projectInfo = _appwrite.getProjectInfo();
-  }
+    CacheRepository? cache,
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance,
+       _cache = cache ?? CacheRepository.instance;
 
   final AppwriteRepository _appwrite;
-  late final ProjectInfo _projectInfo;
+  final CacheRepository _cache;
+
 }
