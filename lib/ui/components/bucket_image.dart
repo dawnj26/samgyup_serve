@@ -1,29 +1,24 @@
 import 'dart:developer';
-import 'dart:typed_data';
+import 'dart:io';
 
-import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:flutter/material.dart';
 
 class BucketImage extends StatelessWidget {
   const BucketImage({
-    required this.fileId,
+    required this.onLoad,
     super.key,
     this.loadingWidget,
     this.fit = BoxFit.cover,
   });
 
-  final String fileId;
   final Widget? loadingWidget;
   final BoxFit fit;
-
-  Future<Uint8List> _loadImage() {
-    return AppwriteRepository.instance.getImageView(fileId);
-  }
+  final Future<File> Function() onLoad;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _loadImage(),
+      future: onLoad(),
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return loadingWidget ??
@@ -39,7 +34,7 @@ class BucketImage extends StatelessWidget {
           return const Center(child: Icon(Icons.image_not_supported));
         }
 
-        return Image.memory(
+        return Image.file(
           snapshot.data!,
           fit: fit,
         );
