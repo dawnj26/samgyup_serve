@@ -57,4 +57,11 @@ class CacheRepository {
     return null;
   }
 
+  /// Get file extension from MIME type string.
+  ///
+  /// Returns the file extension (with dot) for the given MIME type.
+  /// Returns null if no extension is found for the MIME type.
+  String? getExtensionFromMimeType(String mimeType) {
+    return extensionFromMime(mimeType);
+  }
 }
