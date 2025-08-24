@@ -35,4 +35,26 @@ class CacheRepository {
     return directory.path;
   }
 
+  /// Write data to a file in the cache directory.
+  Future<File> writeFileToCache(String fileName, List<int> data) async {
+    final path = await _tempPath;
+    final file = File('$path/$fileName');
+
+    return file.writeAsBytes(data);
+  }
+
+  /// Read data from a file in the cache directory.
+  ///
+  /// Throws a [FileNotFound] exception if the file does not exist.
+  Future<File?> readFileFromCache(String fileName) async {
+    final path = await _tempPath;
+    final file = File('$path/$fileName');
+
+    if (file.existsSync()) {
+      return file;
+    }
+
+    return null;
+  }
+
 }
