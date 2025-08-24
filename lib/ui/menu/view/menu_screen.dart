@@ -18,6 +18,7 @@ class MenuScreen extends StatelessWidget {
       category: 'Noodles',
       ingredients: [],
       createdAt: DateTime.now(),
+      imageId: '68aabc57000ef0e66d9c',
     );
 
     return Scaffold(
@@ -51,6 +52,10 @@ class MenuScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
       ),
     );
   }
