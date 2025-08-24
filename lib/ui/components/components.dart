@@ -4,6 +4,7 @@ export 'app_logo_bounce.dart';
 export 'app_logo_icon.dart';
 export 'badge_indicator.dart';
 export 'bottom_loader.dart';
+export 'bucket_image.dart';
 export 'buttons/buttons.dart';
 export 'datetime_picker.dart';
 export 'dialogs/dialogs.dart';
