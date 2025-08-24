@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
@@ -119,5 +117,25 @@ class AppwriteRepository {
       ...document.data,
       'updatedAt': document.$updatedAt,
     };
+  }
+
+  /// Fetches metadata for a file stored in Appwrite by its unique ID.
+  Future<appwrite_models.File> getFileMetadata(String fileId) async {
+    final response = await _storage.getFile(
+      bucketId: environment.storageBucketId,
+      fileId: fileId,
+    );
+
+    return response;
+  }
+
+  /// Retrieves a specific file and returns its data as a byte array.
+  Future<Uint8List> downloadFile(String fileId) async {
+    final response = await _storage.getFileDownload(
+      bucketId: environment.storageBucketId,
+      fileId: fileId,
+    );
+
+    return response;
   }
 }
