@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -109,6 +112,11 @@ class _MenuImage extends StatelessWidget {
 
   final String? imageId;
 
+  Future<File> _handleLoadImage(BuildContext context) {
+    final menuRepo = context.read<MenuRepository>();
+    return menuRepo.getMenuItemImage(imageId!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -126,7 +134,7 @@ class _MenuImage extends StatelessWidget {
                   variant: AppLogoIconVariant.blackAndWhite,
                 )
               : BucketImage(
-                  fileId: imageId!,
+                  onLoad: () => _handleLoadImage(context),
                 ),
         ),
       ),
