@@ -44,8 +44,6 @@ class CacheRepository {
   }
 
   /// Read data from a file in the cache directory.
-  ///
-  /// Throws a [FileNotFound] exception if the file does not exist.
   Future<File?> readFileFromCache(String fileName) async {
     final path = await _tempPath;
     final file = File('$path/$fileName');
