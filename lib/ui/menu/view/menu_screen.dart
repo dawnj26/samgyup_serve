@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -44,7 +45,6 @@ class MenuScreen extends StatelessWidget {
           SliverPadding(
             padding: const EdgeInsets.only(bottom: 16),
             sliver: SliverList.builder(
-              addRepaintBoundaries: false,
               itemBuilder: (_, _) => MenuListItem(
                 item: item,
               ),
@@ -54,7 +54,9 @@ class MenuScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.router.push(const MenuCreateRoute());
+        },
         child: const Icon(Icons.add),
       ),
     );
