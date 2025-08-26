@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
+import 'package:samgyup_serve/data/enums/inventory_item_option.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
-import 'package:samgyup_serve/ui/inventory/components/item_tile.dart';
+import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryItemList extends StatelessWidget {
   const InventoryItemList({
@@ -25,8 +28,29 @@ class InventoryItemList extends StatelessWidget {
             ? const BottomLoader()
             : ItemTile(
                 item: items[index],
-                onEdit: () => onEdit?.call(items[index]),
                 onTap: () => onTap?.call(items[index]),
+                trailing: ItemMoreOptionButton(
+                  onSelected: (option) {
+                    switch (option) {
+                      case InventoryItemOption.edit:
+                        onEdit?.call(items[index]);
+                      case InventoryItemOption.delete:
+                        showDialog<void>(
+                          context: context,
+                          builder: (ctx) => DeleteDialog(
+                            item: items[index],
+                            onDelete: () {
+                              context.read<InventoryDeleteBloc>().add(
+                                InventoryDeleteEvent.started(
+                                  item: items[index],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                    }
+                  },
+                ),
               );
       },
       itemCount: hasReachedMax ? items.length : items.length + 1,
