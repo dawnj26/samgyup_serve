@@ -9,6 +9,7 @@ abstract class MenuCreateState with _$MenuCreateState {
     @Default(MenuCategoryInput.pure()) MenuCategoryInput category,
     @Default([]) List<Ingredient> ingredients,
     @Default(false) bool isDetailsValid,
+    File? imageFile,
   }) = MenuCreateInitial;
 
   const factory MenuCreateState.changed({
@@ -18,6 +19,7 @@ abstract class MenuCreateState with _$MenuCreateState {
     required MenuCategoryInput category,
     required List<Ingredient> ingredients,
     required bool isDetailsValid,
+    File? imageFile,
   }) = MenuCreateChanged;
 
   const factory MenuCreateState.submitting({
@@ -27,6 +29,7 @@ abstract class MenuCreateState with _$MenuCreateState {
     required MenuCategoryInput category,
     required List<Ingredient> ingredients,
     required bool isDetailsValid,
+    File? imageFile,
   }) = MenuCreateSubmitting;
 
   const factory MenuCreateState.success({
@@ -36,6 +39,7 @@ abstract class MenuCreateState with _$MenuCreateState {
     required MenuCategoryInput category,
     required List<Ingredient> ingredients,
     required bool isDetailsValid,
+    File? imageFile,
   }) = MenuCreateSuccess;
 
   const factory MenuCreateState.failure({
@@ -45,6 +49,7 @@ abstract class MenuCreateState with _$MenuCreateState {
     required MenuCategoryInput category,
     required List<Ingredient> ingredients,
     required bool isDetailsValid,
+    File? imageFile,
     String? errorMessage,
   }) = MenuCreateFailure;
 }

@@ -12,4 +12,5 @@ class MenuCreateEvent with _$MenuCreateEvent {
     List<Ingredient> ingredients,
   ) = _IngredientsChanged;
   const factory MenuCreateEvent.submitted() = _Submitted;
+  const factory MenuCreateEvent.imageChanged(File? imageFile) = _ImageChanged;
 }

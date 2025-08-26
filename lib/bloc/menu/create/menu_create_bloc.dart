@@ -21,6 +21,7 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
     on<_PriceChanged>(_onPriceChanged);
     on<_CategoryChanged>(_onCategoryChanged);
     on<_IngredientsChanged>(_onIngredientsChanged);
+    on<_ImageChanged>(_onImageChanged);
   }
 
   final MenuRepository _menuRepository;
@@ -37,6 +38,7 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
         price: state.price,
         category: state.category,
         ingredients: state.ingredients,
+        imageFile: state.imageFile,
         isDetailsValid: Formz.validate([
           name,
           state.description,
@@ -59,6 +61,7 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
         price: state.price,
         category: state.category,
         ingredients: state.ingredients,
+        imageFile: state.imageFile,
         isDetailsValid: Formz.validate([
           state.name,
           description,
@@ -81,6 +84,7 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
         price: price,
         category: state.category,
         ingredients: state.ingredients,
+        imageFile: state.imageFile,
         isDetailsValid: Formz.validate([
           state.name,
           state.description,
@@ -103,6 +107,7 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
         price: state.price,
         category: category,
         ingredients: state.ingredients,
+        imageFile: state.imageFile,
         isDetailsValid: Formz.validate([
           state.name,
           state.description,
@@ -125,7 +130,9 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
         category: state.category,
         ingredients: event.ingredients,
         isDetailsValid: state.isDetailsValid,
+        imageFile: state.imageFile,
       ),
     );
   }
+
 }
