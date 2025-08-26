@@ -6,6 +6,7 @@ import 'package:samgyup_serve/shared/form/menu/menu_category_input.dart';
 import 'package:samgyup_serve/shared/form/menu/menu_description.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
+import 'package:samgyup_serve/ui/components/image_picker.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 @RoutePage()
@@ -33,8 +34,25 @@ class MenuFormScreen extends StatelessWidget {
           const _Price(),
           const SizedBox(height: 16),
           const _Category(),
+          const SizedBox(height: 16),
+          const _Image(),
         ],
       ),
+    );
+  }
+}
+
+class _Image extends StatelessWidget {
+  const _Image();
+
+  @override
+  Widget build(BuildContext context) {
+    return ImagePicker(
+      onChange: (image) {
+        context.read<MenuCreateBloc>().add(
+          MenuCreateEvent.imageChanged(image),
+        );
+      },
     );
   }
 }
