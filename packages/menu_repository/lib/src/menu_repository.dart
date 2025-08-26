@@ -75,4 +75,23 @@ class MenuRepository {
     }
   }
 
+  Future<void> _addIngredient(
+    Ingredient ingredients,
+    String menuItemId,
+  ) async {
+    try {
+      final ingredient = ingredients.copyWith(
+        menuItemId: menuItemId,
+        id: ID.unique(),
+      );
+      await _appwrite.databases.createDocument(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.menuIngredientsCollectionId,
+        documentId: ingredient.id,
+        data: ingredient.toJson(),
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
 }
