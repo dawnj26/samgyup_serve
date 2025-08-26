@@ -6,12 +6,12 @@ import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as m;
-import 'package:samgyup_serve/shared/form/inventory/name.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
+import 'package:samgyup_serve/shared/form/name.dart';
 
+part 'inventory_edit_bloc.freezed.dart';
 part 'inventory_edit_event.dart';
 part 'inventory_edit_state.dart';
-part 'inventory_edit_bloc.freezed.dart';
 
 class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
   InventoryEditBloc({

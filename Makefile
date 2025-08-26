@@ -69,5 +69,3 @@ release-prod: generate
 release-stg: generate
 	@echo "==> Building production APK"
 	@$(FLUTTER) build apk --flavor staging --split-per-abi -t lib/main_staging.dart
-
-

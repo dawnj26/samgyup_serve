@@ -6,17 +6,10 @@ import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
-import 'package:samgyup_serve/shared/form/inventory/name.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
+import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
-import 'package:samgyup_serve/ui/inventory/components/add_button.dart';
-import 'package:samgyup_serve/ui/inventory/components/category_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/description_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/expiration_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/low_stock_threshold_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/measurement_unit_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/name_input.dart';
-import 'package:samgyup_serve/ui/inventory/components/stock_input.dart';
+import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryAddScreen extends StatelessWidget {
   const InventoryAddScreen({super.key});

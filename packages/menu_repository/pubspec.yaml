@@ -1,0 +1,30 @@
+name: menu_repository
+description: A Very Good Project created by Very Good CLI.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ^3.35.0
+
+dependencies:
+  appwrite: 17.0.0
+  appwrite_repository:
+    path: ../appwrite_repository
+  cache_repository:
+    path: ../cache_repository
+  flutter:
+    sdk: flutter
+  freezed_annotation: ^3.1.0
+  inventory_repository:
+    path: ../inventory_repository
+  json_annotation: ^4.9.0
+
+dev_dependencies:
+  build_runner: ^2.5.4
+  flutter_test:
+    sdk: flutter
+  freezed: ^3.1.0
+  json_serializable: ^6.0.0
+  mocktail: ^1.0.4
+  very_good_analysis: ^9.0.0

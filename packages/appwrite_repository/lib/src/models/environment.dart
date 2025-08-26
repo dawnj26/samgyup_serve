@@ -10,6 +10,9 @@ class Environment {
     required this.appwriteProjectName,
     required this.databaseId,
     required this.inventoryCollectionId,
+    required this.menuCollectionId,
+    required this.menuIngredientsCollectionId,
+    required this.storageBucketId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -26,4 +29,13 @@ class Environment {
 
   /// The ID of inventory collection.
   final String inventoryCollectionId;
+
+  /// The ID of menu collection.
+  final String menuCollectionId;
+
+  /// The ID of menu ingredients collection.
+  final String menuIngredientsCollectionId;
+
+  /// The ID of storage bucket.
+  final String storageBucketId;
 }

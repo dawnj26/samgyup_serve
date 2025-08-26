@@ -1,12 +1,15 @@
 /// A data model for holding appwrite project information.
 class ProjectInfo {
   /// Creates a new [ProjectInfo] instance.
-  ProjectInfo({
+  const ProjectInfo({
     required this.endpoint,
     required this.projectId,
     required this.projectName,
     required this.databaseId,
     required this.inventoryCollectionId,
+    required this.menuCollectionId,
+    required this.menuIngredientsCollectionId,
+    required this.storageBucketId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -23,4 +26,13 @@ class ProjectInfo {
 
   /// The ID of the inventory collection.
   final String inventoryCollectionId;
+
+  /// The ID of the menu collection.
+  final String menuCollectionId;
+
+  /// The ID of the menu ingredients collection.
+  final String menuIngredientsCollectionId;
+
+  /// The ID of the storage bucket.
+  final String storageBucketId;
 }

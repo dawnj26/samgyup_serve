@@ -7,9 +7,7 @@ import 'package:samgyup_serve/bloc/inventory/status/inventory_status_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/dialogs/loading_dialog.dart';
-import 'package:samgyup_serve/ui/inventory/components/detail_drawer.dart';
-import 'package:samgyup_serve/ui/inventory/components/inventory_item_list.dart';
-import 'package:samgyup_serve/ui/inventory/components/status_list_app_bar.dart';
+import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryStatusListScreen extends StatefulWidget {
   const InventoryStatusListScreen({super.key});

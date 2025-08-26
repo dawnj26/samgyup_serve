@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwrite_models;
 import 'package:appwrite_repository/src/models/models.dart';
@@ -14,6 +17,7 @@ class AppwriteRepository {
         .setEndpoint(environment.appwritePublicEndpoint);
     _account = Account(_client);
     _databases = Databases(_client);
+    _storage = Storage(_client);
   }
 
   /// Whether the repository has been initialized.
@@ -28,6 +32,7 @@ class AppwriteRepository {
   late final Client _client;
   late final Account _account;
   late final Databases _databases;
+  late final Storage _storage;
 
   /// Returns the [Client] instance used for making requests to Appwrite.
   Client get client => _client;
@@ -37,6 +42,9 @@ class AppwriteRepository {
 
   /// Returns the [Databases] service for database operations.
   Databases get databases => _databases;
+
+  /// Returns the [Storage] service for file storage operations.
+  Storage get storage => _storage;
 
   /// Initialize the singleton. Call once (e.g., in main()).
   static Future<AppwriteRepository> initialize({
@@ -66,6 +74,9 @@ class AppwriteRepository {
       projectName: environment.appwriteProjectName,
       inventoryCollectionId: environment.inventoryCollectionId,
       databaseId: environment.databaseId,
+      menuCollectionId: environment.menuCollectionId,
+      menuIngredientsCollectionId: environment.menuIngredientsCollectionId,
+      storageBucketId: environment.storageBucketId,
     );
   }
 
@@ -107,5 +118,51 @@ class AppwriteRepository {
       ...document.data,
       'updatedAt': document.$updatedAt,
     };
+  }
+
+  /// Converts a model's data and ID to a map suitable for Appwrite Document.
+  Map<String, dynamic> modeltoDocumentMap(
+    String id,
+    Map<String, dynamic> data,
+  ) {
+    return {
+      ...data,
+      r'$id': id,
+    };
+  }
+
+  /// Fetches metadata for a file stored in Appwrite by its unique ID.
+  Future<appwrite_models.File> getFileMetadata(String fileId) async {
+    final response = await _storage.getFile(
+      bucketId: environment.storageBucketId,
+      fileId: fileId,
+    );
+
+    return response;
+  }
+
+  /// Retrieves a specific file and returns its data as a byte array.
+  Future<Uint8List> downloadFile(String fileId) async {
+    final response = await _storage.getFileDownload(
+      bucketId: environment.storageBucketId,
+      fileId: fileId,
+    );
+
+    return response;
+  }
+
+  /// Uploads a file to Appwrite Storage and returns its unique file ID.
+  Future<String> uploadFile(File file) async {
+    final response = await _storage.createFile(
+      bucketId: environment.storageBucketId,
+      fileId: ID.unique(),
+      file: InputFile.fromPath(path: file.path, filename: _getFilename(file)),
+    );
+
+    return response.$id;
+  }
+
+  String _getFilename(File file) {
+    return file.path.split(Platform.pathSeparator).last;
   }
 }

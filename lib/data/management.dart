@@ -9,8 +9,9 @@ final List<ManagementItem> managementItems = [
     route: InventoryRoute(),
   ),
   const ManagementItem(
-    title: 'Orders',
-    icon: Icons.receipt_long_rounded,
+    title: 'Menu',
+    icon: Icons.restaurant_menu,
+    route: MenuShellRoute(),
   ),
   const ManagementItem(
     title: 'Customers',
