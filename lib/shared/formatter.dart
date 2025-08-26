@@ -13,3 +13,11 @@ class CurrencyFormatter {
     return _phpFormatter.format(amount);
   }
 }
+
+String formatNumber(double number) {
+  if (number == number.toInt()) {
+    return number.toInt().toString();
+  } else {
+    return number.toStringAsFixed(2);
+  }
+}
