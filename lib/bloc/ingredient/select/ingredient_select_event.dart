@@ -8,6 +8,6 @@ class IngredientSelectEvent with _$IngredientSelectEvent {
     Ingredient ingredient,
   ) = _IngredientSelected;
   const factory IngredientSelectEvent.ingredientRemoved(
-    Ingredient ingredient,
+    String inventoryItemId,
   ) = _IngredientRemoved;
 }
