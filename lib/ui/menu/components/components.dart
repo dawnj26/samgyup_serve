@@ -1,6 +1,10 @@
 export 'category_input.dart';
 export 'description_input.dart';
+export 'ingredient_select_dialog.dart';
+export 'ingredient_tile.dart';
 export 'menu_list_item.dart';
 export 'name_input.dart';
 export 'price_input.dart';
+export 'selected_ingredients_bar.dart';
+export 'selected_ingredients_bottom_sheet.dart';
 export 'status_section.dart';
