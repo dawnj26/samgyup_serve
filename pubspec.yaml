@@ -18,6 +18,7 @@ dependencies:
     path: packages/cache_repository
   collection: ^1.19.1
   dotted_border: ^3.1.0
+  file_picker: ^10.3.2
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
