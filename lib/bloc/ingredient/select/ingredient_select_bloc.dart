@@ -27,6 +27,8 @@ class IngredientSelectBloc
         const Duration(milliseconds: 300),
       ),
     );
+    on<_IngredientSelected>(_onIngredientSelected);
+    on<_IngredientRemoved>(_onIngredientRemoved);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -96,7 +98,7 @@ class IngredientSelectBloc
       emit(
         IngredientSelectLoaded(
           selectedIngredients: state.selectedIngredients,
-          items: items,
+          items: [...state.items, ...items],
           hasReachedMax: items.length < _pageSize,
         ),
       );
@@ -119,5 +121,42 @@ class IngredientSelectBloc
         ),
       );
     }
+  }
+
+  void _onIngredientSelected(
+    _IngredientSelected event,
+    Emitter<IngredientSelectState> emit,
+  ) {
+    final updatedIngredients = [
+      ...state.selectedIngredients,
+      event.ingredient,
+    ];
+
+    emit(
+      IngredientSelectLoaded(
+        selectedIngredients: updatedIngredients,
+        items: state.items,
+        hasReachedMax: state.hasReachedMax,
+      ),
+    );
+  }
+
+  void _onIngredientRemoved(
+    _IngredientRemoved event,
+    Emitter<IngredientSelectState> emit,
+  ) {
+    final updatedIngredients = state.selectedIngredients
+        .where(
+          (ingredient) => ingredient.inventoryItemId != event.inventoryItemId,
+        )
+        .toList();
+
+    emit(
+      IngredientSelectLoaded(
+        selectedIngredients: updatedIngredients,
+        items: state.items,
+        hasReachedMax: state.hasReachedMax,
+      ),
+    );
   }
 }
