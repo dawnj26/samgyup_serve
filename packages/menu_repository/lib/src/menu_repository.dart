@@ -42,4 +42,37 @@ class MenuRepository {
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
+
+  /// Adds a new menu item along with its ingredients.
+  Future<void> addMenu({
+    required MenuItem menu,
+    required List<Ingredient> ingredients,
+    File? imageFile,
+  }) async {
+    try {
+      String? imageId;
+      if (imageFile != null) {
+        imageId = await _appwrite.uploadFile(imageFile);
+      }
+
+      final m = menu.copyWith(
+        id: ID.unique(),
+        imageId: imageId,
+      );
+
+      final menuDocument = await _appwrite.databases.createDocument(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.menuCollectionId,
+        documentId: m.id,
+        data: m.toJson(),
+      );
+
+      for (final ingredient in ingredients) {
+        await _addIngredient(ingredient, menuDocument.$id);
+      }
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
 }
