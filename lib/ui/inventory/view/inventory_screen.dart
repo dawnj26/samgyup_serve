@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/inventory_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
-import 'package:samgyup_serve/ui/inventory/components/category_card.dart';
-import 'package:samgyup_serve/ui/inventory/components/status_section.dart';
+import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryScreen extends StatelessWidget {
   const InventoryScreen({super.key});
