@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/create/menu_create_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:samgyup_serve/shared/snackbar.dart';
 
 @RoutePage()
 class MenuCreatePage extends StatelessWidget implements AutoRouteWrapper {
@@ -34,7 +36,21 @@ class MenuCreatePage extends StatelessWidget implements AutoRouteWrapper {
       create: (context) => MenuCreateBloc(
         menuRepository: context.read(),
       ),
-      child: this,
+      child: BlocListener<MenuCreateBloc, MenuCreateState>(
+        listener: (context, state) {
+          switch (state) {
+            case MenuCreateSubmitting():
+              showLoadingDialog(context: context, message: 'Creating menu...');
+            case MenuCreateSuccess():
+              context.router.popUntilRouteWithName(MenuRoute.name);
+              showSnackBar(context, 'Menu created successfully');
+            case MenuCreateFailure(:final errorMessage):
+              context.router.pop();
+              showSnackBar(context, errorMessage ?? 'Failed to create menu');
+          }
+        },
+        child: this,
+      ),
     );
   }
 }
@@ -54,10 +70,12 @@ class _MenuCreateNagivationBarState extends State<_MenuCreateNagivationBar> {
     final isEndOfPage = index == pageCount - 1;
 
     if (isEndOfPage != _isEndOfPage) {
-      setState(() {
+      return setState(() {
         _isEndOfPage = isEndOfPage;
       });
     }
+
+    context.read<MenuCreateBloc>().add(const MenuCreateEvent.submitted());
   }
 
   @override
