@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:cache_repository/cache_repository.dart';
+import 'package:menu_repository/menu_repository.dart';
 
 /// {@template menu_repository}
 /// Repository package for managing menu data.
@@ -17,6 +18,8 @@ class MenuRepository {
 
   final AppwriteRepository _appwrite;
   final CacheRepository _cache;
+
+  ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
 
   /// Gets image data of a menu item
   Future<File> getMenuItemImage(String fileId) async {
