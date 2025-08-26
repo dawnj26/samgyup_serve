@@ -113,6 +113,52 @@ extension UnitExtension on MeasurementUnit {
     }
   }
 
+  /// Returns the shorthand/abbreviated representation of the unit.
+  String get shorthand {
+    switch (this) {
+      case MeasurementUnit.grams:
+        return 'g';
+      case MeasurementUnit.kilograms:
+        return 'kg';
+      case MeasurementUnit.pounds:
+        return 'lbs';
+      case MeasurementUnit.ounces:
+        return 'oz';
+      case MeasurementUnit.milliliters:
+        return 'ml';
+      case MeasurementUnit.liters:
+        return 'L';
+      case MeasurementUnit.cups:
+        return 'cup';
+      case MeasurementUnit.gallons:
+        return 'gal';
+      case MeasurementUnit.piece:
+        return 'pc';
+      case MeasurementUnit.pack:
+        return 'pk';
+      case MeasurementUnit.bottle:
+        return 'btl';
+      case MeasurementUnit.can:
+        return 'can';
+      case MeasurementUnit.tray:
+        return 'tray';
+      case MeasurementUnit.box:
+        return 'box';
+      case MeasurementUnit.set:
+        return 'set';
+      case MeasurementUnit.roll:
+        return 'roll';
+      case MeasurementUnit.sheet:
+        return 'sht';
+      case MeasurementUnit.bundle:
+        return 'bdl';
+      case MeasurementUnit.dozen:
+        return 'dz';
+      case MeasurementUnit.unknown:
+        return '?';
+    }
+  }
+
   /// Creates a [MeasurementUnit] from its string representation.
   ///
   /// Returns [MeasurementUnit.piece] as the default fallback if the string
