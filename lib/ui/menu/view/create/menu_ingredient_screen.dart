@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/bloc/menu/create/menu_create_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/ui/components/empty_fallback.dart';
+import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 @RoutePage()
 class MenuIngredientScreen extends StatelessWidget {
@@ -13,11 +15,11 @@ class MenuIngredientScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -27,11 +29,49 @@ class MenuIngredientScreen extends StatelessWidget {
               const _AddButton(),
             ],
           ),
-          const Expanded(
-            child: _MenuIngredientFallback(),
+        ),
+        const SizedBox(height: 16),
+        Expanded(
+          child: BlocBuilder<MenuCreateBloc, MenuCreateState>(
+            buildWhen: (p, c) => p.ingredients != c.ingredients,
+            builder: (context, state) {
+              final ingredients = state.ingredients;
+
+              if (ingredients.isEmpty) {
+                return const EmptyFallback(
+                  message: '''
+                      No ingredients added yet.
+                      Tap the + button to add ingredients.
+                      ''',
+                );
+              }
+
+              return ListView.builder(
+                itemBuilder: (ctx, i) {
+                  final ingredient = ingredients[i];
+
+                  return IngredientTile(
+                    ingredient: ingredient,
+                    trailing: IconButton(
+                      onPressed: () {
+                        final updated = ingredients
+                            .where((ing) => ing.id != ingredient.id)
+                            .toList();
+
+                        context.read<MenuCreateBloc>().add(
+                          MenuCreateEvent.ingredientsChanged(updated),
+                        );
+                      },
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  );
+                },
+                itemCount: ingredients.length,
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -46,42 +86,18 @@ class _AddButton extends StatelessWidget {
     );
 
     return IconButton(
-      onPressed: () {
-        context.router.push(IngredientSelectRoute(initialValue: ingredients));
+      onPressed: () async {
+        final selected = await context.router.push<List<Ingredient>>(
+          IngredientSelectRoute(initialValue: ingredients),
+        );
+
+        if (!context.mounted || selected == null) return;
+
+        context.read<MenuCreateBloc>().add(
+          MenuCreateEvent.ingredientsChanged(selected),
+        );
       },
       icon: const Icon(Icons.add),
-    );
-  }
-}
-
-class _MenuIngredientFallback extends StatelessWidget {
-  const _MenuIngredientFallback();
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: DottedBorder(
-        options: RoundedRectDottedBorderOptions(
-          radius: const Radius.circular(12),
-          stackFit: StackFit.expand,
-          dashPattern: [10, 5],
-          strokeWidth: 2,
-          color: colorScheme.outlineVariant,
-        ),
-        child: Center(
-          child: Text(
-            'No ingredients added yet.\nTap the + button to add ingredients.',
-            textAlign: TextAlign.center,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
