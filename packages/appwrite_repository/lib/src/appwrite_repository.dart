@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
@@ -148,5 +149,20 @@ class AppwriteRepository {
     );
 
     return response;
+  }
+
+  /// Uploads a file to Appwrite Storage and returns its unique file ID.
+  Future<String> uploadFile(File file) async {
+    final response = await _storage.createFile(
+      bucketId: environment.storageBucketId,
+      fileId: ID.unique(),
+      file: InputFile.fromPath(path: file.path, filename: _getFilename(file)),
+    );
+
+    return response.$id;
+  }
+
+  String _getFilename(File file) {
+    return file.path.split(Platform.pathSeparator).last;
   }
 }
