@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,6 +24,7 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
     on<_PriceChanged>(_onPriceChanged);
     on<_CategoryChanged>(_onCategoryChanged);
     on<_IngredientsChanged>(_onIngredientsChanged);
+    on<_Submitted>(_onSubmitted);
     on<_ImageChanged>(_onImageChanged);
   }
 
@@ -135,4 +139,80 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
     );
   }
 
+  Future<void> _onSubmitted(
+    _Submitted event,
+    Emitter<MenuCreateState> emit,
+  ) async {
+    if (!state.isDetailsValid) return;
+
+    emit(
+      MenuCreateSubmitting(
+        name: state.name,
+        description: state.description,
+        price: state.price,
+        category: state.category,
+        ingredients: state.ingredients,
+        isDetailsValid: state.isDetailsValid,
+        imageFile: state.imageFile,
+      ),
+    );
+
+    try {
+      final menu = MenuItem(
+        name: state.name.value,
+        description: state.description.value,
+        price: double.parse(state.price.value),
+        category: state.category.value!,
+        createdAt: DateTime.now(),
+      );
+
+      await _menuRepository.addMenu(
+        menu: menu,
+        ingredients: state.ingredients,
+        imageFile: state.imageFile,
+      );
+
+      emit(
+        MenuCreateSuccess(
+          name: state.name,
+          description: state.description,
+          price: state.price,
+          category: state.category,
+          ingredients: state.ingredients,
+          isDetailsValid: state.isDetailsValid,
+          imageFile: state.imageFile,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        MenuCreateFailure(
+          name: state.name,
+          description: state.description,
+          price: state.price,
+          category: state.category,
+          ingredients: state.ingredients,
+          isDetailsValid: state.isDetailsValid,
+          imageFile: state.imageFile,
+          errorMessage: e.message,
+        ),
+      );
+    }
+  }
+
+  void _onImageChanged(
+    _ImageChanged event,
+    Emitter<MenuCreateState> emit,
+  ) {
+    emit(
+      MenuCreateChanged(
+        name: state.name,
+        description: state.description,
+        price: state.price,
+        category: state.category,
+        ingredients: state.ingredients,
+        isDetailsValid: state.isDetailsValid,
+        imageFile: event.imageFile,
+      ),
+    );
+  }
 }
