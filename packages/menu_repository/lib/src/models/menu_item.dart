@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:menu_repository/src/enums/enums.dart';
 
 part 'menu_item.freezed.dart';
 part 'menu_item.g.dart';
@@ -14,8 +14,7 @@ abstract class MenuItem with _$MenuItem {
     required String name,
     required String description,
     required double price,
-    required String category,
-    required List<Ingredient> ingredients,
+    required MenuCategory category,
     required DateTime createdAt,
     @Default(true) bool isAvailable,
     @Default('') String id,
@@ -28,8 +27,7 @@ abstract class MenuItem with _$MenuItem {
     name: '',
     description: '',
     price: 0,
-    category: '',
-    ingredients: [],
+    category: MenuCategory.aLaCarteMeats,
     createdAt: DateTime.now(),
   );
 

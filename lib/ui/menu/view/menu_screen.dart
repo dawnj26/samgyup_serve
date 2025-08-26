@@ -16,8 +16,7 @@ class MenuScreen extends StatelessWidget {
       name: 'Pancit Canton Platter',
       description: 'description',
       price: 200,
-      category: 'Noodles',
-      ingredients: [],
+      category: MenuCategory.riceAndNoodles,
       createdAt: DateTime.now(),
       imageId: '68aabc57000ef0e66d9c',
     );
