@@ -119,6 +119,17 @@ class AppwriteRepository {
     };
   }
 
+  /// Converts a model's data and ID to a map suitable for Appwrite Document.
+  Map<String, dynamic> modeltoDocumentMap(
+    String id,
+    Map<String, dynamic> data,
+  ) {
+    return {
+      ...data,
+      r'$id': id,
+    };
+  }
+
   /// Fetches metadata for a file stored in Appwrite by its unique ID.
   Future<appwrite_models.File> getFileMetadata(String fileId) async {
     final response = await _storage.getFile(
