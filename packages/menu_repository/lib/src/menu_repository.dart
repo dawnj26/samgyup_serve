@@ -44,14 +44,14 @@ class MenuRepository {
     File? imageFile,
   }) async {
     try {
-      String? imageId;
+      String? imageFileName;
       if (imageFile != null) {
-        imageId = await _appwrite.uploadFile(imageFile);
+        imageFileName = await _appwrite.uploadFile(imageFile);
       }
 
       final m = menu.copyWith(
         id: ID.unique(),
-        imageId: imageId,
+        imageFileName: imageFileName,
       );
 
       final menuDocument = await _appwrite.databases.createDocument(
