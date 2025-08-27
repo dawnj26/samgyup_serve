@@ -39,9 +39,10 @@ class MenuIngredientScreen extends StatelessWidget {
 
               if (ingredients.isEmpty) {
                 return const EmptyFallback(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   message: '''
-                      No ingredients added yet.
-                      Tap the + button to add ingredients.
+No ingredients added yet.
+Tap the + button to add ingredients.
                       ''',
                 );
               }
