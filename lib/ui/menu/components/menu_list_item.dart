@@ -14,6 +14,8 @@ class MenuListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final price = CurrencyFormatter.formatToPHP(item.price);
+
     return AspectRatio(
       aspectRatio: 3,
       child: InkWell(
@@ -31,6 +33,17 @@ class MenuListItem extends StatelessWidget {
                         Expanded(child: _MenuTitle(title: item.name)),
                         const SizedBox(width: 8),
                         _MenuState(isAvailable: item.isAvailable),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '$price · ${item.category.label}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
