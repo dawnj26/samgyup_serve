@@ -26,11 +26,9 @@ class MenuListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _MenuTitle(title: item.name),
-                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text(CurrencyFormatter.formatToPHP(item.price)),
+                        Expanded(child: _MenuTitle(title: item.name)),
                         const SizedBox(width: 8),
                         _MenuState(isAvailable: item.isAvailable),
                       ],
