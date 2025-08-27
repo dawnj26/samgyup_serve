@@ -44,25 +44,26 @@ class _MenuScreenState extends State<MenuScreen> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          const SliverToBoxAdapter(
-            child: StatusSection(),
-          ),
+          const _Status(),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 0, 8),
               child: Text(
                 'Menu Items',
                 style: textTheme.titleMedium,
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 16),
-            sliver: SliverList.builder(
-              itemBuilder: (_, _) => MenuListItem(
-                item: item,
-              ),
-              itemCount: 20,
+          SliverToBoxAdapter(
+            child: CategoryFilters(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              onSelectionChanged: (selected) {
+                context.read<MenuBloc>().add(
+                  MenuEvent.filterChanged(
+                    selectedCategories: selected,
+                  ),
+                );
+              },
             ),
           ),
           const _ItemList(),
