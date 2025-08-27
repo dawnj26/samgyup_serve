@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
@@ -69,6 +70,60 @@ class MenuRepository {
     }
   }
 
+  /// Fetches a list of menu items with optional filtering by category.
+  Future<List<MenuItem>> fetchItems({
+    List<MenuCategory>? category,
+    int limit = 20,
+    String? cursor,
+  }) async {
+    try {
+      final documents = await _appwrite.databases.listDocuments(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.menuCollectionId,
+        queries: [
+          if (category != null && category.isNotEmpty)
+            Query.equal('category', category.map((e) => e.name).toList()),
+          Query.limit(limit),
+          if (cursor != null) Query.cursorAfter(cursor),
+          Query.orderDesc('createdAt'),
+        ],
+      );
+
+      return documents.documents
+          .map((doc) => MenuItem.fromJson(_appwrite.documentToJson(doc)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
+  /// Fetches menu information such as total items and availability.
+  Future<MenuInfo> fetchMenuInfo() async {
+    try {
+      final items = await fetchItems(limit: 2000);
+
+      if (items.length > 1000) {
+        return Isolate.run(() => _getMenuInfo(items));
+      }
+
+      return _getMenuInfo(items);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
+  MenuInfo _getMenuInfo(List<MenuItem> items) {
+    final totalItems = items.length;
+    final availableItems = items.where((item) => item.isAvailable).length;
+    final unavailableItems = totalItems - availableItems;
+
+    return MenuInfo(
+      totalItems: totalItems,
+      availableItems: availableItems,
+      unavailableItems: unavailableItems,
+    );
+  }
+
   Future<void> _addIngredient(
     Ingredient ingredients,
     String menuItemId,
@@ -87,5 +142,9 @@ class MenuRepository {
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
+  }
+
+  String _getFileId(String filename) {
+    return filename.split('.').first;
   }
 }
