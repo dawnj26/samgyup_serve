@@ -8,7 +8,9 @@ import 'package:samgyup_serve/shared/snackbar.dart';
 
 @RoutePage()
 class MenuCreatePage extends StatelessWidget implements AutoRouteWrapper {
-  const MenuCreatePage({super.key});
+  const MenuCreatePage({super.key, this.onCreated});
+
+  final void Function()? onCreated;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class MenuCreatePage extends StatelessWidget implements AutoRouteWrapper {
               showLoadingDialog(context: context, message: 'Creating menu...');
             case MenuCreateSuccess():
               context.router.popUntilRouteWithName(MenuRoute.name);
+              onCreated?.call();
               showSnackBar(context, 'Menu created successfully');
             case MenuCreateFailure(:final errorMessage):
               context.router.pop();
