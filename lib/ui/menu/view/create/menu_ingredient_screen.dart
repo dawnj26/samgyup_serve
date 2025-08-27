@@ -39,9 +39,10 @@ class MenuIngredientScreen extends StatelessWidget {
 
               if (ingredients.isEmpty) {
                 return const EmptyFallback(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   message: '''
-                      No ingredients added yet.
-                      Tap the + button to add ingredients.
+No ingredients added yet.
+Tap the + button to add ingredients.
                       ''',
                 );
               }
@@ -55,7 +56,11 @@ class MenuIngredientScreen extends StatelessWidget {
                     trailing: IconButton(
                       onPressed: () {
                         final updated = ingredients
-                            .where((ing) => ing.id != ingredient.id)
+                            .where(
+                              (ing) =>
+                                  ing.inventoryItemId !=
+                                  ingredient.inventoryItemId,
+                            )
                             .toList();
 
                         context.read<MenuCreateBloc>().add(

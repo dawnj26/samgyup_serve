@@ -81,7 +81,7 @@ class InventoryRepository {
           'expirationDate',
           DateTime.now().toIso8601String(),
         ),
-        Query.limit(limit ?? 500),
+        Query.limit(limit ?? 2000),
       ];
       final documents = await _appwrite.databases.listDocuments(
         databaseId: _projectInfo.databaseId,

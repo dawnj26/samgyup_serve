@@ -153,16 +153,22 @@ class AppwriteRepository {
 
   /// Uploads a file to Appwrite Storage and returns its unique file ID.
   Future<String> uploadFile(File file) async {
+    final filename = _getFilename(file);
+    final fileExtension = _getFileExtension(filename);
     final response = await _storage.createFile(
       bucketId: environment.storageBucketId,
       fileId: ID.unique(),
-      file: InputFile.fromPath(path: file.path, filename: _getFilename(file)),
+      file: InputFile.fromPath(path: file.path, filename: filename),
     );
 
-    return response.$id;
+    return '${response.$id}.$fileExtension';
   }
 
   String _getFilename(File file) {
     return file.path.split(Platform.pathSeparator).last;
+  }
+
+  String _getFileExtension(String filename) {
+    return filename.split('.').last;
   }
 }

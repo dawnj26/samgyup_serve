@@ -2,9 +2,14 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 class EmptyFallback extends StatelessWidget {
-  const EmptyFallback({required this.message, super.key});
+  const EmptyFallback({
+    required this.message,
+    super.key,
+    this.padding = EdgeInsets.zero,
+  });
 
   final String message;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +17,7 @@ class EmptyFallback extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: padding,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
           radius: const Radius.circular(12),

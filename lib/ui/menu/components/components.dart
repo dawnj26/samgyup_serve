@@ -1,3 +1,4 @@
+export 'category_filters.dart';
 export 'category_input.dart';
 export 'description_input.dart';
 export 'ingredient_select_dialog.dart';
