@@ -56,7 +56,7 @@ class MenuListItem extends StatelessWidget {
                 ),
               ),
             ),
-            _MenuImage(imageId: item.imageId),
+            _MenuImage(imageFilename: item.imageFileName),
           ],
         ),
       ),
@@ -76,6 +76,7 @@ class _MenuTitle extends StatelessWidget {
     return Text(
       title,
       style: textTheme.labelLarge,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
@@ -119,13 +120,13 @@ class _MenuState extends StatelessWidget {
 }
 
 class _MenuImage extends StatelessWidget {
-  const _MenuImage({this.imageId});
+  const _MenuImage({this.imageFilename});
 
-  final String? imageId;
+  final String? imageFilename;
 
   Future<File> _handleLoadImage(BuildContext context) {
     final menuRepo = context.read<MenuRepository>();
-    return menuRepo.getMenuItemImage(imageId!);
+    return menuRepo.getMenuItemImage(imageFilename!);
   }
 
   @override
@@ -140,7 +141,7 @@ class _MenuImage extends StatelessWidget {
             color: Colors.grey.shade200,
           ),
           clipBehavior: Clip.hardEdge,
-          child: imageId == null
+          child: imageFilename == null
               ? const AppLogoIcon(
                   variant: AppLogoIconVariant.blackAndWhite,
                 )
