@@ -71,7 +71,13 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.router.push(const MenuCreateRoute());
+          context.router.push(
+            MenuCreateRoute(
+              onCreated: () {
+                context.read<MenuBloc>().add(const MenuEvent.refresh());
+              },
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -115,3 +121,60 @@ class _Status extends StatelessWidget {
   }
 }
 
+class _ItemList extends StatelessWidget {
+  const _ItemList();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MenuBloc, MenuState>(
+      builder: (context, state) {
+        switch (state) {
+          case MenuLoaded(
+            items: final items,
+            hasReachedMax: final hasReachedMax,
+          ):
+            if (items.isEmpty) {
+              return const SliverFillRemaining(
+                hasScrollBody: false,
+                child: EmptyFallback(
+                  message: 'No menu items found.',
+                  padding: EdgeInsets.all(16),
+                ),
+              );
+            }
+
+            return SliverPadding(
+              padding: const EdgeInsets.only(bottom: 16),
+              sliver: SliverList.builder(
+                itemBuilder: (ctx, i) {
+                  if (i >= items.length) {
+                    return const BottomLoader();
+                  }
+                  final item = items[i];
+                  return MenuListItem(
+                    item: item,
+                    onTap: () {},
+                  );
+                },
+                itemCount: hasReachedMax ? items.length : items.length + 1,
+              ),
+            );
+          case MenuError(:final message):
+            return SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(message),
+              ),
+            );
+          default:
+            return const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+        }
+      },
+    );
+  }
+}
