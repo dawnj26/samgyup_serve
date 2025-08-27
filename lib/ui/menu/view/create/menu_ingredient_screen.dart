@@ -56,7 +56,11 @@ Tap the + button to add ingredients.
                     trailing: IconButton(
                       onPressed: () {
                         final updated = ingredients
-                            .where((ing) => ing.id != ingredient.id)
+                            .where(
+                              (ing) =>
+                                  ing.inventoryItemId !=
+                                  ingredient.inventoryItemId,
+                            )
                             .toList();
 
                         context.read<MenuCreateBloc>().add(
