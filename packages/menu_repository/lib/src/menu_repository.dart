@@ -22,21 +22,15 @@ class MenuRepository {
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
 
   /// Gets image data of a menu item
-  Future<File> getMenuItemImage(String fileId) async {
+  Future<File> getMenuItemImage(String filename) async {
     try {
-      final meta = await _appwrite.getFileMetadata(fileId);
-      final fileType = _cache.getExtensionFromMimeType(meta.mimeType);
-
-      if (fileType == null) {
-        throw Exception('Unsupported file type: ${meta.mimeType}');
-      }
-
-      final filename = '$fileId.$fileType';
       final file = await _cache.readFileFromCache(filename);
 
       if (file != null) return file;
 
-      final data = await _appwrite.downloadFile(fileId);
+      final id = _getFileId(filename);
+      final data = await _appwrite.downloadFile(id);
+
       return _cache.writeFileToCache(filename, data);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
