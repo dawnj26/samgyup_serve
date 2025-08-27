@@ -1,25 +1,39 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:samgyup_serve/ui/components/empty_fallback.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
-    final item = MenuItem(
-      name: 'Pancit Canton Platter',
-      description: 'description',
-      price: 200,
-      category: MenuCategory.riceAndNoodles,
-      createdAt: DateTime.now(),
-      imageId: '68aabc57000ef0e66d9c',
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -28,6 +42,7 @@ class MenuScreen extends StatelessWidget {
         backgroundColor: colorScheme.primaryContainer,
       ),
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           const SliverToBoxAdapter(
             child: StatusSection(),
@@ -50,6 +65,7 @@ class MenuScreen extends StatelessWidget {
               itemCount: 20,
             ),
           ),
+          const _ItemList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,4 +76,41 @@ class MenuScreen extends StatelessWidget {
       ),
     );
   }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<MenuBloc>().add(
+        const MenuEvent.loadMore(),
+      );
+    }
+  }
 }
+
+class _Status extends StatelessWidget {
+  const _Status();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: BlocBuilder<MenuBloc, MenuState>(
+        buildWhen: (p, c) => p.menuInfo != c.menuInfo,
+        builder: (context, state) {
+          final isLoading = state is MenuLoading || state is MenuInitial;
+
+          return StatusSection(
+            menuInfo: state.menuInfo,
+            isLoading: isLoading,
+          );
+        },
+      ),
+    );
+  }
+}
+
