@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
-import 'package:samgyup_serve/ui/components/empty_fallback.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -152,7 +151,9 @@ class _ItemList extends StatelessWidget {
                   final item = items[i];
                   return MenuListItem(
                     item: item,
-                    onTap: () {},
+                    onTap: () {
+                      context.router.push(MenuDetailsRoute(menuItem: item));
+                    },
                   );
                 },
                 itemCount: hasReachedMax ? items.length : items.length + 1,
