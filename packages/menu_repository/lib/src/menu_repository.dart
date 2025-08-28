@@ -116,6 +116,26 @@ class MenuRepository {
     }
   }
 
+  /// Fetches ingredients for a specific menu item.
+  Future<List<Ingredient>> fetchIngredients(String menuItemId) async {
+    try {
+      final documents = await _appwrite.databases.listDocuments(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.menuIngredientsCollectionId,
+        queries: [
+          Query.equal('menuItemId', menuItemId),
+          Query.orderAsc('name'),
+        ],
+      );
+
+      return documents.documents
+          .map((doc) => Ingredient.fromJson(_appwrite.documentToJson(doc)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   MenuInfo _getMenuInfo(List<MenuItem> items) {
     final totalItems = items.length;
     final availableItems = items.where((item) => item.isAvailable).length;
