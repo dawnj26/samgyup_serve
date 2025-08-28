@@ -8,7 +8,8 @@ class MenuDeleteDialog extends StatelessWidget {
     return AlertDialog(
       title: const Text('Delete Menu Item'),
       content: const Text(
-        'Are you sure you want to delete this menu item? This action cannot be undone.',
+        'Are you sure you want to delete this menu item? '
+        'This action cannot be undone.',
       ),
       actions: [
         TextButton(
