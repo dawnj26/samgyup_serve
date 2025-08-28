@@ -1,9 +1,12 @@
+export 'available_badge.dart';
 export 'category_filters.dart';
 export 'category_input.dart';
 export 'description_input.dart';
 export 'ingredient_select_dialog.dart';
 export 'ingredient_tile.dart';
+export 'menu_image.dart';
 export 'menu_list_item.dart';
+export 'menu_options_button.dart';
 export 'name_input.dart';
 export 'price_input.dart';
 export 'selected_ingredients_bar.dart';
