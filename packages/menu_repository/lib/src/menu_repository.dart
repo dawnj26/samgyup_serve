@@ -136,6 +136,19 @@ class MenuRepository {
     }
   }
 
+  /// Deletes a menu item by its ID.
+  Future<void> deleteMenu(String menuId) async {
+    try {
+      await _appwrite.databases.deleteDocument(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.menuCollectionId,
+        documentId: menuId,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   MenuInfo _getMenuInfo(List<MenuItem> items) {
     final totalItems = items.length;
     final availableItems = items.where((item) => item.isAvailable).length;

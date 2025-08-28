@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/bloc/menu/delete/menu_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/details/menu_details_bloc.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -203,7 +204,7 @@ class _MenuAppbar extends StatelessWidget {
               case MenuOptions.edit:
                 break;
               case MenuOptions.delete:
-                break;
+                _handleDelete(context);
             }
           },
         ),
@@ -254,6 +255,22 @@ class _MenuAppbar extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _handleDelete(BuildContext context) async {
+    final confirm =
+        (await showDialog<bool>(
+          context: context,
+          builder: (context) => const MenuDeleteDialog(),
+        )) ??
+        false;
+
+    if (!context.mounted || !confirm) return;
+
+    final item = context.read<MenuDetailsBloc>().state.menuItem;
+    context.read<MenuDeleteBloc>().add(
+      MenuDeleteEvent.started(menuId: item.id),
     );
   }
 }

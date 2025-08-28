@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -152,7 +154,21 @@ class _ItemList extends StatelessWidget {
                   return MenuListItem(
                     item: item,
                     onTap: () {
-                      context.router.push(MenuDetailsRoute(menuItem: item));
+                      context.router.push(
+                        MenuDetailsRoute(
+                          menuItem: item,
+                          onChange: ({required needsReload}) {
+                            log(
+                              'MenuDetailsRoute.onChange called: $needsReload',
+                            );
+                            if (needsReload) {
+                              context.read<MenuBloc>().add(
+                                const MenuEvent.refresh(),
+                              );
+                            }
+                          },
+                        ),
+                      );
                     },
                   );
                 },
