@@ -4,6 +4,7 @@ export 'category_input.dart';
 export 'description_input.dart';
 export 'ingredient_select_dialog.dart';
 export 'ingredient_tile.dart';
+export 'menu_delete_dialog.dart';
 export 'menu_image.dart';
 export 'menu_list_item.dart';
 export 'menu_options_button.dart';
