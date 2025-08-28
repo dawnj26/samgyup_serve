@@ -1,9 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwrite_models;
 import 'package:appwrite_repository/src/models/models.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 /// {@template appwrite_repository}
@@ -18,6 +21,7 @@ class AppwriteRepository {
     _account = Account(_client);
     _databases = Databases(_client);
     _storage = Storage(_client);
+    _functions = Functions(_client);
   }
 
   /// Whether the repository has been initialized.
@@ -33,6 +37,7 @@ class AppwriteRepository {
   late final Account _account;
   late final Databases _databases;
   late final Storage _storage;
+  late final Functions _functions;
 
   /// Returns the [Client] instance used for making requests to Appwrite.
   Client get client => _client;
@@ -45,6 +50,9 @@ class AppwriteRepository {
 
   /// Returns the [Storage] service for file storage operations.
   Storage get storage => _storage;
+
+  /// Returns the [Functions] service for executing server-side functions.
+  Functions get functions => _functions;
 
   /// Initialize the singleton. Call once (e.g., in main()).
   static Future<AppwriteRepository> initialize({
@@ -162,6 +170,48 @@ class AppwriteRepository {
     );
 
     return '${response.$id}.$fileExtension';
+  }
+
+  /// Creates a JSON Web Token (JWT) for the current user session.
+  Future<String?> createJWT() async {
+    try {
+      await _account.get();
+
+      final jwt = await _account.createJWT();
+      return jwt.jwt;
+    } on AppwriteException catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+
+  /// Executes a server-side function with optional data payload.
+  Future<void> executeFunction({
+    required String endpoint,
+    Map<String, dynamic>? data,
+  }) async {
+    final jwt = await createJWT();
+    if (jwt == null) {
+      throw Exception('User is not authenticated.');
+    }
+
+    final uri = Uri.parse(endpoint);
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-appwrite-user-jwt': jwt,
+    };
+
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: data != null ? jsonEncode(data) : null,
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(
+        'Function execution failed: ${response.statusCode}: ${response.body}',
+      );
+    }
   }
 
   String _getFilename(File file) {
