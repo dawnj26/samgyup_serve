@@ -70,6 +70,7 @@ class AppRouter extends RootStackRouter {
                   ],
                 ),
                 AutoRoute(page: IngredientSelectRoute.page),
+                AutoRoute(page: MenuDetailsRoute.page),
               ],
             ),
           ],

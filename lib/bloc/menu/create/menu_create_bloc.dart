@@ -196,6 +196,19 @@ class MenuCreateBloc extends Bloc<MenuCreateEvent, MenuCreateState> {
           errorMessage: e.message,
         ),
       );
+    } on Exception catch (e) {
+      emit(
+        MenuCreateFailure(
+          name: state.name,
+          description: state.description,
+          price: state.price,
+          category: state.category,
+          ingredients: state.ingredients,
+          isDetailsValid: state.isDetailsValid,
+          imageFile: state.imageFile,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 

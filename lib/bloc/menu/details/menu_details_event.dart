@@ -1,0 +1,6 @@
+part of 'menu_details_bloc.dart';
+
+@freezed
+class MenuDetailsEvent with _$MenuDetailsEvent {
+  const factory MenuDetailsEvent.started() = _Started;
+}

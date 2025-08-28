@@ -21,6 +21,8 @@ class MenuRepository {
   final CacheRepository _cache;
 
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
+  String get _availabilityEndpoint =>
+      'https://68aed0320022a720ec79.syd.appwrite.run';
 
   /// Gets image data of a menu item
   Future<File> getMenuItemImage(String filename) async {
@@ -65,6 +67,8 @@ class MenuRepository {
       for (final ingredient in ingredients) {
         await _addIngredient(ingredient, menuDocument.$id);
       }
+
+      await _checkMenuAvailability(m.id);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
@@ -112,6 +116,26 @@ class MenuRepository {
     }
   }
 
+  /// Fetches ingredients for a specific menu item.
+  Future<List<Ingredient>> fetchIngredients(String menuItemId) async {
+    try {
+      final documents = await _appwrite.databases.listDocuments(
+        databaseId: _projectInfo.databaseId,
+        collectionId: _projectInfo.menuIngredientsCollectionId,
+        queries: [
+          Query.equal('menuItemId', menuItemId),
+          Query.orderAsc('name'),
+        ],
+      );
+
+      return documents.documents
+          .map((doc) => Ingredient.fromJson(_appwrite.documentToJson(doc)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   MenuInfo _getMenuInfo(List<MenuItem> items) {
     final totalItems = items.length;
     final availableItems = items.where((item) => item.isAvailable).length;
@@ -146,5 +170,16 @@ class MenuRepository {
 
   String _getFileId(String filename) {
     return filename.split('.').first;
+  }
+
+  Future<void> _checkMenuAvailability(String menuId) async {
+    try {
+      await _appwrite.executeFunction(
+        endpoint: _availabilityEndpoint,
+        data: {'menuId': menuId, 'databaseId': _projectInfo.databaseId},
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
   }
 }
