@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 class MenuListItem extends StatelessWidget {
   const MenuListItem({required this.item, super.key, this.onTap});
@@ -105,17 +103,7 @@ class _MenuState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!isAvailable) {
-      return const BadgeIndicator(
-        color: Colors.red,
-        label: 'Unavailable',
-      );
-    }
-
-    return const BadgeIndicator(
-      color: Colors.green,
-      label: 'Available',
-    );
+    return AvailableBadge(isAvailable: isAvailable);
   }
 }
 
@@ -123,11 +111,6 @@ class _MenuImage extends StatelessWidget {
   const _MenuImage({this.imageFilename});
 
   final String? imageFilename;
-
-  Future<File> _handleLoadImage(BuildContext context) {
-    final menuRepo = context.read<MenuRepository>();
-    return menuRepo.getMenuItemImage(imageFilename!);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,9 +128,7 @@ class _MenuImage extends StatelessWidget {
               ? const AppLogoIcon(
                   variant: AppLogoIconVariant.blackAndWhite,
                 )
-              : BucketImage(
-                  onLoad: () => _handleLoadImage(context),
-                ),
+              : MenuImage(imageFileName: imageFilename!),
         ),
       ),
     );
