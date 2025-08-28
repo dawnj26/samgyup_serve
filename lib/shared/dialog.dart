@@ -16,3 +16,19 @@ void showLoadingDialog({
     },
   );
 }
+
+void showErrorDialog({
+  required BuildContext context,
+  required String message,
+}) {
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    useRootNavigator: false,
+    builder: (ctx) {
+      return ErrorDialog(
+        message: message,
+      );
+    },
+  );
+}
