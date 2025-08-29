@@ -32,6 +32,8 @@ dependencies:
   json_annotation: ^4.9.0
   menu_repository:
     path: packages/menu_repository
+  package_repository:
+    path: packages/package_repository
   shared_preferences: ^2.5.3
   stream_transform: ^2.1.1
 
