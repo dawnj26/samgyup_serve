@@ -182,6 +182,36 @@ class MenuRepository {
     }
   }
 
+  /// Updates a menu item along with its image if provided.
+  Future<MenuItem> updateMenu({
+    required MenuItem menu,
+    File? imageFile,
+  }) async {
+    try {
+      var imageFileName = menu.imageFileName;
+      if (imageFile != null) {
+        imageFileName = await _appwrite.uploadFile(imageFile);
+      }
+
+      final m = menu.copyWith(
+        imageFileName: imageFileName,
+      );
+
+      final menuDocument = await _appwrite.databases.updateRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.menuCollectionId,
+        rowId: m.id,
+        data: m.toJson(),
+      );
+
+      await _checkMenuAvailability(m.id);
+
+      return MenuItem.fromJson(_appwrite.rowToJson(menuDocument));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   MenuInfo _getMenuInfo(List<MenuItem> items) {
     final totalItems = items.length;
     final availableItems = items.where((item) => item.isAvailable).length;
