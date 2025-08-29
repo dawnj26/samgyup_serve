@@ -14,11 +14,12 @@ final List<ManagementItem> managementItems = [
     route: MenuShellRoute(),
   ),
   const ManagementItem(
-    title: 'Customers',
-    icon: Icons.people_rounded,
+    title: 'Packages',
+    icon: Icons.card_giftcard_rounded,
+    route: FoodPackageShellRoute(),
   ),
   const ManagementItem(
-    title: 'Settings',
-    icon: Icons.settings_rounded,
+    title: 'Tables',
+    icon: Icons.table_bar_rounded,
   ),
 ];
