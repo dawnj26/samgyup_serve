@@ -2,8 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/bloc/ingredient/edit/ingredient_edit_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/delete/menu_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/details/menu_details_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
@@ -87,7 +89,25 @@ class _IngredientHeader extends StatelessWidget {
           style: textTheme.titleMedium,
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () async {
+            final ingredients = context
+                .read<MenuDetailsBloc>()
+                .state
+                .ingredients;
+            final updatedIngredients = await context.router
+                .push<List<Ingredient>>(
+                  IngredientSelectRoute(initialValue: ingredients),
+                );
+
+            if (!context.mounted || updatedIngredients == null) return;
+
+            context.read<IngredientEditBloc>().add(
+              IngredientEditEvent.submitted(
+                ingredients: updatedIngredients,
+                menuId: context.read<MenuDetailsBloc>().state.menuItem.id,
+              ),
+            );
+          },
           child: const Text('Edit'),
         ),
       ],
@@ -202,7 +222,19 @@ class _MenuAppbar extends StatelessWidget {
           onSelected: (option) {
             switch (option) {
               case MenuOptions.edit:
-                break;
+                final item = context.read<MenuDetailsBloc>().state.menuItem;
+                context.router.push(
+                  MenuEditRoute(
+                    menuItem: item,
+                    onChange: ({required needsReload}) {
+                      if (needsReload) {
+                        context.read<MenuDetailsBloc>().add(
+                          const MenuDetailsEvent.menuReloaded(),
+                        );
+                      }
+                    },
+                  ),
+                );
               case MenuOptions.delete:
                 _handleDelete(context);
             }

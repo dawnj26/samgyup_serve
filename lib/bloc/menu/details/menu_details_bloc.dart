@@ -18,6 +18,8 @@ class MenuDetailsBloc extends Bloc<MenuDetailsEvent, MenuDetailsState> {
          ),
        ) {
     on<_Started>(_onStarted);
+    on<_Reloaded>(_onIngredientsReloaded);
+    on<_MenuReloaded>(_onMenuReloaded);
   }
 
   final MenuRepository _menuRepository;
@@ -44,6 +46,91 @@ class MenuDetailsBloc extends Bloc<MenuDetailsEvent, MenuDetailsState> {
           menuItem: state.menuItem,
           ingredients: ingredients,
           isDirty: state.isDirty,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        MenuDetailsState.error(
+          message: e.message,
+          menuItem: state.menuItem,
+          ingredients: state.ingredients,
+          isDirty: state.isDirty,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        MenuDetailsState.error(
+          message: e.toString(),
+          menuItem: state.menuItem,
+          ingredients: state.ingredients,
+          isDirty: state.isDirty,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onIngredientsReloaded(
+    _Reloaded event,
+    Emitter<MenuDetailsState> emit,
+  ) async {
+    emit(
+      MenuDetailsState.loading(
+        menuItem: state.menuItem,
+        ingredients: state.ingredients,
+        isDirty: state.isDirty,
+      ),
+    );
+
+    try {
+      final ingredients = await _menuRepository.fetchIngredients(
+        state.menuItem.id,
+      );
+      final menuItem = await _menuRepository.fetchItem(
+        state.menuItem.id,
+      );
+
+      emit(
+        MenuDetailsState.loaded(
+          menuItem: menuItem,
+          ingredients: ingredients,
+          isDirty: true,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        MenuDetailsState.error(
+          message: e.message,
+          menuItem: state.menuItem,
+          ingredients: state.ingredients,
+          isDirty: state.isDirty,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        MenuDetailsState.error(
+          message: e.toString(),
+          menuItem: state.menuItem,
+          ingredients: state.ingredients,
+          isDirty: state.isDirty,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onMenuReloaded(
+    _MenuReloaded event,
+    Emitter<MenuDetailsState> emit,
+  ) async {
+    try {
+      final menuItem = await _menuRepository.fetchItem(
+        state.menuItem.id,
+      );
+
+      emit(
+        MenuDetailsState.loaded(
+          menuItem: menuItem,
+          ingredients: state.ingredients,
+          isDirty: true,
         ),
       );
     } on ResponseException catch (e) {

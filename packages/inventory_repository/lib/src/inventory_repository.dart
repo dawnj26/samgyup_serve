@@ -52,14 +52,14 @@ class InventoryRepository {
         if (category != null) Query.equal('category', category.name),
         Query.limit(limit ?? 500),
       ];
-      final documents = await _appwrite.databases.listDocuments(
+      final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.inventoryCollectionId,
+        tableId: _projectInfo.inventoryCollectionId,
         queries: queries.isEmpty ? null : queries,
       );
 
-      return documents.documents.map((doc) {
-        final json = _appwrite.documentToJson(doc);
+      return response.rows.map((row) {
+        final json = _appwrite.rowToJson(row);
         return InventoryItem.fromJson(json);
       }).toList();
     } on AppwriteException catch (e) {
@@ -83,14 +83,14 @@ class InventoryRepository {
         ),
         Query.limit(limit ?? 2000),
       ];
-      final documents = await _appwrite.databases.listDocuments(
+      final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.inventoryCollectionId,
+        tableId: _projectInfo.inventoryCollectionId,
         queries: queries.isEmpty ? null : queries,
       );
 
-      return documents.documents.map((doc) {
-        final json = _appwrite.documentToJson(doc);
+      return response.rows.map((row) {
+        final json = _appwrite.rowToJson(row);
         return InventoryItem.fromJson(json);
       }).toList();
     } on AppwriteException catch (e) {
@@ -103,22 +103,22 @@ class InventoryRepository {
   /// Adds a new inventory item.
   Future<InventoryItem> addItem(InventoryItem item) async {
     try {
-      final documentId = ID.unique();
+      final rowId = ID.unique();
       final status = _getInventoryStatus(item);
 
-      final document = await _appwrite.databases.createDocument(
+      final row = await _appwrite.databases.createRow(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.inventoryCollectionId,
-        documentId: documentId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: rowId,
         data: item
             .copyWith(
-              id: documentId,
+              id: rowId,
               status: status,
             )
             .toJson(),
       );
 
-      final json = _appwrite.documentToJson(document);
+      final json = _appwrite.rowToJson(row);
 
       return InventoryItem.fromJson(json);
     } on AppwriteException catch (e) {
@@ -153,10 +153,10 @@ class InventoryRepository {
   /// Deletes an inventory item by its ID.
   Future<void> deleteItem(String itemId) async {
     try {
-      await _appwrite.databases.deleteDocument(
+      await _appwrite.databases.deleteRow(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.inventoryCollectionId,
-        documentId: itemId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: itemId,
       );
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
@@ -170,14 +170,14 @@ class InventoryRepository {
     try {
       final status = _getInventoryStatus(item);
 
-      final document = await _appwrite.databases.updateDocument(
+      final document = await _appwrite.databases.updateRow(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.inventoryCollectionId,
-        documentId: item.id,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: item.id,
         data: item.copyWith(status: status).toJson(),
       );
 
-      final json = _appwrite.documentToJson(document);
+      final json = _appwrite.rowToJson(document);
 
       return InventoryItem.fromJson(json);
     } on AppwriteException catch (e) {
