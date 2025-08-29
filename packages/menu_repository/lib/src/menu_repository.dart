@@ -66,8 +66,8 @@ class MenuRepository {
         data: m.toJson(),
       );
 
-      for (final ingredient in ingredients) {
-        await _addIngredient(ingredient, menuDocument.$id);
+      if (ingredients.isNotEmpty) {
+        await _bulkAddIngredients(ingredients, m.id);
       }
 
       await _checkMenuAvailability(m.id);
