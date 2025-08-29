@@ -8,6 +8,7 @@ import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
 import 'package:samgyup_serve/ui/components/screens/loading_screen.dart';
 import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
+import 'package:samgyup_serve/ui/food_package/food_package.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
 import 'package:samgyup_serve/ui/inventory/inventory.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
@@ -72,6 +73,12 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(page: IngredientSelectRoute.page),
                 AutoRoute(page: MenuDetailsRoute.page),
                 AutoRoute(page: MenuEditRoute.page),
+              ],
+            ),
+            AutoRoute(
+              page: FoodPackageShellRoute.page,
+              children: [
+                AutoRoute(page: FoodPackageRoute.page, initial: true),
               ],
             ),
           ],
