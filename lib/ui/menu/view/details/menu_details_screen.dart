@@ -87,7 +87,25 @@ class _IngredientHeader extends StatelessWidget {
           style: textTheme.titleMedium,
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () async {
+            final ingredients = context
+                .read<MenuDetailsBloc>()
+                .state
+                .ingredients;
+            final updatedIngredients = await context.router
+                .push<List<Ingredient>>(
+                  IngredientSelectRoute(initialValue: ingredients),
+                );
+
+            if (!context.mounted || updatedIngredients == null) return;
+
+            context.read<IngredientEditBloc>().add(
+              IngredientEditEvent.submitted(
+                ingredients: updatedIngredients,
+                menuId: context.read<MenuDetailsBloc>().state.menuItem.id,
+              ),
+            );
+          },
           child: const Text('Edit'),
         ),
       ],
