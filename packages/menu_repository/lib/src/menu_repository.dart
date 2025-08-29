@@ -23,6 +23,8 @@ class MenuRepository {
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
   String get _availabilityEndpoint =>
       'https://68aed0320022a720ec79.syd.appwrite.run';
+  String get _ingredientBulkEndpoint =>
+      'https://68b14af7003e3eb10829.syd.appwrite.run';
 
   /// Gets image data of a menu item
   Future<File> getMenuItemImage(String filename) async {
@@ -149,6 +151,22 @@ class MenuRepository {
     }
   }
 
+  /// Updates ingredients for a specific menu item.
+  Future<void> updateIngredients({
+    required List<Ingredient> ingredients,
+    required String menuId,
+  }) async {
+    try {
+      await _bulkDeleteIngredients(menuId);
+      if (ingredients.isNotEmpty) {
+        await _bulkAddIngredients(ingredients, menuId);
+      }
+      await _checkMenuAvailability(menuId);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   MenuInfo _getMenuInfo(List<MenuItem> items) {
     final totalItems = items.length;
     final availableItems = items.where((item) => item.isAvailable).length;
@@ -183,13 +201,45 @@ class MenuRepository {
 
   String _getFileId(String filename) {
     return filename.split('.').first;
+  Future<void> _bulkDeleteIngredients(String menuId) async {
+    try {
+      await _appwrite.executeFunction(
+        endpoint: _ingredientBulkEndpoint,
+        data: {
+          'method': 'delete',
+          'data': [Query.equal('menuItemId', menuId)],
+        },
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
   }
 
   Future<void> _checkMenuAvailability(String menuId) async {
+  Future<void> _bulkAddIngredients(
+    List<Ingredient> ingredients,
+    String menuId,
+  ) async {
     try {
+      final data = ingredients.map(
+        (i) {
+          final ingredient = i.copyWith(
+            menuItemId: menuId,
+            id: ID.unique(),
+          );
+          return {
+            r'$id': ingredient.id,
+            ...ingredient.toJson(),
+          };
+        },
+      ).toList();
       await _appwrite.executeFunction(
-        endpoint: _availabilityEndpoint,
         data: {'menuId': menuId, 'databaseId': _projectInfo.databaseId},
+        endpoint: _ingredientBulkEndpoint,
+        data: {
+          'method': 'add',
+          'data': data,
+        },
       );
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
