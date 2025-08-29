@@ -167,6 +167,21 @@ class MenuRepository {
     }
   }
 
+  /// Fetches a specific menu item by its ID.
+  Future<MenuItem> fetchItem(String menuId) async {
+    try {
+      final response = await _appwrite.databases.getRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.menuCollectionId,
+        rowId: menuId,
+      );
+
+      return MenuItem.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   MenuInfo _getMenuInfo(List<MenuItem> items) {
     final totalItems = items.length;
     final availableItems = items.where((item) => item.isAvailable).length;
