@@ -59,7 +59,7 @@ class MenuRepository {
         imageFileName: imageFileName,
       );
 
-      final menuDocument = await _appwrite.databases.createRow(
+      await _appwrite.databases.createRow(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.menuCollectionId,
         rowId: m.id,
