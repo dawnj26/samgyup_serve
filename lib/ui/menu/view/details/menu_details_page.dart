@@ -60,6 +60,15 @@ class MenuDetailsPage extends StatelessWidget implements AutoRouteWrapper {
           },
         ),
       ],
+      child: PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          final isDirty = context.read<MenuDetailsBloc>().state.isDirty;
+          if (didPop) {
+            onChange?.call(needsReload: isDirty);
+          }
+        },
+        child: const MenuDetailsScreen(),
+      ),
     );
   }
 
