@@ -42,6 +42,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       menuCollectionId: '68a9869d001723644444',
       menuIngredientsCollectionId: '68a9a529003b46dde3f2',
       storageBucketId: '68a46eed00337cbc0a5f',
+      packageCollectionId: '68b19d02000a97f35693',
     ),
   );
 
