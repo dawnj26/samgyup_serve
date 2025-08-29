@@ -179,28 +179,21 @@ class MenuRepository {
     );
   }
 
-  Future<void> _addIngredient(
-    Ingredient ingredients,
-    String menuItemId,
-  ) async {
+  String _getFileId(String filename) {
+    return filename.split('.').first;
+  }
+
+  Future<void> _checkMenuAvailability(String menuId) async {
     try {
-      final ingredient = ingredients.copyWith(
-        menuItemId: menuItemId,
-        id: ID.unique(),
-      );
-      await _appwrite.databases.createRow(
-        databaseId: _projectInfo.databaseId,
-        tableId: _projectInfo.menuIngredientsCollectionId,
-        rowId: ingredient.id,
-        data: ingredient.toJson(),
+      await _appwrite.executeFunction(
+        endpoint: _availabilityEndpoint,
+        data: {'menuId': menuId, 'databaseId': _projectInfo.databaseId},
       );
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
 
-  String _getFileId(String filename) {
-    return filename.split('.').first;
   Future<void> _bulkDeleteIngredients(String menuId) async {
     try {
       await _appwrite.executeFunction(
@@ -215,7 +208,6 @@ class MenuRepository {
     }
   }
 
-  Future<void> _checkMenuAvailability(String menuId) async {
   Future<void> _bulkAddIngredients(
     List<Ingredient> ingredients,
     String menuId,
@@ -234,7 +226,6 @@ class MenuRepository {
         },
       ).toList();
       await _appwrite.executeFunction(
-        data: {'menuId': menuId, 'databaseId': _projectInfo.databaseId},
         endpoint: _ingredientBulkEndpoint,
         data: {
           'method': 'add',
