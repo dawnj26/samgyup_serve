@@ -19,7 +19,7 @@ class AppwriteRepository {
         .setProject(environment.appwriteProjectId)
         .setEndpoint(environment.appwritePublicEndpoint);
     _account = Account(_client);
-    _databases = Databases(_client);
+    _databases = TablesDB(_client);
     _storage = Storage(_client);
     _functions = Functions(_client);
   }
@@ -35,7 +35,7 @@ class AppwriteRepository {
 
   late final Client _client;
   late final Account _account;
-  late final Databases _databases;
+  late final TablesDB _databases;
   late final Storage _storage;
   late final Functions _functions;
 
@@ -46,7 +46,7 @@ class AppwriteRepository {
   Account get account => _account;
 
   /// Returns the [Databases] service for database operations.
-  Databases get databases => _databases;
+  TablesDB get databases => _databases;
 
   /// Returns the [Storage] service for file storage operations.
   Storage get storage => _storage;
@@ -120,11 +120,11 @@ class AppwriteRepository {
     return DateFormat('MMM dd, HH:mm').format(DateTime.now());
   }
 
-  /// Converts an Appwrite Document to a JSON map.
-  Map<String, dynamic> documentToJson(appwrite_models.Document document) {
+  /// Converts an Appwrite Row to a JSON map.
+  Map<String, dynamic> rowToJson(appwrite_models.Row row) {
     return {
-      ...document.data,
-      'updatedAt': document.$updatedAt,
+      ...row.data,
+      'updatedAt': row.$updatedAt,
     };
   }
 

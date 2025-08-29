@@ -57,10 +57,10 @@ class MenuRepository {
         imageFileName: imageFileName,
       );
 
-      final menuDocument = await _appwrite.databases.createDocument(
+      final menuDocument = await _appwrite.databases.createRow(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.menuCollectionId,
-        documentId: m.id,
+        tableId: _projectInfo.menuCollectionId,
+        rowId: m.id,
         data: m.toJson(),
       );
 
@@ -81,9 +81,9 @@ class MenuRepository {
     String? cursor,
   }) async {
     try {
-      final documents = await _appwrite.databases.listDocuments(
+      final respose = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.menuCollectionId,
+        tableId: _projectInfo.menuCollectionId,
         queries: [
           if (category != null && category.isNotEmpty)
             Query.equal('category', category.map((e) => e.name).toList()),
@@ -93,8 +93,8 @@ class MenuRepository {
         ],
       );
 
-      return documents.documents
-          .map((doc) => MenuItem.fromJson(_appwrite.documentToJson(doc)))
+      return respose.rows
+          .map((row) => MenuItem.fromJson(_appwrite.rowToJson(row)))
           .toList();
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
@@ -119,17 +119,17 @@ class MenuRepository {
   /// Fetches ingredients for a specific menu item.
   Future<List<Ingredient>> fetchIngredients(String menuItemId) async {
     try {
-      final documents = await _appwrite.databases.listDocuments(
+      final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.menuIngredientsCollectionId,
+        tableId: _projectInfo.menuIngredientsCollectionId,
         queries: [
           Query.equal('menuItemId', menuItemId),
           Query.orderAsc('name'),
         ],
       );
 
-      return documents.documents
-          .map((doc) => Ingredient.fromJson(_appwrite.documentToJson(doc)))
+      return response.rows
+          .map((row) => Ingredient.fromJson(_appwrite.rowToJson(row)))
           .toList();
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
@@ -139,10 +139,10 @@ class MenuRepository {
   /// Deletes a menu item by its ID.
   Future<void> deleteMenu(String menuId) async {
     try {
-      await _appwrite.databases.deleteDocument(
+      await _appwrite.databases.deleteRow(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.menuCollectionId,
-        documentId: menuId,
+        tableId: _projectInfo.menuCollectionId,
+        rowId: menuId,
       );
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
@@ -170,10 +170,10 @@ class MenuRepository {
         menuItemId: menuItemId,
         id: ID.unique(),
       );
-      await _appwrite.databases.createDocument(
+      await _appwrite.databases.createRow(
         databaseId: _projectInfo.databaseId,
-        collectionId: _projectInfo.menuIngredientsCollectionId,
-        documentId: ingredient.id,
+        tableId: _projectInfo.menuIngredientsCollectionId,
+        rowId: ingredient.id,
         data: ingredient.toJson(),
       );
     } on AppwriteException catch (e) {
