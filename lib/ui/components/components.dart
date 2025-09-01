@@ -14,6 +14,7 @@ export 'empty_fallback.dart';
 export 'image_picker.dart';
 export 'info_card.dart';
 export 'name_input.dart';
+export 'no_image_fallback.dart';
 export 'outlined_text_field.dart';
 export 'price_input.dart';
 export 'status_card.dart';
