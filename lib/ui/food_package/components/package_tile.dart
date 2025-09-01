@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:samgyup_serve/ui/food_package/components/components.dart';
 
 class PackageTile extends StatelessWidget {
   const PackageTile({
@@ -29,10 +31,9 @@ class PackageTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: Image.network(
-                'https://picsum.photos/200/300',
-                fit: BoxFit.cover,
-              ),
+              child: package.imageFilename != null
+                  ? PackageImage(filename: package.imageFilename!)
+                  : const NoImageFallback(),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
