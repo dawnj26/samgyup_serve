@@ -3,7 +3,6 @@ import 'dart:isolate';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
-import 'package:cache_repository/cache_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
 
 /// {@template menu_repository}
@@ -13,34 +12,15 @@ class MenuRepository {
   /// {@macro menu_repository}
   MenuRepository({
     AppwriteRepository? appwrite,
-    CacheRepository? cache,
-  }) : _appwrite = appwrite ?? AppwriteRepository.instance,
-       _cache = cache ?? CacheRepository.instance;
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance;
 
   final AppwriteRepository _appwrite;
-  final CacheRepository _cache;
 
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
   String get _availabilityEndpoint =>
       'https://68aed0320022a720ec79.syd.appwrite.run';
   String get _ingredientBulkEndpoint =>
       'https://68b14af7003e3eb10829.syd.appwrite.run';
-
-  /// Gets image data of a menu item
-  Future<File> getMenuItemImage(String filename) async {
-    try {
-      final file = await _cache.readFileFromCache(filename);
-
-      if (file != null) return file;
-
-      final id = _getFileId(filename);
-      final data = await _appwrite.downloadFile(id);
-
-      return _cache.writeFileToCache(filename, data);
-    } on AppwriteException catch (e) {
-      throw ResponseException.fromCode(e.code ?? -1);
-    }
-  }
 
   /// Adds a new menu item along with its ingredients.
   Future<void> addMenu({
@@ -222,10 +202,6 @@ class MenuRepository {
       availableItems: availableItems,
       unavailableItems: unavailableItems,
     );
-  }
-
-  String _getFileId(String filename) {
-    return filename.split('.').first;
   }
 
   Future<void> _checkMenuAvailability(String menuId) async {
