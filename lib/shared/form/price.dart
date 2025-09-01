@@ -6,6 +6,19 @@ enum PriceValidationError {
   invalidFormat,
 }
 
+extension PriceValidationErrorX on PriceValidationError {
+  String get message {
+    switch (this) {
+      case PriceValidationError.empty:
+        return 'Price is required';
+      case PriceValidationError.negative:
+        return 'Price cannot be negative';
+      case PriceValidationError.invalidFormat:
+        return 'Price must be a valid number';
+    }
+  }
+}
+
 class Price extends FormzInput<String, PriceValidationError> {
   const Price.pure() : super.pure('');
   const Price.dirty([super.value = '']) : super.dirty();

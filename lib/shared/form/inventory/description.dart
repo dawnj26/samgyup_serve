@@ -4,6 +4,15 @@ enum DescriptionValidationError {
   tooLong,
 }
 
+extension DescriptionValidationErrorX on DescriptionValidationError {
+  String get message {
+    switch (this) {
+      case DescriptionValidationError.tooLong:
+        return 'Description is too long';
+    }
+  }
+}
+
 class Description extends FormzInput<String, DescriptionValidationError> {
   const Description.pure([super.value = '']) : super.pure();
   const Description.dirty([super.value = '']) : super.dirty();
