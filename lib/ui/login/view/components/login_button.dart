@@ -7,6 +7,7 @@ class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
 
   void _onPressed(BuildContext context) {
+    FocusScope.of(context).unfocus();
     context.read<LoginBloc>().add(const LoginEvent.loginSubmitted());
   }
 
