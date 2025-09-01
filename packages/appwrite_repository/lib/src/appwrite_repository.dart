@@ -5,7 +5,9 @@ import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwrite_models;
+import 'package:appwrite_repository/src/exceptions/exceptions.dart';
 import 'package:appwrite_repository/src/models/models.dart';
+import 'package:cache_repository/cache_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -14,7 +16,8 @@ import 'package:intl/intl.dart';
 /// {@endtemplate}
 class AppwriteRepository {
   /// {@macro appwrite_repository}
-  AppwriteRepository._({required this.environment}) {
+  AppwriteRepository._({required this.environment, CacheRepository? cache})
+    : _cache = cache ?? CacheRepository.instance {
     _client = Client()
         .setProject(environment.appwriteProjectId)
         .setEndpoint(environment.appwritePublicEndpoint);
@@ -32,6 +35,7 @@ class AppwriteRepository {
 
   /// The environment configuration for Appwrite.
   final Environment environment;
+  final CacheRepository _cache;
 
   late final Client _client;
   late final Account _account;
@@ -57,9 +61,10 @@ class AppwriteRepository {
   /// Initialize the singleton. Call once (e.g., in main()).
   static Future<AppwriteRepository> initialize({
     required Environment environment,
+    CacheRepository? cache,
   }) async {
     if (_instance != null) return _instance!;
-    _instance = AppwriteRepository._(environment: environment);
+    _instance = AppwriteRepository._(environment: environment, cache: cache);
     return _instance!;
   }
 
@@ -85,6 +90,7 @@ class AppwriteRepository {
       menuCollectionId: environment.menuCollectionId,
       menuIngredientsCollectionId: environment.menuIngredientsCollectionId,
       storageBucketId: environment.storageBucketId,
+      packageCollectionId: environment.packageCollectionId,
     );
   }
 
@@ -129,7 +135,7 @@ class AppwriteRepository {
   }
 
   /// Converts a model's data and ID to a map suitable for Appwrite Document.
-  Map<String, dynamic> modeltoDocumentMap(
+  Map<String, dynamic> modelToDocumentMap(
     String id,
     Map<String, dynamic> data,
   ) {
@@ -170,6 +176,23 @@ class AppwriteRepository {
     );
 
     return '${response.$id}.$fileExtension';
+  }
+
+  /// Gets file from cache if available,
+  /// otherwise downloads from Appwrite and caches it.
+  Future<File> getFile(String filename) async {
+    try {
+      final file = await _cache.readFileFromCache(filename);
+
+      if (file != null) return file;
+
+      final id = _getFileId(filename);
+      final data = await downloadFile(id);
+
+      return _cache.writeFileToCache(filename, data);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
   }
 
   /// Creates a JSON Web Token (JWT) for the current user session.
@@ -220,5 +243,9 @@ class AppwriteRepository {
 
   String _getFileExtension(String filename) {
     return filename.split('.').last;
+  }
+
+  String _getFileId(String filename) {
+    return filename.split('.').first;
   }
 }

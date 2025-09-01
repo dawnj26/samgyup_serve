@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 class SelectedIngredientsBottomSheet extends StatelessWidget {
@@ -17,39 +18,26 @@ class SelectedIngredientsBottomSheet extends StatelessWidget {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final textTheme = Theme.of(context).textTheme;
 
-    return SizedBox(
+    return BottomSheetLayout(
       height: screenHeight * 0.75,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Icon(Icons.drag_handle_rounded)],
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 4,
+              horizontal: 16,
+            ),
+            child: Text(
+              'Ingredients',
+              style: textTheme.labelLarge,
             ),
           ),
+          const Divider(),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 16,
-                  ),
-                  child: Text(
-                    'Ingredients',
-                    style: textTheme.labelLarge,
-                  ),
-                ),
-                const Divider(),
-                Expanded(
-                  child: _IngredientList(
-                    ingredients: ingredients,
-                    onRemove: onRemove,
-                  ),
-                ),
-              ],
+            child: _IngredientList(
+              ingredients: ingredients,
+              onRemove: onRemove,
             ),
           ),
         ],

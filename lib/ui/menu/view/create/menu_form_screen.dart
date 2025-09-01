@@ -6,7 +6,7 @@ import 'package:samgyup_serve/shared/form/menu/menu_category_input.dart';
 import 'package:samgyup_serve/shared/form/menu/menu_description.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
-import 'package:samgyup_serve/ui/components/image_picker.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 @RoutePage()

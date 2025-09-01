@@ -11,8 +11,6 @@ dependencies:
   appwrite: ^18.0.0
   appwrite_repository:
     path: ../appwrite_repository
-  cache_repository:
-    path: ../cache_repository
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0

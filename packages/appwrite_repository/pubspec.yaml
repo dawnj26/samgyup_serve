@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   appwrite: ^18.0.0
+  cache_repository:
+    path: ../cache_repository
   flutter:
     sdk: flutter
   http: ^1.5.0
