@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:package_repository/package_repository.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/food_package/components/components.dart';
 
 class FoodPackageScreen extends StatelessWidget {
@@ -46,6 +47,12 @@ class FoodPackageScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.router.push(FoodPackageCreateRoute());
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
