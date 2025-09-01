@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/app/app.dart';
 import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
@@ -79,6 +80,7 @@ class AppRouter extends RootStackRouter {
               page: FoodPackageShellRoute.page,
               children: [
                 AutoRoute(page: FoodPackageRoute.page, initial: true),
+                AutoRoute(page: FoodPackageCreateRoute.page),
               ],
             ),
           ],
