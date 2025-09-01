@@ -156,7 +156,11 @@ class FoodPackageCreateBloc
         createdAt: DateTime.now(),
         menuIds: [],
       );
-      final newPackage = await _packageRepository.createPackage(package);
+      final newPackage = await _packageRepository.createPackage(
+        package: package,
+        image: state.image,
+      );
+
       emit(FoodPackageCreateSuccess(foodPackage: newPackage));
     } on ResponseException catch (e) {
       emit(

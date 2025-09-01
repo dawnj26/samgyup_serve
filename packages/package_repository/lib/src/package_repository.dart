@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:package_repository/src/models/models.dart';
@@ -16,9 +18,20 @@ class PackageRepository {
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
 
   /// Creates a new food package.
-  Future<FoodPackage> createPackage(FoodPackage package) async {
+  Future<FoodPackage> createPackage({
+    required FoodPackage package,
+    File? image,
+  }) async {
     try {
-      final p = package.copyWith(id: ID.unique());
+      String? imageFileName;
+      if (image != null) {
+        imageFileName = await _appwrite.uploadFile(image);
+      }
+
+      final p = package.copyWith(
+        id: ID.unique(),
+        imageFilename: imageFileName,
+      );
       final row = await _appwrite.databases.createRow(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.packageCollectionId,
