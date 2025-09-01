@@ -50,7 +50,7 @@ class ResponseException implements Exception {
           );
         case 401:
           return const ResponseException(
-            'Authentication required. Please log in to continue.',
+            'Authentication required.',
           );
         case 403:
           return const ResponseException(
