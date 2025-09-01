@@ -34,16 +34,16 @@ help:
 	@echo "  DART=<dart executable> (default: dart)"
 
 # Dependency management
-deps: _deps_root _deps_packages
+deps: _deps_packages _deps_root
 
 update: _update_packages _update_root
 
 update-major: _update_major_packages _update_major_root
 
 # Code generation
-generate: deps _gen_root _gen_packages
+generate: deps _gen_packages _gen_root
 
-generate-only: _gen_root _gen_packages
+generate-only: _gen_packages _gen_root
 
 # Release builds
 release-prod: generate
