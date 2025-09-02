@@ -162,6 +162,28 @@ class MenuRepository {
     }
   }
 
+  /// Fetches multiple menu items by their IDs.
+  Future<List<MenuItem>> fetchItemsByIds(List<String> menuIds) async {
+    try {
+      if (menuIds.isEmpty) return [];
+
+      final response = await _appwrite.databases.listRows(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.menuCollectionId,
+        queries: [
+          Query.equal(r'$id', menuIds),
+          Query.limit(1000),
+        ],
+      );
+
+      return response.rows
+          .map((row) => MenuItem.fromJson(_appwrite.rowToJson(row)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   /// Updates a menu item along with its image if provided.
   Future<MenuItem> updateMenu({
     required MenuItem menu,
