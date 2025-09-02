@@ -14,15 +14,6 @@ extension PackageMoreOptionX on PackageMoreOption {
         return 'Delete';
     }
   }
-
-  IconData get icon {
-    switch (this) {
-      case PackageMoreOption.edit:
-        return Icons.edit;
-      case PackageMoreOption.delete:
-        return Icons.delete;
-    }
-  }
 }
 
 class PackageMoreOptionButton extends StatelessWidget {
@@ -41,9 +32,8 @@ class PackageMoreOptionButton extends StatelessWidget {
           .map(
             (option) => PopupMenuItem<PackageMoreOption>(
               value: option,
-              child: ListTile(
-                leading: Icon(option.icon),
-                title: Text(option.label),
+              child: PopupMenuItem<PackageMoreOption>(
+                child: Text(option.label),
               ),
             ),
           )
