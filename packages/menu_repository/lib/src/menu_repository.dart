@@ -63,7 +63,7 @@ class MenuRepository {
     String? cursor,
   }) async {
     try {
-      final respose = await _appwrite.databases.listRows(
+      final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.menuCollectionId,
         queries: [
@@ -75,7 +75,7 @@ class MenuRepository {
         ],
       );
 
-      return respose.rows
+      return response.rows
           .map((row) => MenuItem.fromJson(_appwrite.rowToJson(row)))
           .toList();
     } on AppwriteException catch (e) {
