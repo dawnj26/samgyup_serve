@@ -31,7 +31,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   Bloc.observer = const AppBlocObserver();
 
-  CacheRepository.initialize();
+  await CacheRepository.initialize();
   await AppwriteRepository.initialize(
     environment: const Environment(
       appwritePublicEndpoint: 'https://syd.cloud.appwrite.io/v1',
