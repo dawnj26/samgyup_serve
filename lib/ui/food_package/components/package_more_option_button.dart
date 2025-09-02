@@ -32,9 +32,7 @@ class PackageMoreOptionButton extends StatelessWidget {
           .map(
             (option) => PopupMenuItem<PackageMoreOption>(
               value: option,
-              child: PopupMenuItem<PackageMoreOption>(
-                child: Text(option.label),
-              ),
+              child: Text(option.label),
             ),
           )
           .toList(),
