@@ -7,15 +7,18 @@ import 'package:path_provider/path_provider.dart';
 /// Represents the cache repository.
 /// {@endtemplate}
 class CacheRepository {
+  /// {@macro cache_repository}
+  CacheRepository._({
+    required String tempPath,
+  }) : _tempPath = tempPath;
+
   /// Initialize the singleton. Call once (e.g., in main()).
-  factory CacheRepository.initialize() {
+  static Future<CacheRepository> initialize() async {
     if (_instance != null) return _instance!;
-    _instance = const CacheRepository._();
+    final tempDir = await getTemporaryDirectory();
+    _instance = CacheRepository._(tempPath: tempDir.path);
     return _instance!;
   }
-
-  /// {@macro cache_repository}
-  const CacheRepository._();
 
   static CacheRepository? _instance;
 
@@ -30,22 +33,19 @@ class CacheRepository {
     return inst;
   }
 
-  Future<String> get _tempPath async {
-    final directory = await getTemporaryDirectory();
-    return directory.path;
-  }
+  late final String _tempPath;
 
   /// Write data to a file in the cache directory.
   Future<File> writeFileToCache(String fileName, List<int> data) async {
-    final path = await _tempPath;
+    final path = _tempPath;
     final file = File('$path/$fileName');
 
     return file.writeAsBytes(data);
   }
 
   /// Read data from a file in the cache directory.
-  Future<File?> readFileFromCache(String fileName) async {
-    final path = await _tempPath;
+  File? readFileFromCache(String fileName) {
+    final path = _tempPath;
     final file = File('$path/$fileName');
 
     if (file.existsSync()) {
