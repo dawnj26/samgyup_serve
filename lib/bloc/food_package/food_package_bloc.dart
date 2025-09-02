@@ -13,6 +13,7 @@ class FoodPackageBloc extends Bloc<FoodPackageEvent, FoodPackageState> {
   }) : _packageRepository = packageRepository,
        super(const FoodPackageInitial()) {
     on<_Started>(_onStarted);
+    on<_Refreshed>(_onRefreshed);
   }
 
   final PackageRepository _packageRepository;
@@ -41,6 +42,52 @@ class FoodPackageBloc extends Bloc<FoodPackageEvent, FoodPackageState> {
       emit(
         FoodPackageSuccess(
           packages: [...state.packages, ...packages],
+          hasReachedMax: hasReachedMax,
+          totalPackages: total,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        FoodPackageFailure(
+          error: e.message,
+          packages: state.packages,
+          hasReachedMax: state.hasReachedMax,
+          totalPackages: state.totalPackages,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        FoodPackageFailure(
+          error: e.toString(),
+          packages: state.packages,
+          hasReachedMax: state.hasReachedMax,
+          totalPackages: state.totalPackages,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onRefreshed(
+    _Refreshed event,
+    Emitter<FoodPackageState> emit,
+  ) async {
+    emit(
+      FoodPackageLoading(
+        packages: state.packages,
+        hasReachedMax: state.hasReachedMax,
+      ),
+    );
+
+    try {
+      final packages = await _packageRepository.fetchPackages(
+        limit: _fetchLimit,
+      );
+      final hasReachedMax = packages.length < _fetchLimit;
+      final total = await _packageRepository.fetchTotalPackages();
+
+      emit(
+        FoodPackageSuccess(
+          packages: packages,
           hasReachedMax: hasReachedMax,
           totalPackages: total,
         ),

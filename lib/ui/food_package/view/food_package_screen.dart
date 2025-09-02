@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/food_package_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/bottom_loader.dart';
@@ -93,7 +94,7 @@ class _PackageList extends StatelessWidget {
                 final package = packages[i];
 
                 return PackageTile(
-                  onTap: _handleTap,
+                  onTap: () => _handleTap(context, package),
                   package: package,
                 );
               },
@@ -118,7 +119,16 @@ class _PackageList extends StatelessWidget {
     );
   }
 
-  void _handleTap() {
-    // TODO(package): implement on tap event
+  void _handleTap(BuildContext context, FoodPackage package) {
+    context.router.push(
+      FoodPackageDetailsRoute(
+        package: package,
+        onChange: () {
+          context.read<FoodPackageBloc>().add(
+            const FoodPackageEvent.refreshed(),
+          );
+        },
+      ),
+    );
   }
 }

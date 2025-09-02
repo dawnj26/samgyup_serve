@@ -63,7 +63,7 @@ class MenuRepository {
     String? cursor,
   }) async {
     try {
-      final respose = await _appwrite.databases.listRows(
+      final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.menuCollectionId,
         queries: [
@@ -75,7 +75,7 @@ class MenuRepository {
         ],
       );
 
-      return respose.rows
+      return response.rows
           .map((row) => MenuItem.fromJson(_appwrite.rowToJson(row)))
           .toList();
     } on AppwriteException catch (e) {
@@ -157,6 +157,28 @@ class MenuRepository {
       );
 
       return MenuItem.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
+  /// Fetches multiple menu items by their IDs.
+  Future<List<MenuItem>> fetchItemsByIds(List<String> menuIds) async {
+    try {
+      if (menuIds.isEmpty) return [];
+
+      final response = await _appwrite.databases.listRows(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.menuCollectionId,
+        queries: [
+          Query.equal(r'$id', menuIds),
+          Query.limit(1000),
+        ],
+      );
+
+      return response.rows
+          .map((row) => MenuItem.fromJson(_appwrite.rowToJson(row)))
+          .toList();
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }

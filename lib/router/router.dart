@@ -5,6 +5,7 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/app/app.dart';
+import 'package:samgyup_serve/router/wrappers/wrappers.dart';
 import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
 import 'package:samgyup_serve/ui/components/screens/loading_screen.dart';
@@ -61,26 +62,33 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(
-              page: MenuShellRoute.page,
+              page: MenuPackageWrapperRoute.page,
               children: [
-                AutoRoute(page: MenuRoute.page, initial: true),
                 AutoRoute(
-                  page: MenuCreateRoute.page,
+                  page: MenuShellRoute.page,
                   children: [
-                    AutoRoute(page: MenuFormRoute.page, initial: true),
-                    AutoRoute(page: MenuIngredientRoute.page),
+                    AutoRoute(page: MenuRoute.page, initial: true),
+                    AutoRoute(
+                      page: MenuCreateRoute.page,
+                      children: [
+                        AutoRoute(page: MenuFormRoute.page, initial: true),
+                        AutoRoute(page: MenuIngredientRoute.page),
+                      ],
+                    ),
+                    AutoRoute(page: IngredientSelectRoute.page),
+                    AutoRoute(page: MenuDetailsRoute.page),
+                    AutoRoute(page: MenuEditRoute.page),
                   ],
                 ),
-                AutoRoute(page: IngredientSelectRoute.page),
-                AutoRoute(page: MenuDetailsRoute.page),
-                AutoRoute(page: MenuEditRoute.page),
-              ],
-            ),
-            AutoRoute(
-              page: FoodPackageShellRoute.page,
-              children: [
-                AutoRoute(page: FoodPackageRoute.page, initial: true),
-                AutoRoute(page: FoodPackageCreateRoute.page),
+                AutoRoute(
+                  page: FoodPackageShellRoute.page,
+                  children: [
+                    AutoRoute(page: FoodPackageRoute.page, initial: true),
+                    AutoRoute(page: FoodPackageCreateRoute.page),
+                    AutoRoute(page: FoodPackageDetailsRoute.page),
+                    AutoRoute(page: MenuSelectRoute.page),
+                  ],
+                ),
               ],
             ),
           ],

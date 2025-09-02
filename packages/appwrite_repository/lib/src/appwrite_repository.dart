@@ -182,7 +182,7 @@ class AppwriteRepository {
   /// otherwise downloads from Appwrite and caches it.
   Future<File> getFile(String filename) async {
     try {
-      final file = await _cache.readFileFromCache(filename);
+      final file = _cache.readFileFromCache(filename);
 
       if (file != null) return file;
 

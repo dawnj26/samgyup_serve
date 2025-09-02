@@ -5,10 +5,18 @@ import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 class MenuListItem extends StatelessWidget {
-  const MenuListItem({required this.item, super.key, this.onTap});
+  const MenuListItem({
+    required this.item,
+    super.key,
+    this.onTap,
+    this.color,
+    this.image,
+  });
 
   final MenuItem item;
   final void Function()? onTap;
+  final Color? color;
+  final Widget? image;
 
   @override
   Widget build(BuildContext context) {
@@ -18,44 +26,50 @@ class MenuListItem extends StatelessWidget {
       aspectRatio: 3,
       child: InkWell(
         onTap: onTap,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(child: _MenuTitle(title: item.name)),
-                        const SizedBox(width: 8),
-                        _MenuState(isAvailable: item.isAvailable),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '$price · ${item.category.label}',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: _MenuDescription(
-                        description: item.description,
+        child: Container(
+          color: color,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: _MenuTitle(title: item.name)),
+                          const SizedBox(width: 8),
+                          _MenuState(isAvailable: item.isAvailable),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '$price · ${item.category.label}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: _MenuDescription(
+                          description: item.description,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            _MenuImage(imageFilename: item.imageFileName),
-          ],
+              _MenuImage(
+                imageFilename: item.imageFileName,
+                child: image,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -108,9 +122,10 @@ class _MenuState extends StatelessWidget {
 }
 
 class _MenuImage extends StatelessWidget {
-  const _MenuImage({this.imageFilename});
+  const _MenuImage({this.imageFilename, this.child});
 
   final String? imageFilename;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +143,7 @@ class _MenuImage extends StatelessWidget {
               ? const AppLogoIcon(
                   variant: AppLogoIconVariant.blackAndWhite,
                 )
-              : MenuImage(imageFileName: imageFilename!),
+              : child ?? MenuImage(imageFileName: imageFilename!),
         ),
       ),
     );

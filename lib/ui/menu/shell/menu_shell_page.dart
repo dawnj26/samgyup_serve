@@ -17,8 +17,8 @@ class MenuShellPage extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
-          create: (context) => MenuRepository(),
+        RepositoryProvider.value(
+          value: context.read<MenuRepository>(),
         ),
         RepositoryProvider(
           create: (context) => InventoryRepository(),
