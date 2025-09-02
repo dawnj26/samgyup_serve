@@ -36,10 +36,28 @@ class FoodPackageScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.router.push(FoodPackageCreateRoute());
+          context.router.push(
+            FoodPackageCreateRoute(
+              onCreated: (package) => _handleCreate(context, package),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Future<void> _handleCreate(BuildContext context, FoodPackage package) async {
+    await context.router.replace(
+      FoodPackageDetailsRoute(
+        package: package,
+      ),
+    );
+
+    if (!context.mounted) return;
+
+    context.read<FoodPackageBloc>().add(
+      const FoodPackageEvent.refreshed(),
     );
   }
 }
