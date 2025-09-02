@@ -120,6 +120,15 @@ class _PackageList extends StatelessWidget {
   }
 
   void _handleTap(BuildContext context, FoodPackage package) {
-    context.router.push(FoodPackageDetailsRoute(package: package));
+    context.router.push(
+      FoodPackageDetailsRoute(
+        package: package,
+        onChange: () {
+          context.read<FoodPackageBloc>().add(
+            const FoodPackageEvent.refreshed(),
+          );
+        },
+      ),
+    );
   }
 }
