@@ -37,7 +37,7 @@ class InventoryItemList extends StatelessWidget {
                       case InventoryItemOption.delete:
                         showDialog<void>(
                           context: context,
-                          builder: (ctx) => DeleteDialog(
+                          builder: (ctx) => InventoryDeleteDialog(
                             item: items[index],
                             onDelete: () {
                               context.read<InventoryDeleteBloc>().add(

@@ -2,9 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/bloc/food_package/delete/food_package_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/details/food_package_details_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/menu/food_package_menu_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/food_package/components/components.dart';
@@ -303,6 +305,7 @@ class _AppBar extends StatelessWidget {
       actions: [
         PackageMoreOptionButton(
           style: buttonStyle,
+          onSelected: (option) => _handleSelected(context, option),
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -319,5 +322,35 @@ class _AppBar extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleSelected(
+    BuildContext context,
+    PackageMoreOption option,
+  ) async {
+    switch (option) {
+      case PackageMoreOption.delete:
+        final delete = await showDeleteDialog(
+          context: context,
+          title: 'Delete package',
+          message: 'Are you sure you want to delete this package?',
+        );
+
+        if (!context.mounted || !delete) return;
+
+        final packageId = context
+            .read<FoodPackageDetailsBloc>()
+            .state
+            .package
+            .id;
+
+        context.read<FoodPackageDeleteBloc>().add(
+          FoodPackageDeleteEvent.started(
+            packageId: packageId,
+          ),
+        );
+      case PackageMoreOption.edit:
+        break;
+    }
   }
 }

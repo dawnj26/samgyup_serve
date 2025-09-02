@@ -50,21 +50,7 @@ class _SelectedBar extends StatelessWidget {
           children: [
             Text('$selectedItemsCount selected'),
             TextButton(
-              onPressed: () {
-                final items = context
-                    .read<MenuSelectBloc>()
-                    .state
-                    .selectedItems;
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (ctx) {
-                    return MenuSelectBottomSheet(
-                      items: items,
-                      onChange: (i) => _handleChange(context, i),
-                    );
-                  },
-                );
-              },
+              onPressed: () => _handleView(context),
               child: const Text('View'),
             ),
           ],
@@ -76,6 +62,19 @@ class _SelectedBar extends StatelessWidget {
   void _handleChange(BuildContext context, List<MenuItem> items) {
     context.read<MenuSelectBloc>().add(
       MenuSelectEvent.selectedItemsChanged(items),
+    );
+  }
+
+  void _handleView(BuildContext context) {
+    final items = context.read<MenuSelectBloc>().state.selectedItems;
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) {
+        return MenuSelectBottomSheet(
+          items: items,
+          onChange: (i) => _handleChange(context, i),
+        );
+      },
     );
   }
 }

@@ -32,3 +32,23 @@ void showErrorDialog({
     },
   );
 }
+
+Future<bool> showDeleteDialog({
+  required BuildContext context,
+  String? title,
+  String? message,
+}) async {
+  final result = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    useRootNavigator: false,
+    builder: (ctx) {
+      return DeleteDialog(
+        title: title,
+        message: message,
+      );
+    },
+  );
+
+  return result ?? false;
+}
