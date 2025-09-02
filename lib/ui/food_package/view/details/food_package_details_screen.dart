@@ -1,10 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/details/food_package_details_bloc.dart';
+import 'package:samgyup_serve/bloc/food_package/menu/food_package_menu_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/food_package/components/components.dart';
+import 'package:samgyup_serve/ui/menu/components/menu_list_item.dart';
 
 class FoodPackageDetailsScreen extends StatefulWidget {
   const FoodPackageDetailsScreen({super.key});
@@ -18,6 +22,34 @@ class _FoodPackageDetailsScreenState extends State<FoodPackageDetailsScreen> {
   final _scrollController = ScrollController();
   final _expandedHeight = 300.0;
   bool _isExpanded = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          _AppBar(
+            expandedHeight: _expandedHeight,
+            isExpanded: _isExpanded,
+          ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+              child: _Details(),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: _MenuHeader(),
+            ),
+          ),
+          const _MenuItems(),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -35,90 +67,7 @@ class _FoodPackageDetailsScreenState extends State<FoodPackageDetailsScreen> {
 
   bool get _isAppBarExpanded {
     return _scrollController.hasClients &&
-        _scrollController.offset < (_expandedHeight - kToolbarHeight);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final package = context.select(
-      (FoodPackageDetailsBloc bloc) => bloc.state.package,
-    );
-    final hasImage =
-        package.imageFilename != null && package.imageFilename!.isNotEmpty;
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    final buttonStyle = _isExpanded
-        ? IconButton.styleFrom(
-            backgroundColor: colorScheme.surface,
-          )
-        : null;
-
-    return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: _expandedHeight,
-            leading: IconButton(
-              onPressed: () {
-                context.router.pop();
-              },
-              icon: const Icon(Icons.arrow_back),
-              style: buttonStyle,
-            ),
-            actions: [
-              PackageMoreOptionButton(
-                style: buttonStyle,
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: hasImage
-                  ? PackageImage(filename: package.imageFilename!)
-                  : const NoImageFallback(),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    package.name,
-                    style: textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    CurrencyFormatter.formatToPHP(package.price),
-                    style: textTheme.titleMedium?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  InfoCard(
-                    title: 'Description',
-                    child: Text(
-                      package.description,
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-              child: Text(
-                'Menu items',
-                style: textTheme.labelLarge,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+        _scrollController.offset < (_expandedHeight + 20 - kToolbarHeight);
   }
 
   void _handleScroll() {
@@ -127,5 +76,248 @@ class _FoodPackageDetailsScreenState extends State<FoodPackageDetailsScreen> {
         _isExpanded = _isAppBarExpanded;
       });
     }
+  }
+}
+
+class _MenuItems extends StatelessWidget {
+  const _MenuItems();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FoodPackageDetailsBloc, FoodPackageDetailsState>(
+      builder: (context, state) {
+        switch (state) {
+          case FoodPackageDetailsLoading() || FoodPackageDetailsInitial():
+            return const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          case FoodPackageDetailsFailure(:final errorMessage):
+            return SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text('Failed to load menu items: $errorMessage'),
+              ),
+            );
+        }
+
+        final menuItems = state.menuItems;
+
+        if (menuItems.isEmpty) {
+          return const SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyFallback(
+              message: 'No menu items added.\nTap edit to add items.',
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            ),
+          );
+        }
+
+        return SliverList.builder(
+          itemCount: menuItems.length,
+          itemBuilder: (ctx, i) {
+            final item = menuItems[i];
+            return MenuListItem(
+              onTap: () {},
+              item: item,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _MenuHeader extends StatelessWidget {
+  const _MenuHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Menu items',
+          style: textTheme.labelLarge,
+        ),
+        BlocBuilder<FoodPackageDetailsBloc, FoodPackageDetailsState>(
+          builder: (context, state) {
+            final isLoading = state is FoodPackageDetailsLoading;
+
+            return TextButton(
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      context.router.push(
+                        MenuSelectRoute(
+                          initialItems: state.menuItems,
+                          onSave: (items) => _handleChange(context, items),
+                        ),
+                      );
+                    },
+              child: const Text('Edit'),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  void _handleChange(BuildContext context, List<MenuItem> items) {
+    final ids = items.map((e) => e.id).toList();
+    context.read<FoodPackageMenuBloc>().add(
+      FoodPackageMenuEvent.started(menuIds: ids),
+    );
+  }
+}
+
+class _Details extends StatelessWidget {
+  const _Details();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Builder(
+          builder: (ctx) {
+            final name = ctx.select(
+              (FoodPackageDetailsBloc bloc) => bloc.state.package.name,
+            );
+            return Text(
+              name,
+              style: textTheme.headlineMedium,
+            );
+          },
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Builder(
+              builder: (ctx) {
+                final price = ctx.select(
+                  (FoodPackageDetailsBloc bloc) => bloc.state.package.price,
+                );
+
+                return Text(
+                  CurrencyFormatter.formatToPHP(price),
+                  style: textTheme.titleMedium?.copyWith(
+                    color: colorScheme.primary,
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 8),
+            Row(
+              children: [
+                Icon(
+                  Icons.timelapse_rounded,
+                  size: 20,
+                  color: Colors.red.shade700,
+                ),
+                const SizedBox(width: 4),
+                Builder(
+                  builder: (ctx) {
+                    final duration = ctx.select(
+                      (FoodPackageDetailsBloc bloc) =>
+                          bloc.state.package.timeLimit,
+                    );
+
+                    return Text(
+                      '$duration minutes',
+                      style: textTheme.titleMedium?.copyWith(
+                        color: Colors.red.shade700,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        InfoCard(
+          title: 'Description',
+          child: Builder(
+            builder: (ctx) {
+              final description = ctx.select(
+                (FoodPackageDetailsBloc bloc) => bloc.state.package.description,
+              );
+
+              return Text(
+                description,
+                style: textTheme.bodyMedium,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AppBar extends StatelessWidget {
+  const _AppBar({required this.expandedHeight, required this.isExpanded});
+
+  final double expandedHeight;
+  final bool isExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final buttonStyle = isExpanded
+        ? IconButton.styleFrom(
+            backgroundColor: colorScheme.surface,
+          )
+        : null;
+
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: expandedHeight,
+      title: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: isExpanded ? 0 : 1,
+        child: Builder(
+          builder: (ctx) {
+            final name = ctx.select(
+              (FoodPackageDetailsBloc bloc) => bloc.state.package.name,
+            );
+            return Text(name);
+          },
+        ),
+      ),
+      leading: IconButton(
+        onPressed: () {
+          context.router.pop();
+        },
+        icon: const Icon(Icons.arrow_back),
+        style: buttonStyle,
+      ),
+      actions: [
+        PackageMoreOptionButton(
+          style: buttonStyle,
+        ),
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        background: Builder(
+          builder: (ctx) {
+            final image = ctx.select(
+              (FoodPackageDetailsBloc bloc) => bloc.state.package.imageFilename,
+            );
+
+            return image != null
+                ? PackageImage(filename: image)
+                : const NoImageFallback();
+          },
+        ),
+      ),
+    );
   }
 }
