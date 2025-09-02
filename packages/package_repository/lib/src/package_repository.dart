@@ -118,4 +118,17 @@ class PackageRepository {
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
+
+  /// Deletes a food package by its ID.
+  Future<void> deletePackage(String id) async {
+    try {
+      await _appwrite.databases.deleteRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.packageCollectionId,
+        rowId: id,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
 }
