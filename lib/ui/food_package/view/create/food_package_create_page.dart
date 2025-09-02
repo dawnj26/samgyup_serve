@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/create/food_package_create_bloc.dart';
-import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/food_package/view/create/food_package_create_screen.dart';
@@ -23,7 +22,7 @@ class FoodPackageCreatePage extends StatelessWidget
           case FoodPackageCreateCreating():
             showLoadingDialog(context: context, message: 'Creating package...');
           case FoodPackageCreateSuccess(:final foodPackage):
-            context.router.popUntilRouteWithName(FoodPackageRoute.name);
+            context.router.pop();
             showSnackBar(context, 'Package created successfully');
             onCreated?.call(foodPackage);
           case FoodPackageCreateFailure(:final errorMessage):
