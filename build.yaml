@@ -18,3 +18,4 @@ targets:
           - lib/ui/**/shell/*.dart
           - lib/ui/**/screens/*.dart
           - lib/app/view/app.dart
+          - lib/router/wrappers/*_page.dart
