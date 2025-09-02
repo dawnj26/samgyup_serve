@@ -68,6 +68,21 @@ class PackageRepository {
     }
   }
 
+  /// Fetches a specific food package by its ID.
+  Future<FoodPackage> fetchPackage(String id) async {
+    try {
+      final row = await _appwrite.databases.getRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.packageCollectionId,
+        rowId: id,
+      );
+
+      return FoodPackage.fromJson(_appwrite.rowToJson(row));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
   /// Fetches the total number of food packages available.
   Future<int> fetchTotalPackages() async {
     try {
