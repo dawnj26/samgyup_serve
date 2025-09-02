@@ -99,4 +99,23 @@ class PackageRepository {
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
+
+  /// Updates the menu IDs associated with a specific food package.
+  Future<void> updateMenuIds({
+    required String packageId,
+    required List<String> menuIds,
+  }) async {
+    try {
+      await _appwrite.databases.updateRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.packageCollectionId,
+        rowId: packageId,
+        data: {
+          'menuIds': menuIds,
+        },
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
 }
