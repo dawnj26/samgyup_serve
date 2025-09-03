@@ -6,6 +6,7 @@ import 'package:samgyup_serve/bloc/ingredient/edit/ingredient_edit_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/delete/menu_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/details/menu_details_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:samgyup_serve/shared/navigation.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/menu/view/details/menu_details_screen.dart';
 
@@ -30,7 +31,8 @@ class MenuDetailsPage extends StatelessWidget implements AutoRouteWrapper {
                 );
               case MenuDeleteSuccess():
                 context.router.pop();
-                context.router.back();
+                goToPreviousRoute(context);
+
                 showSnackBar(context, 'Menu item deleted successfully');
                 onChange?.call(needsReload: true);
               case MenuDeleteError(:final message):

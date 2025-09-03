@@ -6,6 +6,7 @@ import 'package:samgyup_serve/bloc/food_package/delete/food_package_delete_bloc.
 import 'package:samgyup_serve/bloc/food_package/details/food_package_details_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/menu/food_package_menu_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:samgyup_serve/shared/navigation.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/food_package/view/details/food_package_details_screen.dart';
 
@@ -100,8 +101,7 @@ class FoodPackageDetailsPage extends StatelessWidget
         showLoadingDialog(context: context, message: 'Deleting package...');
       case FoodPackageDeleteSuccess():
         context.router.pop();
-        context.router.back();
-        showSnackBar(context, 'Package deleted successfully');
+        goToPreviousRoute(context);
         context.read<FoodPackageDetailsBloc>().add(
           const FoodPackageDetailsEvent.changed(),
         );
