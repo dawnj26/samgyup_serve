@@ -122,12 +122,28 @@ class _MenuItems extends StatelessWidget {
           itemBuilder: (ctx, i) {
             final item = menuItems[i];
             return MenuListItem(
-              onTap: () {},
+              onTap: () => _handleTap(context, item),
               item: item,
             );
           },
         );
       },
+    );
+  }
+
+  void _handleTap(BuildContext context, MenuItem item) {
+    final router = context.router.parent<StackRouter>();
+    router?.push(
+      MenuDetailsRoute(
+        menuItem: item,
+        onChange: ({required needsReload}) {
+          if (needsReload) {
+            context.read<FoodPackageDetailsBloc>().add(
+              const FoodPackageDetailsEvent.refreshed(),
+            );
+          }
+        },
+      ),
     );
   }
 }
