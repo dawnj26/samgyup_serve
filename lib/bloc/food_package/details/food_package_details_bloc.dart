@@ -19,10 +19,24 @@ class FoodPackageDetailsBloc
        super(FoodPackageDetailsInitial(package: package)) {
     on<_Started>(_onStarted);
     on<_Refreshed>(_onRefreshed);
+    on<_Changed>(_onChanged);
   }
 
   final PackageRepository _packageRepository;
   final MenuRepository _menuRepository;
+
+  void _onChanged(
+    _Changed event,
+    Emitter<FoodPackageDetailsState> emit,
+  ) {
+    emit(
+      FoodPackageDetailsState.success(
+        package: state.package,
+        menuItems: state.menuItems,
+        isDirty: true,
+      ),
+    );
+  }
 
   Future<void> _onStarted(
     _Started event,
@@ -32,6 +46,7 @@ class FoodPackageDetailsBloc
       FoodPackageDetailsLoading(
         package: state.package,
         menuItems: state.menuItems,
+        isDirty: state.isDirty,
       ),
     );
     try {
@@ -43,6 +58,7 @@ class FoodPackageDetailsBloc
         FoodPackageDetailsSuccess(
           package: state.package,
           menuItems: menuItems,
+          isDirty: state.isDirty,
         ),
       );
     } on ResponseException catch (e) {
@@ -50,6 +66,7 @@ class FoodPackageDetailsBloc
         FoodPackageDetailsFailure(
           package: state.package,
           menuItems: state.menuItems,
+          isDirty: state.isDirty,
           errorMessage: e.message,
         ),
       );
@@ -58,6 +75,7 @@ class FoodPackageDetailsBloc
         FoodPackageDetailsFailure(
           package: state.package,
           menuItems: state.menuItems,
+          isDirty: state.isDirty,
           errorMessage: e.toString(),
         ),
       );
@@ -72,6 +90,7 @@ class FoodPackageDetailsBloc
       FoodPackageDetailsLoading(
         package: state.package,
         menuItems: state.menuItems,
+        isDirty: state.isDirty,
       ),
     );
     try {
@@ -87,6 +106,7 @@ class FoodPackageDetailsBloc
         FoodPackageDetailsSuccess(
           package: updatedPackage,
           menuItems: menuItems,
+          isDirty: true,
         ),
       );
     } on ResponseException catch (e) {
@@ -95,6 +115,7 @@ class FoodPackageDetailsBloc
           package: state.package,
           menuItems: state.menuItems,
           errorMessage: e.message,
+          isDirty: state.isDirty,
         ),
       );
     } on Exception catch (e) {
@@ -102,6 +123,7 @@ class FoodPackageDetailsBloc
         FoodPackageDetailsFailure(
           package: state.package,
           menuItems: state.menuItems,
+          isDirty: state.isDirty,
           errorMessage: e.toString(),
         ),
       );
