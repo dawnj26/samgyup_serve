@@ -122,12 +122,28 @@ class _MenuItems extends StatelessWidget {
           itemBuilder: (ctx, i) {
             final item = menuItems[i];
             return MenuListItem(
-              onTap: () {},
+              onTap: () => _handleTap(context, item),
               item: item,
             );
           },
         );
       },
+    );
+  }
+
+  void _handleTap(BuildContext context, MenuItem item) {
+    final router = context.router.parent<StackRouter>();
+    router?.push(
+      MenuDetailsRoute(
+        menuItem: item,
+        onChange: ({required needsReload}) {
+          if (needsReload) {
+            context.read<FoodPackageDetailsBloc>().add(
+              const FoodPackageDetailsEvent.refreshed(),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -328,6 +344,8 @@ class _AppBar extends StatelessWidget {
     BuildContext context,
     PackageMoreOption option,
   ) async {
+    final package = context.read<FoodPackageDetailsBloc>().state.package;
+
     switch (option) {
       case PackageMoreOption.delete:
         final delete = await showDeleteDialog(
@@ -338,19 +356,22 @@ class _AppBar extends StatelessWidget {
 
         if (!context.mounted || !delete) return;
 
-        final packageId = context
-            .read<FoodPackageDetailsBloc>()
-            .state
-            .package
-            .id;
-
         context.read<FoodPackageDeleteBloc>().add(
           FoodPackageDeleteEvent.started(
-            packageId: packageId,
+            packageId: package.id,
           ),
         );
       case PackageMoreOption.edit:
-        break;
+        await context.router.push(
+          FoodPackageEditRoute(
+            package: package,
+            onChanged: (package) {
+              context.read<FoodPackageDetailsBloc>().add(
+                FoodPackageDetailsEvent.changed(package),
+              );
+            },
+          ),
+        );
     }
   }
 }

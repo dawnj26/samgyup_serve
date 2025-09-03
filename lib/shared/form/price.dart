@@ -20,7 +20,7 @@ extension PriceValidationErrorX on PriceValidationError {
 }
 
 class Price extends FormzInput<String, PriceValidationError> {
-  const Price.pure() : super.pure('');
+  const Price.pure([super.value = '']) : super.pure();
   const Price.dirty([super.value = '']) : super.dirty();
 
   @override

@@ -5,7 +5,6 @@ import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/delete/food_package_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/details/food_package_details_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/menu/food_package_menu_bloc.dart';
-import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/food_package/view/details/food_package_details_screen.dart';
@@ -35,13 +34,9 @@ class FoodPackageDetailsPage extends StatelessWidget
       ],
       child: PopScope(
         onPopInvokedWithResult: (didPop, _) {
-          final deleteState = context.read<FoodPackageDeleteBloc>().state;
-          final menuState = context.read<FoodPackageMenuBloc>().state;
-          final isPackageChanged =
-              deleteState is FoodPackageDeleteSuccess ||
-              menuState is FoodPackageMenuSuccess;
+          final isDirty = context.read<FoodPackageDetailsBloc>().state.isDirty;
 
-          if (didPop && isPackageChanged) {
+          if (didPop && isDirty) {
             onChange?.call();
           }
         },
@@ -104,8 +99,12 @@ class FoodPackageDetailsPage extends StatelessWidget
       case FoodPackageDeleteDeleting():
         showLoadingDialog(context: context, message: 'Deleting package...');
       case FoodPackageDeleteSuccess():
-        context.router.popUntilRouteWithName(FoodPackageRoute.name);
+        context.router.pop();
+        context.router.back();
         showSnackBar(context, 'Package deleted successfully');
+        context.read<FoodPackageDetailsBloc>().add(
+          const FoodPackageDetailsEvent.changed(),
+        );
       case FoodPackageDeleteFailure(:final errorMessage):
         context.router.pop();
         showErrorDialog(

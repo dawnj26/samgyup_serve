@@ -16,7 +16,7 @@ extension TimeLimitValidationErrorX on TimeLimitValidationError {
 RegExp _int = RegExp(r'^-?(?:0|[1-9][0-9]*)$');
 
 class TimeLimit extends FormzInput<String, TimeLimitValidationError> {
-  const TimeLimit.pure() : super.pure('');
+  const TimeLimit.pure([super.value = '']) : super.pure();
   const TimeLimit.dirty([super.value = '']) : super.dirty();
 
   @override

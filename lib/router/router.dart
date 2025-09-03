@@ -86,6 +86,7 @@ class AppRouter extends RootStackRouter {
                     AutoRoute(page: FoodPackageRoute.page, initial: true),
                     AutoRoute(page: FoodPackageCreateRoute.page),
                     AutoRoute(page: FoodPackageDetailsRoute.page),
+                    AutoRoute(page: FoodPackageEditRoute.page),
                     AutoRoute(page: MenuSelectRoute.page),
                   ],
                 ),

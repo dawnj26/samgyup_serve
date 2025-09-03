@@ -131,4 +131,31 @@ class PackageRepository {
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
+
+  /// Updates an existing food package.
+  Future<FoodPackage> updatePackage({
+    required FoodPackage package,
+    File? image,
+  }) async {
+    try {
+      var imageFileName = package.imageFilename;
+      if (image != null) {
+        imageFileName = await _appwrite.uploadFile(image);
+      }
+
+      final p = package.copyWith(
+        imageFilename: imageFileName,
+      );
+
+      final row = await _appwrite.databases.updateRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.packageCollectionId,
+        rowId: p.id,
+        data: p.toJson(),
+      );
+      return FoodPackage.fromJson(_appwrite.rowToJson(row));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
 }
