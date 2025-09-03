@@ -41,12 +41,8 @@ class FoodPackageCreateScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: FilledButton(
-          onPressed: () => _handleSave(context),
-          child: const Text('Save'),
-        ),
+      bottomNavigationBar: SavePackageButton(
+        onPressed: () => _handleSave(context),
       ),
     );
   }
