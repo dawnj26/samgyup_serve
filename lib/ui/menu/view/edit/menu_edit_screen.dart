@@ -17,7 +17,7 @@ class MenuEditScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final item = context.select((MenuEditBloc bloc) => bloc.menuItem);
 
-    return Scaffold(
+    return FormScaffold(
       appBar: AppBar(
         title: const Text('Edit Menu'),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/login/login_bloc.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/login/view/login_form.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class LoginScreen extends StatelessWidget {
             context.read<AppBloc>().add(AppEvent.login(user: user));
         }
       },
-      child: Scaffold(
+      child: FormScaffold(
         appBar: AppBar(),
         body: const Padding(
           padding: EdgeInsets.all(16),
