@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
-class NameInput extends StatelessWidget {
-  const NameInput({
+class InventoryNameInput extends StatelessWidget {
+  const InventoryNameInput({
     super.key,
     this.initialValue,
     this.onNameChanged,
