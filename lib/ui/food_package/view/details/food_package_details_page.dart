@@ -104,7 +104,8 @@ class FoodPackageDetailsPage extends StatelessWidget
       case FoodPackageDeleteDeleting():
         showLoadingDialog(context: context, message: 'Deleting package...');
       case FoodPackageDeleteSuccess():
-        context.router.popUntilRouteWithName(FoodPackageRoute.name);
+        context.router.pop();
+        context.router.back();
         showSnackBar(context, 'Package deleted successfully');
       case FoodPackageDeleteFailure(:final errorMessage):
         context.router.pop();
