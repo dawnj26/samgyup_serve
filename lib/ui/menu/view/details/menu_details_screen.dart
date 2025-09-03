@@ -208,12 +208,17 @@ class _MenuAppbar extends StatelessWidget {
         : null;
 
     return SliverAppBar(
-      leading: IconButton(
-        onPressed: () {
-          context.router.pop();
+      leading: AutoLeadingButton(
+        builder: (context, leadingType, action) {
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: IconButton(
+              style: buttonStyle,
+              onPressed: action,
+              icon: const Icon(Icons.arrow_back),
+            ),
+          );
         },
-        icon: const Icon(Icons.arrow_back),
-        style: buttonStyle,
       ),
       actionsPadding: const EdgeInsets.only(right: 8),
       actions: [
