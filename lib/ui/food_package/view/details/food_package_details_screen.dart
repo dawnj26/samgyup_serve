@@ -344,6 +344,8 @@ class _AppBar extends StatelessWidget {
     BuildContext context,
     PackageMoreOption option,
   ) async {
+    final package = context.read<FoodPackageDetailsBloc>().state.package;
+
     switch (option) {
       case PackageMoreOption.delete:
         final delete = await showDeleteDialog(
@@ -354,19 +356,22 @@ class _AppBar extends StatelessWidget {
 
         if (!context.mounted || !delete) return;
 
-        final packageId = context
-            .read<FoodPackageDetailsBloc>()
-            .state
-            .package
-            .id;
-
         context.read<FoodPackageDeleteBloc>().add(
           FoodPackageDeleteEvent.started(
-            packageId: packageId,
+            packageId: package.id,
           ),
         );
       case PackageMoreOption.edit:
-        break;
+        await context.router.push(
+          FoodPackageEditRoute(
+            package: package,
+            onChanged: (package) {
+              context.read<FoodPackageDetailsBloc>().add(
+                FoodPackageDetailsEvent.changed(package),
+              );
+            },
+          ),
+        );
     }
   }
 }
