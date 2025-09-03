@@ -31,7 +31,7 @@ class FoodPackageDetailsBloc
   ) {
     emit(
       FoodPackageDetailsState.success(
-        package: state.package,
+        package: event.package ?? state.package,
         menuItems: state.menuItems,
         isDirty: true,
       ),

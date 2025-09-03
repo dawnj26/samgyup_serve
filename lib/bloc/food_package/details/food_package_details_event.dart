@@ -4,5 +4,6 @@ part of 'food_package_details_bloc.dart';
 class FoodPackageDetailsEvent with _$FoodPackageDetailsEvent {
   const factory FoodPackageDetailsEvent.started() = _Started;
   const factory FoodPackageDetailsEvent.refreshed() = _Refreshed;
-  const factory FoodPackageDetailsEvent.changed() = _Changed;
+  const factory FoodPackageDetailsEvent.changed([FoodPackage? package]) =
+      _Changed;
 }
