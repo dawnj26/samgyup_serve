@@ -13,10 +13,8 @@ permissions:
   contents: write
 
 jobs:
-  # Skip if commit message contains [skip ci] or [no release]
-  if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no release]')"
-
   bump-version:
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no release]')"
     uses: ./.github/workflows/bump.yaml
 
   create-tag:
