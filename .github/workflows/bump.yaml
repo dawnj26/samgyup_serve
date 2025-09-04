@@ -1,13 +1,14 @@
 name: Version Bump
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - "README.md"
-      - "docs/**"
-      - ".gitignore"
-      - "LICENSE"
+  workflow_call:
+    outputs:
+      new_version:
+        description: "The new version number"
+        value: ${{ jobs.version-and-release.outputs.new_version }}
+      new_full_version:
+        description: "The new full version with build number"
+        value: ${{ jobs.version-and-release.outputs.new_full_version }}
 
 permissions:
   contents: write
@@ -15,9 +16,9 @@ permissions:
 jobs:
   version-and-release:
     runs-on: ubuntu-latest
-
-    # Skip if commit message contains [skip ci] or [no release]
-    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no release]')"
+    outputs:
+      new_version: ${{ steps.new_version.outputs.new_version }}
+      new_full_version: ${{ steps.new_version.outputs.new_full_version }}
 
     steps:
       - name: Checkout code
@@ -123,12 +124,3 @@ jobs:
           git add pubspec.yaml
           git commit -m "chore: bump version to $new_version [skip ci]"
           git push
-
-      - name: Create and push tag
-        run: |
-          new_version="${{ steps.new_version.outputs.new_version }}"
-          tag_name="v$new_version"
-
-          git tag -a "$tag_name" -m "Release $new_version"
-          git push origin "$tag_name"
-          echo "Created and pushed tag: $tag_name"
