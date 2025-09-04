@@ -13,6 +13,9 @@ permissions:
   contents: write
 
 jobs:
+  checks:
+    uses: ./.github/workflows/checks.yaml
+
   bump-version:
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no release]')"
     uses: ./.github/workflows/bump.yaml
