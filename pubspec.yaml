@@ -36,6 +36,8 @@ dependencies:
     path: packages/package_repository
   shared_preferences: ^2.5.3
   stream_transform: ^2.1.1
+  table_repository:
+    path: packages/table_repository
 
 dev_dependencies:
   auto_route_generator: ^10.1.0
