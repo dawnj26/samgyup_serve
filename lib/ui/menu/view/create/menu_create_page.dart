@@ -5,6 +5,7 @@ import 'package:samgyup_serve/bloc/menu/create/menu_create_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
+import 'package:samgyup_serve/ui/components/form_scaffold.dart';
 
 @RoutePage()
 class MenuCreatePage extends StatelessWidget implements AutoRouteWrapper {
@@ -20,7 +21,7 @@ class MenuCreatePage extends StatelessWidget implements AutoRouteWrapper {
         MenuIngredientRoute(),
       ],
       builder: (context, child, pageController) {
-        return Scaffold(
+        return FormScaffold(
           appBar: AppBar(
             title: const Text('Add menu'),
           ),

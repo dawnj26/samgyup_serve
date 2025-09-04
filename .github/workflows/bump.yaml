@@ -1,0 +1,131 @@
+name: Version Bump
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
+
+jobs:
+  version-and-release:
+    runs-on: ubuntu-latest
+
+    # Skip if commit message contains [skip ci] or [no release]
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no release]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get current version
+        id: current_version
+        run: |
+          version=$(grep "version:" pubspec.yaml | sed 's/version: //' | tr -d ' ')
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "Current version: $version"
+
+      - name: Determine version bump type
+        id: bump_type
+        run: |
+          commit_message="${{ github.event.head_commit.message }}"
+          echo "Commit message: $commit_message"
+
+          # A MAJOR version bump is triggered by "BREAKING CHANGE" in the body/footer 
+          # or a "!" after the type/scope in the subject line.
+          if echo "$commit_message" | grep -q "BREAKING CHANGE" || echo "$commit_message" | grep -qE "^\w+(\(.*\))?!:"; then
+            echo "bump=major" >> $GITHUB_OUTPUT
+            echo "Detected: MAJOR version bump from a breaking change."
+
+          # A MINOR version bump is triggered by a "feat" type.
+          elif echo "$commit_message" | grep -qE "^feat(\(.*\))?:"; then
+            echo "bump=minor" >> $GITHUB_OUTPUT
+            echo "Detected: MINOR version bump from a new feature."
+
+          # A PATCH version bump is triggered by a "fix" type.
+          elif echo "$commit_message" | grep -qE "^fix(\(.*\))?:"; then
+            echo "bump=patch" >> $GITHUB_OUTPUT
+            echo "Detected: PATCH version bump from a bug fix."
+
+          # Default to a PATCH for other commit types (e.g., chore, docs, style, refactor, perf, test).
+          # This ensures that any change merged to main gets a version bump unless skipped.
+          else
+            echo "bump=patch" >> $GITHUB_OUTPUT
+            echo "Default: PATCH version bump for other commit types."
+          fi
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          current_version="${{ steps.current_version.outputs.version }}"
+          bump_type="${{ steps.bump_type.outputs.bump }}"
+
+          # Extract version number (without build number if present)
+          version_number=$(echo "$current_version" | cut -d'+' -f1)
+          build_number=$(echo "$current_version" | cut -d'+' -f2 -s)
+
+          # Split version into parts
+          IFS='.' read -ra VERSION_PARTS <<< "$version_number"
+          major=${VERSION_PARTS[0]}
+          minor=${VERSION_PARTS[1]}
+          patch=${VERSION_PARTS[2]}
+
+          echo "Current: $major.$minor.$patch"
+
+          # Bump version based on type
+          case $bump_type in
+            "major")
+              major=$((major + 1))
+              minor=0
+              patch=0
+              ;;
+            "minor")
+              minor=$((minor + 1))
+              patch=0
+              ;;
+            "patch")
+              patch=$((patch + 1))
+              ;;
+          esac
+
+          new_version="$major.$minor.$patch"
+
+          # Increment build number or start at 1
+          if [ -n "$build_number" ]; then
+            new_build=$((build_number + 1))
+            new_full_version="$new_version+$new_build"
+          else
+            new_full_version="$new_version+1"
+          fi
+
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "new_full_version=$new_full_version" >> $GITHUB_OUTPUT
+          echo "New version: $new_full_version"
+
+      - name: Update pubspec.yaml
+        run: |
+          new_full_version="${{ steps.new_version.outputs.new_full_version }}"
+          sed -i "s/^version: .*/version: $new_full_version/" pubspec.yaml
+          echo "Updated pubspec.yaml to version $new_full_version"
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          new_version="${{ steps.new_version.outputs.new_version }}"
+
+          git add pubspec.yaml
+          git commit -m "chore: bump version to $new_version [skip ci]"
+          git push
+
+      - name: Create and push tag
+        run: |
+          new_version="${{ steps.new_version.outputs.new_version }}"
+          tag_name="v$new_version"
+
+          git tag -a "$tag_name" -m "Release $new_version"
+          git push origin "$tag_name"
+          echo "Created and pushed tag: $tag_name"

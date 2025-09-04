@@ -9,6 +9,7 @@ import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryAddScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class InventoryAddScreen extends StatelessWidget {
             showSnackBar(context, message);
         }
       },
-      child: Scaffold(
+      child: FormScaffold(
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
@@ -91,7 +92,7 @@ class _NameInputField extends StatelessWidget {
           errorText = 'Item name must be at least 3 characters';
         }
 
-        return NameInput(
+        return InventoryNameInput(
           key: const Key('inventoryCreate_nameInput_textField'),
           onNameChanged: (name) {
             context.read<InventoryCreateBloc>().add(
@@ -120,7 +121,7 @@ class _DescriptionInputField extends StatelessWidget {
         if (description.displayError == DescriptionValidationError.tooLong) {
           errorText = 'Description must be at most 500 characters';
         }
-        return DescriptionInput(
+        return InventoryDescriptionInput(
           key: const Key('inventoryCreate_descriptionInput_textField'),
           errorText: errorText,
           onChanged: (value) {

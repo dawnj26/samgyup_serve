@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
-class DescriptionInput extends StatelessWidget {
-  const DescriptionInput({
+class InventoryDescriptionInput extends StatelessWidget {
+  const InventoryDescriptionInput({
     super.key,
     this.errorText,
     this.onChanged,
