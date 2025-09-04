@@ -17,6 +17,7 @@ jobs:
     uses: ./.github/workflows/checks.yaml
 
   bump-version:
+    needs: checks
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no release]')"
     uses: ./.github/workflows/bump.yaml
 
@@ -51,3 +52,7 @@ jobs:
     uses: ./.github/workflows/release.yaml
     with:
       version: ${{ needs.bump-version.outputs.new_version }}
+    secrets:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+
