@@ -1,9 +1,12 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -51,3 +54,5 @@ jobs:
         with:
           files: build/app/outputs/flutter-apk/*.apk
           generate_release_notes: true
+          tag_name: v${{ inputs.version }}
+          name: Release ${{ inputs.version }}
