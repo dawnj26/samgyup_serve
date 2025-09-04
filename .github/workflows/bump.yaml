@@ -9,6 +9,9 @@ on:
       - ".gitignore"
       - "LICENSE"
 
+permissions:
+  contents: write
+
 jobs:
   version-and-release:
     runs-on: ubuntu-latest
