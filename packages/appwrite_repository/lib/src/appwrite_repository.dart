@@ -91,6 +91,7 @@ class AppwriteRepository {
       menuIngredientsCollectionId: environment.menuIngredientsCollectionId,
       storageBucketId: environment.storageBucketId,
       packageCollectionId: environment.packageCollectionId,
+      tableCollectionId: environment.tableCollectionId,
     );
   }
 

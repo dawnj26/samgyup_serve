@@ -14,6 +14,7 @@ class Environment {
     required this.menuIngredientsCollectionId,
     required this.storageBucketId,
     required this.packageCollectionId,
+    required this.tableCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -42,4 +43,7 @@ class Environment {
 
   /// The ID of package collection.
   final String packageCollectionId;
+
+  /// The ID of table collection.
+  final String tableCollectionId;
 }
