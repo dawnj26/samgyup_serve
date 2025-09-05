@@ -51,7 +51,13 @@ class TableScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (ctx) => const CreateTableBottomSheet(),
+            isScrollControlled: true,
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
