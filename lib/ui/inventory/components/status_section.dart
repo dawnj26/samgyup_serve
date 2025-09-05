@@ -45,6 +45,7 @@ class StatusSection extends StatelessWidget {
                     onTap: () => _handleNavigation(context),
                   ),
                 ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: StatusCard(
                     title: 'In Stock',
@@ -58,6 +59,7 @@ class StatusSection extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
@@ -71,6 +73,7 @@ class StatusSection extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: StatusCard(
                     title: 'Out of Stock',
@@ -84,6 +87,7 @@ class StatusSection extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
