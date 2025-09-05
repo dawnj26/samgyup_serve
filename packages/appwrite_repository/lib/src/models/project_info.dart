@@ -11,6 +11,7 @@ class ProjectInfo {
     required this.menuIngredientsCollectionId,
     required this.storageBucketId,
     required this.packageCollectionId,
+    required this.tableCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -39,4 +40,7 @@ class ProjectInfo {
 
   /// The ID of the package collection.
   final String packageCollectionId;
+
+  /// The ID of the table collection.
+  final String tableCollectionId;
 }
