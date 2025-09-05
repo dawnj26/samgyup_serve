@@ -16,6 +16,7 @@ import 'package:samgyup_serve/ui/inventory/inventory.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 import 'package:samgyup_serve/ui/menu/menu.dart';
+import 'package:samgyup_serve/ui/table/table.dart';
 
 part 'router.gr.dart';
 
@@ -90,6 +91,12 @@ class AppRouter extends RootStackRouter {
                     AutoRoute(page: MenuSelectRoute.page),
                   ],
                 ),
+              ],
+            ),
+            AutoRoute(
+              page: TableShellRoute.page,
+              children: [
+                AutoRoute(page: TableRoute.page, initial: true),
               ],
             ),
           ],
