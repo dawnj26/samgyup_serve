@@ -1,7 +1,20 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:table_repository/src/models/table.dart';
+
 /// {@template table_repository}
-/// A Very Good Project created by Very Good CLI.
+/// A Dart package which manages tables.
 /// {@endtemplate}
 class TableRepository {
   /// {@macro table_repository}
-  const TableRepository();
+  TableRepository({
+    AppwriteRepository? appwrite,
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance,
+       _collectionId =
+           appwrite?.environment.tableCollectionId ??
+           AppwriteRepository.instance.environment.tableCollectionId;
+
+  final AppwriteRepository _appwrite;
+  final String _collectionId;
+
 }
