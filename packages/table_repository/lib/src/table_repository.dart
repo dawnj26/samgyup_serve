@@ -34,7 +34,6 @@ class TableRepository {
 
       return Table.fromJson(_appwrite.rowToJson(response));
     } on AppwriteException catch (e) {
-      print(e);
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
