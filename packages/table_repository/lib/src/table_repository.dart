@@ -17,4 +17,25 @@ class TableRepository {
   final AppwriteRepository _appwrite;
   final String _collectionId;
 
+  /// Creates a new table in the database.
+  Future<Table> createTable(Table table) async {
+    try {
+      final t = table.copyWith(
+        id: ID.unique(),
+        createdAt: DateTime.now(),
+      );
+
+      final response = await _appwrite.databases.createRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        rowId: t.id,
+        data: t.toJson(),
+      );
+
+      return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      print(e);
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }
