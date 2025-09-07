@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/table/components/components.dart';
+import 'package:samgyup_serve/ui/table/view/create/table_create_screen.dart';
 import 'package:table_repository/table_repository.dart' as t;
 
 class TableScreen extends StatelessWidget {
@@ -54,7 +55,7 @@ class TableScreen extends StatelessWidget {
         onPressed: () {
           showModalBottomSheet<void>(
             context: context,
-            builder: (ctx) => const CreateTableBottomSheet(),
+            builder: (ctx) => const TableCreateScreen(),
             isScrollControlled: true,
           );
         },

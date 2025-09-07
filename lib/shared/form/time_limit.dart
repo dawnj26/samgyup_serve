@@ -1,4 +1,5 @@
 import 'package:formz/formz.dart';
+import 'package:string_validator/string_validator.dart';
 
 enum TimeLimitValidationError { empty, invalid }
 
@@ -13,8 +14,6 @@ extension TimeLimitValidationErrorX on TimeLimitValidationError {
   }
 }
 
-RegExp _int = RegExp(r'^-?(?:0|[1-9][0-9]*)$');
-
 class TimeLimit extends FormzInput<String, TimeLimitValidationError> {
   const TimeLimit.pure([super.value = '']) : super.pure();
   const TimeLimit.dirty([super.value = '']) : super.dirty();
@@ -25,7 +24,7 @@ class TimeLimit extends FormzInput<String, TimeLimitValidationError> {
       return TimeLimitValidationError.empty;
     }
 
-    if (!_int.hasMatch(value) || int.parse(value) <= 0) {
+    if (value.isInt || int.parse(value) <= 0) {
       return TimeLimitValidationError.invalid;
     }
     return null;
