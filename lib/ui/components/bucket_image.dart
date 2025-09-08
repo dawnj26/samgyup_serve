@@ -1,11 +1,10 @@
-import 'dart:developer';
-import 'dart:io';
-
+import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class BucketImage extends StatelessWidget {
   const BucketImage({
-    required this.onLoad,
+    required this.fileId,
     super.key,
     this.loadingWidget,
     this.fit = BoxFit.cover,
@@ -13,32 +12,18 @@ class BucketImage extends StatelessWidget {
 
   final Widget? loadingWidget;
   final BoxFit fit;
-  final Future<File> Function() onLoad;
+  final String fileId;
+
+  String getFileUrl(String fileId) {
+    return AppwriteRepository.instance.getFileUrl(fileId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: onLoad(),
-      builder: (ctx, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return loadingWidget ??
-              const Center(
-                child: CircularProgressIndicator(),
-              );
-        }
-        if (snapshot.hasError) {
-          log(snapshot.error.toString());
-          return const Center(child: Icon(Icons.error));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: Icon(Icons.image_not_supported));
-        }
-
-        return Image.file(
-          snapshot.data!,
-          fit: fit,
-        );
-      },
+    return CachedNetworkImage(
+      imageUrl: getFileUrl(fileId),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+      fit: fit,
     );
   }
 }
