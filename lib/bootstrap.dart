@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:cache_repository/cache_repository.dart';
 import 'package:flutter/widgets.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -31,7 +30,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   Bloc.observer = const AppBlocObserver();
 
-  await CacheRepository.initialize();
   await AppwriteRepository.initialize(
     environment: const Environment(
       appwritePublicEndpoint: 'https://syd.cloud.appwrite.io/v1',
