@@ -14,8 +14,7 @@ dependencies:
   auto_route: ^10.1.0+1
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
-  cache_repository:
-    path: packages/cache_repository
+  cached_network_image: ^3.4.1
   collection: ^1.19.1
   dotted_border: ^3.1.0
   file_picker: ^10.3.2
