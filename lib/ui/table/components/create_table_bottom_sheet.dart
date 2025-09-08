@@ -27,7 +27,7 @@ class CreateTableBottomSheet extends StatelessWidget {
           children: [
             Text(
               'Create New Table',
-              style: textTheme.titleMedium,
+              style: textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
             const _TableNumber(),
