@@ -332,7 +332,7 @@ class _AppBar extends StatelessWidget {
             );
 
             return image != null
-                ? PackageImage(filename: image)
+                ? PackageImage(fileId: image)
                 : const NoImageFallback();
           },
         ),
