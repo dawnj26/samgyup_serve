@@ -143,7 +143,7 @@ class _MenuImage extends StatelessWidget {
               ? const AppLogoIcon(
                   variant: AppLogoIconVariant.blackAndWhite,
                 )
-              : child ?? MenuImage(imageFileName: imageFilename!),
+              : child ?? MenuImage(fileId: imageFilename!),
         ),
       ),
     );

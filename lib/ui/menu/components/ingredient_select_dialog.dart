@@ -20,6 +20,7 @@ class _IngredientSelectDialogState extends State<IngredientSelectDialog> {
     return AlertDialog(
       title: Text(widget.item.name),
       content: TextField(
+        autofocus: true,
         controller: _textController,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(

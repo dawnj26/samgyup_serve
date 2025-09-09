@@ -20,6 +20,7 @@ class StatusCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Card(
+      margin: EdgeInsets.zero,
       color: color,
       elevation: 0,
       clipBehavior: Clip.antiAlias,

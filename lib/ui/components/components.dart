@@ -14,6 +14,7 @@ export 'empty_fallback.dart';
 export 'form_scaffold.dart';
 export 'image_picker.dart';
 export 'info_card.dart';
+export 'layouts/layouts.dart';
 export 'name_input.dart';
 export 'no_image_fallback.dart';
 export 'outlined_text_field.dart';

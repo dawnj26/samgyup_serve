@@ -21,5 +21,6 @@ final List<ManagementItem> managementItems = [
   const ManagementItem(
     title: 'Tables',
     icon: Icons.table_bar_rounded,
+    route: TableShellRoute(),
   ),
 ];

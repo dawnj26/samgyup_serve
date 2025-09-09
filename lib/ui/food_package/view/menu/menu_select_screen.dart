@@ -100,7 +100,6 @@ class _MenuItemsState extends State<_MenuItems> {
             :final items,
             :final selectedItems,
             :final hasReachedMax,
-            :final itemImages,
           ):
             return ListView.builder(
               key: const Key('menuSelectScreen_listView'),
@@ -112,16 +111,12 @@ class _MenuItemsState extends State<_MenuItems> {
                 }
 
                 final item = items[i];
-                final file = itemImages[item.id];
                 final isSelected = selectedItems.any((e) => e.id == item.id);
 
                 return MenuListItem(
                   key: Key('menuSelectScreen_item_${item.id}'),
                   item: item,
                   color: isSelected ? colorScheme.surfaceContainer : null,
-                  image: file == null
-                      ? null
-                      : Image.file(file, fit: BoxFit.cover),
                   onTap: () {
                     context.read<MenuSelectBloc>().add(
                       MenuSelectEvent.itemToggled(

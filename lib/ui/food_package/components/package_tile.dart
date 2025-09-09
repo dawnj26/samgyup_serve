@@ -32,7 +32,7 @@ class PackageTile extends StatelessWidget {
           children: [
             Expanded(
               child: package.imageFilename != null
-                  ? PackageImage(filename: package.imageFilename!)
+                  ? PackageImage(fileId: package.imageFilename!)
                   : const NoImageFallback(),
             ),
             Padding(
