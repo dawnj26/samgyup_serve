@@ -26,9 +26,10 @@ class TableScreen extends StatelessWidget {
               child: _Total(),
             ),
           ),
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: TableStatusFilter(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+              onChanged: (statuses) => _handleStatusChanged(context, statuses),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             ),
           ),
           const SliverPadding(
@@ -56,6 +57,9 @@ class TableScreen extends StatelessWidget {
     context.read<TablesBloc>().add(const TablesEvent.loadedMore());
   }
 
+  void _handleStatusChanged(BuildContext context, List<TableStatus> statuses) {
+    context.read<TablesBloc>().add(TablesEvent.statusChanged(statuses));
+  }
 
   void _handleRefresh(BuildContext context) {
     context.read<TablesBloc>().add(const TablesEvent.refreshed());
