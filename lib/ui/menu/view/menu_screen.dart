@@ -6,27 +6,8 @@ import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
-class MenuScreen extends StatefulWidget {
+class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
-
-  @override
-  State<MenuScreen> createState() => _MenuScreenState();
-}
-
-class _MenuScreenState extends State<MenuScreen> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +20,10 @@ class _MenuScreenState extends State<MenuScreen> {
         title: const Text('Menu'),
         backgroundColor: colorScheme.primaryContainer,
       ),
-      body: CustomScrollView(
-        controller: _scrollController,
+      body: InfiniteScrollLayout(
+        onLoadMore: () => context.read<MenuBloc>().add(
+          const MenuEvent.loadMore(),
+        ),
         slivers: [
           const _Status(),
           SliverToBoxAdapter(
@@ -80,21 +63,6 @@ class _MenuScreenState extends State<MenuScreen> {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
-  }
-
-  void _onScroll() {
-    if (_isBottom) {
-      context.read<MenuBloc>().add(
-        const MenuEvent.loadMore(),
-      );
-    }
   }
 }
 
