@@ -110,12 +110,27 @@ class _TableList extends StatelessWidget {
                 }
 
                 final table = tables[index];
-                return TableTile(table: table);
+                return TableTile(
+                  table: table,
+                  onTap: (table) {
+                    context.router.push(
+                      TableDetailsRoute(
+                        id: table.id,
+                        table: table,
+                        onChanged: () => _handleRefresh(context),
+                      ),
+                    );
+                  },
+                );
               },
             );
         }
       },
     );
+  }
+
+  void _handleRefresh(BuildContext context) {
+    context.read<TablesBloc>().add(const TablesEvent.refreshed());
   }
 }
 
