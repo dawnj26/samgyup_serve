@@ -10,13 +10,10 @@ class TableRepository {
   /// {@macro table_repository}
   TableRepository({
     AppwriteRepository? appwrite,
-  }) : _appwrite = appwrite ?? AppwriteRepository.instance,
-       _collectionId =
-           appwrite?.environment.tableCollectionId ??
-           AppwriteRepository.instance.environment.tableCollectionId;
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance;
 
   final AppwriteRepository _appwrite;
-  final String _collectionId;
+  String get _collectionId => _appwrite.environment.tableCollectionId;
 
   /// Creates a new table in the database.
   Future<Table> createTable(Table table) async {
