@@ -2,9 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/table/tables_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/table/components/components.dart';
-import 'package:samgyup_serve/ui/table/view/create/table_create_screen.dart';
+import 'package:samgyup_serve/ui/table/view/form/table_form_screen.dart';
 import 'package:table_repository/table_repository.dart';
 
 class TableScreen extends StatelessWidget {
@@ -42,8 +43,8 @@ class TableScreen extends StatelessWidget {
         onPressed: () {
           showModalBottomSheet<void>(
             context: context,
-            builder: (ctx) => TableCreateScreen(
-              onCreated: () => _handleRefresh(context),
+            builder: (ctx) => TableFormScreen(
+              onSaved: () => _handleRefresh(context),
             ),
             isScrollControlled: true,
           );
