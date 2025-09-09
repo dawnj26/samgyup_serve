@@ -5,35 +5,30 @@ abstract class MenuSelectState with _$MenuSelectState {
   const factory MenuSelectState.initial({
     @Default([]) List<MenuItem> items,
     @Default([]) List<MenuItem> selectedItems,
-    @Default({}) Map<String, File?> itemImages,
     @Default(false) bool hasReachedMax,
   }) = MenuSelectInitial;
 
   const factory MenuSelectState.loading({
     @Default([]) List<MenuItem> items,
     @Default([]) List<MenuItem> selectedItems,
-    @Default({}) Map<String, File?> itemImages,
     @Default(false) bool hasReachedMax,
   }) = MenuSelectLoading;
 
   const factory MenuSelectState.success({
     required List<MenuItem> items,
     required List<MenuItem> selectedItems,
-    required Map<String, File?> itemImages,
     required bool hasReachedMax,
   }) = MenuSelectSuccess;
 
   const factory MenuSelectState.done({
     required List<MenuItem> items,
     required List<MenuItem> selectedItems,
-    required Map<String, File?> itemImages,
     required bool hasReachedMax,
   }) = MenuSelectDone;
 
   const factory MenuSelectState.failure({
     @Default([]) List<MenuItem> items,
     @Default([]) List<MenuItem> selectedItems,
-    @Default({}) Map<String, File?> itemImages,
     @Default(false) bool hasReachedMax,
     String? errorMessage,
   }) = MenuSelectFailure;

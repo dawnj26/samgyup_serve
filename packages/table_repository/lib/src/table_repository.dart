@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:table_repository/src/enums/enums.dart';
 import 'package:table_repository/src/models/table.dart';
 
 /// {@template table_repository}
@@ -9,13 +10,10 @@ class TableRepository {
   /// {@macro table_repository}
   TableRepository({
     AppwriteRepository? appwrite,
-  }) : _appwrite = appwrite ?? AppwriteRepository.instance,
-       _collectionId =
-           appwrite?.environment.tableCollectionId ??
-           AppwriteRepository.instance.environment.tableCollectionId;
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance;
 
   final AppwriteRepository _appwrite;
-  final String _collectionId;
+  String get _collectionId => _appwrite.environment.tableCollectionId;
 
   /// Creates a new table in the database.
   Future<Table> createTable(Table table) async {
@@ -33,6 +31,49 @@ class TableRepository {
       );
 
       return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Fetches all tables from the database.
+  Future<List<Table>> fetchTables({
+    int limit = 20,
+    String? cursor,
+    List<TableStatus> statuses = const [],
+  }) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.limit(limit),
+          if (cursor != null) Query.cursorAfter(cursor),
+          if (statuses.isNotEmpty)
+            Query.equal('status', statuses.map((e) => e.name).toList()),
+          Query.orderAsc('number'),
+        ],
+      );
+
+      return response.rows
+          .map((row) => Table.fromJson(_appwrite.rowToJson(row)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Gets the total number of tables in the database.
+  Future<int> getTotalTable() async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.limit(500),
+        ],
+      );
+      return response.total;
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }

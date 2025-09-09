@@ -54,6 +54,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      title: 'Samgyup Serve',
       routerConfig: router.config(),
       theme: ThemeData(
         colorSchemeSeed: Colors.red,

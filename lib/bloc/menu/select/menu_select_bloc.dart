@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -49,18 +47,8 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
         limit: _itemsPerPage,
       );
 
-      final appwrite = AppwriteRepository.instance;
-      final itemImages = <String, File?>{};
-      for (final item in items) {
-        if (item.imageFileName == null) continue;
-
-        final image = await appwrite.getFile(item.imageFileName!);
-        itemImages[item.id] = image;
-      }
-
       emit(
         MenuSelectSuccess(
-          itemImages: itemImages,
           items: items,
           selectedItems: state.selectedItems,
           hasReachedMax: items.length < _itemsPerPage,
@@ -70,7 +58,7 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
       emit(
         MenuSelectFailure(
           items: state.items,
-          itemImages: state.itemImages,
+
           selectedItems: state.selectedItems,
           hasReachedMax: state.hasReachedMax,
           errorMessage: e.message,
@@ -80,7 +68,7 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
       emit(
         MenuSelectFailure(
           items: state.items,
-          itemImages: state.itemImages,
+
           selectedItems: state.selectedItems,
           hasReachedMax: state.hasReachedMax,
           errorMessage: e.toString(),
@@ -103,17 +91,8 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
         cursor: lastDocumentId,
       );
 
-      final appwrite = AppwriteRepository.instance;
-      final itemImages = <String, File?>{};
-      for (final item in items) {
-        if (item.imageFileName == null) continue;
-
-        final image = await appwrite.getFile(item.imageFileName!);
-        itemImages[item.id] = image;
-      }
       emit(
         MenuSelectSuccess(
-          itemImages: {...state.itemImages, ...itemImages},
           items: [...state.items, ...items],
           selectedItems: state.selectedItems,
           hasReachedMax: items.length < _itemsPerPage,
@@ -122,7 +101,6 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
     } on ResponseException catch (e) {
       emit(
         MenuSelectFailure(
-          itemImages: state.itemImages,
           items: state.items,
           selectedItems: state.selectedItems,
           hasReachedMax: state.hasReachedMax,
@@ -132,7 +110,6 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
     } on Exception catch (e) {
       emit(
         MenuSelectFailure(
-          itemImages: state.itemImages,
           items: state.items,
           selectedItems: state.selectedItems,
           hasReachedMax: state.hasReachedMax,
@@ -151,7 +128,6 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
         : [...state.selectedItems, event.item];
     emit(
       MenuSelectSuccess(
-        itemImages: state.itemImages,
         items: state.items,
         selectedItems: updatedSelectedItems,
         hasReachedMax: state.hasReachedMax,
@@ -165,7 +141,6 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
   ) {
     emit(
       MenuSelectDone(
-        itemImages: state.itemImages,
         items: state.items,
         selectedItems: state.selectedItems,
         hasReachedMax: state.hasReachedMax,
@@ -179,7 +154,6 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
   ) {
     emit(
       MenuSelectSuccess(
-        itemImages: state.itemImages,
         items: state.items,
         selectedItems: event.items,
         hasReachedMax: state.hasReachedMax,

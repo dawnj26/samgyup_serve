@@ -415,7 +415,7 @@ class _MenuImage extends StatelessWidget {
           );
         }
 
-        return MenuImage(imageFileName: imageFileName);
+        return MenuImage(fileId: imageFileName);
       },
     );
   }
