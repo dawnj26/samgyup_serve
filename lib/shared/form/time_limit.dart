@@ -24,7 +24,7 @@ class TimeLimit extends FormzInput<String, TimeLimitValidationError> {
       return TimeLimitValidationError.empty;
     }
 
-    if (value.isInt || int.parse(value) <= 0) {
+    if (!value.isInt || int.parse(value) <= 0) {
       return TimeLimitValidationError.invalid;
     }
     return null;
