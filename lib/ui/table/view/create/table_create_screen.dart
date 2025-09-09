@@ -8,7 +8,9 @@ import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/table/components/create_table_bottom_sheet.dart';
 
 class TableCreateScreen extends StatelessWidget {
-  const TableCreateScreen({super.key});
+  const TableCreateScreen({super.key, this.onCreated});
+
+  final void Function()? onCreated;
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +18,17 @@ class TableCreateScreen extends StatelessWidget {
       create: (context) => TableCreateBloc(
         tableRepository: context.read(),
       ),
-      child: const _Screen(),
+      child: _Screen(
+        onCreated,
+      ),
     );
   }
 }
 
 class _Screen extends StatelessWidget {
-  const _Screen();
+  const _Screen(this.onCreated);
+
+  final void Function()? onCreated;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +42,7 @@ class _Screen extends StatelessWidget {
           case FormzSubmissionStatus.success:
             context.router.pop();
             showSnackBar(context, 'Table created successfully');
+            onCreated?.call();
           case FormzSubmissionStatus.failure:
             showErrorDialog(
               context: context,
