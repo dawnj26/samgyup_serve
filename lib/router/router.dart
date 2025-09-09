@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Table;
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:package_repository/package_repository.dart';
@@ -17,6 +17,7 @@ import 'package:samgyup_serve/ui/login/login.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 import 'package:samgyup_serve/ui/menu/menu.dart';
 import 'package:samgyup_serve/ui/table/table.dart';
+import 'package:table_repository/table_repository.dart';
 
 part 'router.gr.dart';
 
@@ -97,6 +98,7 @@ class AppRouter extends RootStackRouter {
               page: TableShellRoute.page,
               children: [
                 AutoRoute(page: TableRoute.page, initial: true),
+                AutoRoute(page: TableDetailsRoute.page),
               ],
             ),
           ],

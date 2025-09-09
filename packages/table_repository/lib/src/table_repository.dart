@@ -78,4 +78,48 @@ class TableRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Updates an existing table in the database.
+  Future<Table> updateTable(Table table) async {
+    try {
+      final response = await _appwrite.databases.updateRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        rowId: table.id,
+        data: table.toJson(),
+      );
+
+      return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Fetch a single table by its ID.
+  Future<Table> fetchTable(String id) async {
+    try {
+      final response = await _appwrite.databases.getRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        rowId: id,
+      );
+
+      return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Deletes a table from the database.
+  Future<void> deleteTable(String id) async {
+    try {
+      await _appwrite.databases.deleteRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        rowId: id,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }

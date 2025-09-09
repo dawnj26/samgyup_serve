@@ -7,15 +7,23 @@ import 'package:samgyup_serve/shared/form/table/table_number.dart';
 import 'package:samgyup_serve/shared/form/table/table_status_input.dart';
 import 'package:table_repository/table_repository.dart';
 
-part 'table_create_event.dart';
-part 'table_create_state.dart';
-part 'table_create_bloc.freezed.dart';
+part 'table_form_event.dart';
+part 'table_form_state.dart';
+part 'table_form_bloc.freezed.dart';
 
-class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
-  TableCreateBloc({
+class TableFormBloc extends Bloc<TableFormEvent, TableFormState> {
+  TableFormBloc({
     required TableRepository tableRepository,
+    Table? initialTable,
   }) : _repo = tableRepository,
-       super(const _Initial()) {
+       super(
+         _Initial(
+           tableNumber: TableNumber.pure(initialTable?.number.toString() ?? ''),
+           capacity: Capacity.pure(initialTable?.capacity.toString() ?? ''),
+           tableStatus: TableStatusInput.pure(initialTable?.status),
+           initialTable: initialTable,
+         ),
+       ) {
     on<_TableNumberChanged>(_onTableNumberChanged);
     on<_CapacityChanged>(_onCapacityChanged);
     on<_TableStatusChanged>(_onTableStatusChanged);
@@ -26,7 +34,7 @@ class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
 
   void _onTableNumberChanged(
     _TableNumberChanged event,
-    Emitter<TableCreateState> emit,
+    Emitter<TableFormState> emit,
   ) {
     final tableNumber = TableNumber.dirty(event.value);
     emit(
@@ -38,7 +46,7 @@ class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
 
   void _onCapacityChanged(
     _CapacityChanged event,
-    Emitter<TableCreateState> emit,
+    Emitter<TableFormState> emit,
   ) {
     final capacity = Capacity.dirty(event.value);
     emit(
@@ -50,7 +58,7 @@ class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
 
   void _onTableStatusChanged(
     _TableStatusChanged event,
-    Emitter<TableCreateState> emit,
+    Emitter<TableFormState> emit,
   ) {
     final tableStatus = TableStatusInput.dirty(event.status);
     emit(
@@ -62,7 +70,7 @@ class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
 
   Future<void> _onFormSubmitted(
     _FormSubmitted event,
-    Emitter<TableCreateState> emit,
+    Emitter<TableFormState> emit,
   ) async {
     final tableNumber = TableNumber.dirty(state.tableNumber.value);
     final capacity = Capacity.dirty(state.capacity.value);
@@ -83,11 +91,27 @@ class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
     try {
+      if (state.initialTable != null) {
+        final updatedTable = state.initialTable!.copyWith(
+          number: int.parse(tableNumber.value),
+          capacity: int.parse(capacity.value),
+          status: tableStatus.value!,
+        );
+
+        if (updatedTable == state.initialTable) {
+          return emit(state.copyWith(status: FormzSubmissionStatus.canceled));
+        }
+
+        await _repo.updateTable(updatedTable);
+        return emit(state.copyWith(status: FormzSubmissionStatus.success));
+      }
+
       final table = Table(
         number: int.parse(tableNumber.value),
         capacity: int.parse(capacity.value),
         status: tableStatus.value!,
       );
+
       await _repo.createTable(table);
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on ResponseException catch (e) {
@@ -97,11 +121,11 @@ class TableCreateBloc extends Bloc<TableCreateEvent, TableCreateState> {
           errorMessage: e.message,
         ),
       );
-    } on Exception catch (_) {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
-          errorMessage: 'Something went wrong. Please try again.',
+          errorMessage: e.toString(),
         ),
       );
     }

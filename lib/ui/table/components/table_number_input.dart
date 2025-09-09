@@ -21,6 +21,7 @@ class TableNumberInput extends StatelessWidget {
       initialValue: initialValue,
       errorText: errorText,
       onChanged: onChanged,
+      helperText: 'Must be unique',
     );
   }
 }

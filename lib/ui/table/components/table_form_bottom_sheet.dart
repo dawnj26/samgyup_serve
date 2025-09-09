@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:samgyup_serve/bloc/table/create/table_create_bloc.dart';
+import 'package:samgyup_serve/bloc/table/form/table_form_bloc.dart';
 import 'package:samgyup_serve/shared/form/table/capacity.dart';
 import 'package:samgyup_serve/shared/form/table/table_number.dart';
 import 'package:samgyup_serve/shared/form/table/table_status_input.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/table/components/components.dart';
+import 'package:table_repository/table_repository.dart';
 
-class CreateTableBottomSheet extends StatelessWidget {
-  const CreateTableBottomSheet({super.key});
+class TableFormBottomSheet extends StatelessWidget {
+  const TableFormBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    final textTheme = Theme.of(context).textTheme;
+    final initialTable = context.select(
+      (TableFormBloc bloc) => bloc.state.initialTable,
+    );
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -25,21 +28,41 @@ class CreateTableBottomSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Create New Table',
-              style: textTheme.titleLarge,
-            ),
+            const _Title(),
             const SizedBox(height: 24),
-            const _TableNumber(),
+            _TableNumber(
+              initialTable?.number.toString(),
+            ),
             const SizedBox(height: 16),
-            const _Capacity(),
+            _Capacity(
+              initialTable?.capacity.toString(),
+            ),
             const SizedBox(height: 16),
-            const _TableStatus(),
+            _TableStatus(
+              initialTable?.status,
+            ),
             const Spacer(),
             const _SaveButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final initialTable = context.select(
+      (TableFormBloc bloc) => bloc.state.initialTable,
+    );
+
+    return Text(
+      initialTable == null ? 'Add Table' : 'Edit Table ${initialTable.number}',
+      style: textTheme.titleLarge,
     );
   }
 }
@@ -50,7 +73,7 @@ class _SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = context.select(
-      (TableCreateBloc bloc) => bloc.state.status,
+      (TableFormBloc bloc) => bloc.state.status,
     );
     final isLoading = status == FormzSubmissionStatus.inProgress;
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -60,8 +83,8 @@ class _SaveButton extends StatelessWidget {
           ? null
           : () {
               FocusScope.of(context).unfocus();
-              context.read<TableCreateBloc>().add(
-                const TableCreateEvent.formSubmitted(),
+              context.read<TableFormBloc>().add(
+                const TableFormEvent.formSubmitted(),
               );
             },
       child: Row(
@@ -86,17 +109,20 @@ class _SaveButton extends StatelessWidget {
 }
 
 class _TableNumber extends StatelessWidget {
-  const _TableNumber();
+  const _TableNumber([this.initialValue]);
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
     final tableNumber = context.select(
-      (TableCreateBloc bloc) => bloc.state.tableNumber,
+      (TableFormBloc bloc) => bloc.state.tableNumber,
     );
 
     return TableNumberInput(
-      onChanged: (value) => context.read<TableCreateBloc>().add(
-        TableCreateEvent.tableNumberChanged(value),
+      initialValue: initialValue,
+      onChanged: (value) => context.read<TableFormBloc>().add(
+        TableFormEvent.tableNumberChanged(value),
       ),
       errorText: tableNumber.displayError?.message,
     );
@@ -104,17 +130,20 @@ class _TableNumber extends StatelessWidget {
 }
 
 class _Capacity extends StatelessWidget {
-  const _Capacity();
+  const _Capacity([this.initialValue]);
+
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
     final capacity = context.select(
-      (TableCreateBloc bloc) => bloc.state.capacity,
+      (TableFormBloc bloc) => bloc.state.capacity,
     );
 
     return CapacityInput(
-      onChanged: (value) => context.read<TableCreateBloc>().add(
-        TableCreateEvent.capacityChanged(value),
+      initialValue: initialValue,
+      onChanged: (value) => context.read<TableFormBloc>().add(
+        TableFormEvent.capacityChanged(value),
       ),
       errorText: capacity.displayError?.message,
     );
@@ -122,20 +151,23 @@ class _Capacity extends StatelessWidget {
 }
 
 class _TableStatus extends StatelessWidget {
-  const _TableStatus();
+  const _TableStatus([this.initialValue]);
+
+  final TableStatus? initialValue;
 
   @override
   Widget build(BuildContext context) {
     final tableStatus = context.select(
-      (TableCreateBloc bloc) => bloc.state.tableStatus,
+      (TableFormBloc bloc) => bloc.state.tableStatus,
     );
 
     return TableStatusDropdownMenu(
+      value: initialValue,
       onSelected: (status) {
         if (status == null) return;
 
-        context.read<TableCreateBloc>().add(
-          TableCreateEvent.tableStatusChanged(status),
+        context.read<TableFormBloc>().add(
+          TableFormEvent.tableStatusChanged(status),
         );
       },
       errorText: tableStatus.displayError?.message,

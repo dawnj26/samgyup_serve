@@ -31,6 +31,7 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
   }
 
   Future<void> _onRefreshed(_Refreshed event, Emitter<TablesState> emit) async {
+    emit(state.copyWith(status: TablesStatus.loading));
     return _loadTables(emit: emit, statuses: state.statuses, refresh: true);
   }
 
