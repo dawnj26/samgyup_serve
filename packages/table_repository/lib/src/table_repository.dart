@@ -40,7 +40,7 @@ class TableRepository {
   Future<List<Table>> fetchTables({
     int limit = 20,
     String? cursor,
-    TableStatus? status,
+    List<TableStatus> statuses = const [],
   }) async {
     try {
       final response = await _appwrite.databases.listRows(
@@ -49,8 +49,9 @@ class TableRepository {
         queries: [
           Query.limit(limit),
           if (cursor != null) Query.cursorAfter(cursor),
-          if (status != null) Query.equal('status', status.name),
-          Query.orderDesc(r'$createdAt'),
+          if (statuses.isNotEmpty)
+            Query.equal('status', statuses.map((e) => e.name).toList()),
+          Query.orderAsc('number'),
         ],
       );
 
