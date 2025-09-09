@@ -17,7 +17,8 @@ class TableScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: const Text('Tables'),
       ),
-      body: CustomScrollView(
+      body: InfiniteScrollLayout(
+        onLoadMore: () => _handleLoadMore(context),
         slivers: [
           const SliverToBoxAdapter(
             child: Padding(
@@ -51,6 +52,15 @@ class TableScreen extends StatelessWidget {
     );
   }
 
+  void _handleLoadMore(BuildContext context) {
+    context.read<TablesBloc>().add(const TablesEvent.loadedMore());
+  }
+
+
+  void _handleRefresh(BuildContext context) {
+    context.read<TablesBloc>().add(const TablesEvent.refreshed());
+  }
+}
 
 class _TableList extends StatelessWidget {
   const _TableList();
