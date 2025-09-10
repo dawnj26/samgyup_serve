@@ -24,7 +24,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   final AuthenticationRepository _authenticationRepository;
 
   Future<void> _onStarted(_Started event, Emitter<AppState> emit) async {
-    if (state is Authenticated) return;
+    emit(state.copyWith(status: AppStatus.loading));
+
+    var deviceStatus = DeviceStatus.unregistered;
+    Device? device;
+
+    try {
+      device = await _deviceRepository.getDevice();
+    } on ResponseException {
+      device = await _deviceRepository.addDevice();
+    } on DeviceNotSupported {
+      deviceStatus = DeviceStatus.unknown;
+    }
 
     try {
       final user = await _authenticationRepository.currentUser;
