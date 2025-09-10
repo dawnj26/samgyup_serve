@@ -41,32 +41,69 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final user = await _authenticationRepository.currentUser;
 
       if (user == User.empty()) {
-        emit(const Unauthenticated());
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            authStatus: AuthStatus.unauthenticated,
+            deviceStatus: deviceStatus,
+            device: device,
+            user: null,
+          ),
+        );
       } else {
-        emit(Authenticated(user: user));
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            authStatus: AuthStatus.authenticated,
+            deviceStatus: deviceStatus,
+            device: device,
+            user: user,
+          ),
+        );
       }
-    } on Exception catch (_) {
-      emit(const Unauthenticated());
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          authStatus: AuthStatus.unauthenticated,
+          deviceStatus: deviceStatus,
+          device: device,
+          errorMessage: e.toString(),
+          user: null,
+        ),
+      );
     }
   }
 
-  void _onLogin(_Login event, Emitter<AppState> emit) {
-    if (state is Authenticated) return;
-    emit(Authenticated(user: event.user));
+  Future<void> _onLogin(_Login event, Emitter<AppState> emit) async {
+    emit(
+      state.copyWith(
+        authStatus: AuthStatus.authenticated,
+        user: event.user,
+      ),
+    );
   }
 
   Future<void> _onLogout(_Logout event, Emitter<AppState> emit) async {
-    if (state is Unauthenticated || state is Unauthenticating) return;
+    if (state.authStatus == AuthStatus.unauthenticated ||
+        state.authStatus == AuthStatus.unauthenticating) {
+      return;
+    }
 
-    emit(Unauthenticating(user: (state as Authenticated).user));
+    emit(
+      state.copyWith(
+        authStatus: AuthStatus.unauthenticating,
+      ),
+    );
     await Future<void>.delayed(const Duration(milliseconds: 500));
 
-    try {
-      await _authenticationRepository.logOut();
+    await _authenticationRepository.logOut();
 
-      emit(const Unauthenticated());
-    } on Exception catch (_) {
-      emit(const Unauthenticated());
-    }
+    emit(
+      state.copyWith(
+        authStatus: AuthStatus.unauthenticated,
+        user: null,
+      ),
+    );
   }
 }
