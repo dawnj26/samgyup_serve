@@ -13,14 +13,12 @@ enum DeviceStatus { registered, unregistered, unknown }
 
 @freezed
 abstract class AppState with _$AppState {
-  const factory AppState.initial() = Initial;
-  const factory AppState.authenticated({
-    required User user,
-  }) = Authenticated;
-  const factory AppState.unauthenticating({
-    required User user,
-  }) = Unauthenticating;
-  const factory AppState.unauthenticated({
+  const factory AppState.initial({
+    @Default(AppStatus.initial) AppStatus status,
+    @Default(AuthStatus.unauthenticated) AuthStatus authStatus,
+    @Default(DeviceStatus.unregistered) DeviceStatus deviceStatus,
+    Device? device,
+    User? user,
     String? errorMessage,
-  }) = Unauthenticated;
+  }) = _Initial;
 }
