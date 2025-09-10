@@ -29,10 +29,10 @@ packages:
     dependency: transitive
     description:
       name: appwrite
-      sha256: "9ef251a65f99c2442dfe559bc77280ca2372f56686539d43e223ae4bcc94c024"
+      sha256: a30f0c571c44d7290eb1e56c5b4f5610cea97201b096407b5b75b4ae224e5a9e
       url: "https://pub.dev"
     source: hosted
-    version: "18.0.0"
+    version: "19.0.0"
   appwrite_repository:
     dependency: "direct main"
     description:
@@ -1184,10 +1184,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "69ee86740f2847b9a4ba6cffa74ed12ce500bbe2b07f3dc1e643439da60637b7"
+      sha256: dbdd48a5b6a6fe9c7d75099bd2d03f9da9393f8d51a0d250301debbcecd552d2
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.18"
+    version: "6.3.19"
   url_launcher_ios:
     dependency: transitive
     description:
