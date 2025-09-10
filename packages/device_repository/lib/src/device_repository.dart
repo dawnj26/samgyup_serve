@@ -82,4 +82,25 @@ class DeviceRepository {
       manufacturer: deviceInfo.manufacturer,
     );
   }
+
+  /// Retrieves a device associated with a specific table ID.
+  Future<Device?> getDeviceByTable(String tableId) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('tableId', tableId),
+          Query.limit(1),
+        ],
+      );
+
+      if (response.total == 0) return null;
+
+      final json = _appwrite.rowToJson(response.rows.first);
+      return Device.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }
