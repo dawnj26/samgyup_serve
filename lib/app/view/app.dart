@@ -99,14 +99,12 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
                   : const HomeRoute();
 
               return [
-                if (state is Authenticated)
-                  const AdminRoute()
-                else if (state is Unauthenticated)
-                  const HomeShellRoute()
-                else if (state is Unauthenticating)
+                if (authStatus == AuthStatus.unauthenticated)
+                  home
+                else if (authStatus == AuthStatus.unauthenticating)
                   LoadingRoute(message: 'Logging out...')
                 else
-                  const AppLoadingRoute(),
+                  const AdminRoute(),
               ];
             },
           ),
