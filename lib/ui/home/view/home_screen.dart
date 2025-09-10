@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
@@ -9,7 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
       appBar: AppBar(
@@ -28,19 +30,57 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(
-              child: AppLogo(
-                size: screenWidth * 0.6,
-              ),
+            AppLogo(
+              size: screenWidth * 0.5,
             ),
             const SizedBox(height: 16),
-            PrimaryButton(
-              child: const Text('Tap to start ordering'),
-              onPressed: () {},
-            ),
+            const _OrderButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _OrderButton extends StatelessWidget {
+  const _OrderButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    final deviceStatus = context.select(
+      (AppBloc bloc) => bloc.state.deviceStatus,
+    );
+    final device = context.select(
+      (AppBloc bloc) => bloc.state.device,
+    );
+
+    final isRegistered = deviceStatus == DeviceStatus.registered;
+    final warningLabel = switch (deviceStatus) {
+      DeviceStatus.registered => null,
+      DeviceStatus.unknown => 'Unknown Device',
+      DeviceStatus.unregistered =>
+        'This device is not assigned. '
+            'Please contact the staff for assistance. '
+            '(${device!.id})',
+    };
+
+    return Column(
+      children: [
+        PrimaryButton(
+          onPressed: isRegistered ? () {} : null,
+          child: const Text('Tap to start ordering'),
+        ),
+        if (warningLabel != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            warningLabel,
+            style: textTheme.bodySmall?.copyWith(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ],
     );
   }
 }
