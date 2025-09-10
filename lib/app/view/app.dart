@@ -79,6 +79,10 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
+        final authStatus = state.authStatus;
+        final deviceStatus = state.deviceStatus;
+        final appStatus = state.status;
+
         return PopScope(
           canPop: false,
           child: AutoRouter.declarative(
