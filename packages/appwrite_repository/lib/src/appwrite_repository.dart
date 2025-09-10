@@ -87,6 +87,7 @@ class AppwriteRepository {
       storageBucketId: environment.storageBucketId,
       packageCollectionId: environment.packageCollectionId,
       tableCollectionId: environment.tableCollectionId,
+      deviceCollectionId: environment.deviceCollectionId,
     );
   }
 

@@ -56,6 +56,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       storageBucketId: '68a46eed00337cbc0a5f',
       packageCollectionId: '68b19d02000a97f35693',
       tableCollectionId: '68bad636002d8c251fd0',
+      deviceCollectionId: '68c13f6f0034f3a61008',
     ),
   );
 
