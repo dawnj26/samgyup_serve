@@ -63,8 +63,9 @@ class TableDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         BlocProvider(
           create: (context) => TableDetailsBloc(
             tableRepository: context.read<t.TableRepository>(),
+            deviceRepository: context.read(),
             table: table,
-          ),
+          )..add(const TableDetailsEvent.started()),
         ),
         BlocProvider(
           create: (context) => TableDeleteBloc(tableRepository: context.read()),
