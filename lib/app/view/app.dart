@@ -93,6 +93,11 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
                   const AppLoadingRoute(),
                 ];
               }
+
+              final home = deviceStatus == DeviceStatus.unknown
+                  ? const LoginRoute()
+                  : const HomeRoute();
+
               return [
                 if (state is Authenticated)
                   const AdminRoute()
