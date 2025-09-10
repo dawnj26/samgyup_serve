@@ -72,7 +72,7 @@ class AppView extends StatelessWidget {
 }
 
 @RoutePage()
-class AppWrapperPage extends StatelessWidget {
+class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
   const AppWrapperPage({super.key});
 
   @override
@@ -97,6 +97,21 @@ class AppWrapperPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocListener<AppBloc, AppState>(
+      listener: (context, state) {
+        if (state.status == AppStatus.failure) {
+          showErrorDialog(
+            context: context,
+            message: state.errorMessage ?? 'An unknown error occurred',
+          );
+        }
+      },
+      child: this,
     );
   }
 }
