@@ -1,10 +1,12 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:device_repository/device_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/l10n/l10n.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -15,12 +17,14 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
+  late final DeviceRepository _deviceRepository;
   late final AppRouter _router;
 
   @override
   void initState() {
     _router = AppRouter();
     _authenticationRepository = AuthenticationRepository();
+    _deviceRepository = DeviceRepository();
 
     super.initState();
   }
@@ -30,13 +34,15 @@ class _AppState extends State<App> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: _authenticationRepository),
+        RepositoryProvider.value(value: _deviceRepository),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) =>
-                AppBloc(authenticationRepository: _authenticationRepository)
-                  ..add(const AppEvent.started()),
+            create: (context) => AppBloc(
+              authenticationRepository: _authenticationRepository,
+              deviceRepository: _deviceRepository,
+            )..add(const AppEvent.started()),
           ),
         ],
         child: AppView(

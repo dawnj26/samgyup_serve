@@ -1,5 +1,7 @@
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:device_repository/device_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'app_event.dart';
@@ -9,13 +11,16 @@ part 'app_bloc.freezed.dart';
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required AuthenticationRepository authenticationRepository,
+    required DeviceRepository deviceRepository,
   }) : _authenticationRepository = authenticationRepository,
-       super(const Initial()) {
+       _deviceRepository = deviceRepository,
+       super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_Logout>(_onLogout);
     on<_Login>(_onLogin);
   }
 
+  final DeviceRepository _deviceRepository;
   final AuthenticationRepository _authenticationRepository;
 
   Future<void> _onStarted(_Started event, Emitter<AppState> emit) async {
