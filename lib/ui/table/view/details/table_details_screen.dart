@@ -123,11 +123,12 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final table = context.select((TableDetailsBloc bloc) => bloc.state.table);
-    final isAssigned = table.deviceId != null && table.deviceId!.isNotEmpty;
+    final device = context.select((TableDetailsBloc bloc) => bloc.state.device);
+    final status = context.select((TableDetailsBloc bloc) => bloc.state.status);
 
-    final deviceStatus = isAssigned
-        ? 'Assigned to ${table.deviceId}'
-        : 'Not assigned to any device';
+    final tableStatus = device == null
+        ? 'No device assigned'
+        : 'Table assigned to ${device.name}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +147,7 @@ class _Header extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          deviceStatus,
+          status == TableDetailsStatus.loading ? '-' : tableStatus,
           style: Theme.of(context).textTheme.labelLarge,
         ),
       ],
