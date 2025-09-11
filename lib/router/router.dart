@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:device_repository/device_repository.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -10,6 +11,7 @@ import 'package:samgyup_serve/ui/admin/admin.dart';
 import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
 import 'package:samgyup_serve/ui/components/screens/loading_screen.dart';
 import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
+import 'package:samgyup_serve/ui/device/device.dart';
 import 'package:samgyup_serve/ui/food_package/food_package.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
 import 'package:samgyup_serve/ui/inventory/inventory.dart';
@@ -99,6 +101,12 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: TableRoute.page, initial: true),
                 AutoRoute(page: TableDetailsRoute.page),
+              ],
+            ),
+            AutoRoute(
+              page: DeviceShellRoute.page,
+              children: [
+                AutoRoute(page: DeviceSelectRoute.page),
               ],
             ),
           ],
