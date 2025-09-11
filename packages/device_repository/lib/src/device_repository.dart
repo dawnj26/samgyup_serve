@@ -122,4 +122,20 @@ class DeviceRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Updates an existing device in the repository.
+  Future<Device> updateDevice(Device device) async {
+    try {
+      final response = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: device.id,
+        data: device.toJson(),
+      );
+
+      return Device.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }
