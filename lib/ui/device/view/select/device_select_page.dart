@@ -22,8 +22,9 @@ class DeviceSelectPage extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
       create: (context) => DeviceSelectBloc(
+        tableRepository: context.read(),
         deviceRepository: context.read(),
-      ),
+      )..add(const DeviceSelectEvent.started()),
       child: this,
     );
   }
