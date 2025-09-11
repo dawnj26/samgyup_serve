@@ -97,16 +97,21 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(
-              page: TableShellRoute.page,
+              page: TableDeviceWrapperRoute.page,
               children: [
-                AutoRoute(page: TableRoute.page, initial: true),
-                AutoRoute(page: TableDetailsRoute.page),
-              ],
-            ),
-            AutoRoute(
-              page: DeviceShellRoute.page,
-              children: [
-                AutoRoute(page: DeviceSelectRoute.page),
+                AutoRoute(
+                  page: TableShellRoute.page,
+                  children: [
+                    AutoRoute(page: TableRoute.page, initial: true),
+                    AutoRoute(page: TableDetailsRoute.page),
+                  ],
+                ),
+                AutoRoute(
+                  page: DeviceShellRoute.page,
+                  children: [
+                    AutoRoute(page: DeviceSelectRoute.page),
+                  ],
+                ),
               ],
             ),
           ],
