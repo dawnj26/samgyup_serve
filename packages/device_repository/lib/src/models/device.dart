@@ -16,6 +16,9 @@ abstract class Device with _$Device {
 
     /// Model name of the device.
     required String model,
+
+    /// Optional table identifier associated with the device.
+    String? tableId,
   }) = _Device;
 
   const Device._();

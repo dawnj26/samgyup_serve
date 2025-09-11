@@ -37,6 +37,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       deviceStatus = DeviceStatus.unknown;
     }
 
+    if (device != null && device.tableId != null) {
+      deviceStatus = DeviceStatus.registered;
+    }
+
     try {
       final user = await _authenticationRepository.currentUser;
 

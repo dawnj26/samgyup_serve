@@ -13,6 +13,7 @@ abstract class TableDetailsState with _$TableDetailsState {
     required Table table,
     @Default(false) bool isDirty,
     @Default(TableDetailsStatus.initial) TableDetailsStatus status,
+    Device? device,
     String? errorMessage,
   }) = _Initial;
 }
