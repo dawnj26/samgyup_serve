@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:device_repository/device_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/table/delete/table_delete_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/table/components/components.dart';
 import 'package:samgyup_serve/ui/table/view/form/table_form_screen.dart';
+import 'package:table_repository/table_repository.dart' as t;
 
 class TableDetailsScreen extends StatelessWidget {
   const TableDetailsScreen({super.key});
@@ -93,8 +95,44 @@ class TableDetailsScreen extends StatelessWidget {
       case TableMoreOption.assign:
         final router = context.router.parent<StackRouter>();
 
-        await router?.push(DeviceSelectRoute());
+        await router?.push(
+          DeviceSelectRoute(
+            onSelected: (device) =>
+                _handleDeviceSelect(context, device, router, table),
+          ),
+        );
     }
+  }
+
+  Future<void> _handleDeviceSelect(
+    BuildContext ctx,
+    Device device,
+    StackRouter? router,
+    t.Table table,
+  ) async {
+    if (device.tableId == table.id) {
+      await router?.maybePop();
+      return;
+    }
+
+    if (device.tableId != null) {
+      final assigned = await showConfirmationDialog(
+        context: ctx,
+        title: 'Device already assigned',
+        message:
+            'This device is already assigned to another table. '
+            'Are you sure you want to reassign it to this table?',
+      );
+
+      if (!assigned) return;
+    }
+    await router?.maybePop();
+
+    if (!ctx.mounted) return;
+
+    ctx.read<TableDetailsBloc>().add(
+      TableDetailsEvent.assigned(device),
+    );
   }
 }
 
