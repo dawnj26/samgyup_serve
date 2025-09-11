@@ -10,6 +10,7 @@ enum TableDetailsStatus {
 enum TableAssignmentStatus {
   initial,
   assigning,
+  unassigning,
   success,
   failure,
 }
