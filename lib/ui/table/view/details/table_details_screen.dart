@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/table/delete/table_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/table/details/table_details_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/table/components/components.dart';
 import 'package:samgyup_serve/ui/table/view/form/table_form_screen.dart';
@@ -89,7 +91,9 @@ class TableDetailsScreen extends StatelessWidget {
           TableDeleteEvent.started(id: table.id),
         );
       case TableMoreOption.assign:
-        break;
+        final router = context.router.parent<StackRouter>();
+
+        await router?.push(DeviceSelectRoute());
     }
   }
 }
