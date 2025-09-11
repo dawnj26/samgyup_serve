@@ -1,4 +1,5 @@
 export 'capacity_input.dart';
+export 'device_chip.dart';
 export 'table_capacity.dart';
 export 'table_form_bottom_sheet.dart';
 export 'table_more_option_button.dart';
