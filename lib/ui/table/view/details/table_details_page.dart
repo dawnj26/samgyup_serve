@@ -89,6 +89,8 @@ class TableDetailsPage extends StatelessWidget implements AutoRouteWrapper {
 
   void _handleDetailsListener(BuildContext context, TableDetailsState state) {
     switch (state.assignmentStatus) {
+      case TableAssignmentStatus.unassigning:
+        showLoadingDialog(context: context, message: 'Unassigning device...');
       case TableAssignmentStatus.assigning:
         showLoadingDialog(context: context, message: 'Assigning device...');
       case TableAssignmentStatus.success:
