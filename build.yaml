@@ -11,6 +11,10 @@ targets:
           - lib/bloc/**/*.dart
         options:
           format: false
+      auto_route_generator:auto_router_generator:
+        options:
+          ignore_for_file:
+            - inference_failure_on_instance_creation
       auto_route_generator:auto_route_generator:
         generate_for:
           - lib/ui/**/view/*.dart
