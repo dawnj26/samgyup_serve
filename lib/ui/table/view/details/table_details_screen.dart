@@ -29,7 +29,7 @@ class TableDetailsScreen extends StatelessWidget {
         slivers: [
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
               child: _Header(),
             ),
           ),
@@ -166,11 +166,14 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final table = context.select((TableDetailsBloc bloc) => bloc.state.table);
     final device = context.select((TableDetailsBloc bloc) => bloc.state.device);
-    final status = context.select((TableDetailsBloc bloc) => bloc.state.status);
+    final status = context.select(
+      (TableDetailsBloc bloc) => bloc.state.status,
+    );
 
-    final tableStatus = device == null
-        ? 'No device assigned'
-        : 'Table assigned to ${device.name}';
+    final isLoading =
+        status == TableDetailsStatus.loading ||
+        status == TableDetailsStatus.initial;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,12 +190,35 @@ class _Header extends StatelessWidget {
             TableStatusBadge(status: table.status),
           ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          status == TableDetailsStatus.loading ? '-' : tableStatus,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        const SizedBox(height: 16),
+        if (device == null)
+          Text(
+            isLoading ? 'Loading device...' : 'No device assigned',
+            style: textTheme.bodyMedium,
+          )
+        else
+          DeviceChip(
+            device: device,
+            onRemoved: () => _handleRemoveDevice(context),
+          ),
       ],
+    );
+  }
+
+  Future<void> _handleRemoveDevice(BuildContext context) async {
+    final confirmed = await showConfirmationDialog(
+      context: context,
+      title: 'Remove device',
+      message: 'Are you sure you want to remove the device from this table?',
+    );
+
+    if (!confirmed || !context.mounted) return;
+
+    final device = context.read<TableDetailsBloc>().state.device;
+    if (device == null) return;
+
+    context.read<TableDetailsBloc>().add(
+      TableDetailsEvent.unassigned(device),
     );
   }
 }
