@@ -1,6 +1,6 @@
 name: samgyup_serve
 description: An ordering app for a Korean BBQ restaurant.
-version: 1.4.0+7
+version: 1.5.0+8
 publish_to: none
 
 environment:
