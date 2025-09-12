@@ -18,6 +18,7 @@ import 'package:samgyup_serve/ui/inventory/inventory.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 import 'package:samgyup_serve/ui/menu/menu.dart';
+import 'package:samgyup_serve/ui/order/order.dart';
 import 'package:samgyup_serve/ui/table/table.dart';
 import 'package:table_repository/table_repository.dart';
 
@@ -41,6 +42,13 @@ class AppRouter extends RootStackRouter {
           children: [
             AutoRoute(page: HomeRoute.page, initial: true),
             AutoRoute(path: 'login', page: LoginRoute.page),
+            AutoRoute(
+              path: 'order',
+              page: OrderShellRoute.page,
+              children: [
+                AutoRoute(page: OrderRoute.page, initial: true),
+              ],
+            ),
           ],
         ),
         AutoRoute(
