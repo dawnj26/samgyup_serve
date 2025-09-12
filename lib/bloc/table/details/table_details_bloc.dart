@@ -22,6 +22,8 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
        ) {
     on<_Changed>(_onRefreshed);
     on<_Started>(_onStarted);
+    on<_Assigned>(_onAssigned);
+    on<_Unassigned>(_onUnassigned);
   }
 
   final TableRepository _tableRepo;
@@ -69,6 +71,66 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
       emit(
         state.copyWith(
           status: TableDetailsStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onAssigned(
+    _Assigned event,
+    Emitter<TableDetailsState> emit,
+  ) async {
+    emit(state.copyWith(assignmentStatus: TableAssignmentStatus.assigning));
+
+    try {
+      final device = event.device;
+
+      await Future<void>.delayed(const Duration(seconds: 1));
+      final updatedDevice = await _deviceRepo.updateDevice(
+        device.copyWith(tableId: state.table.id),
+      );
+
+      emit(
+        state.copyWith(
+          assignmentStatus: TableAssignmentStatus.success,
+          device: updatedDevice,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          assignmentStatus: TableAssignmentStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onUnassigned(
+    _Unassigned event,
+    Emitter<TableDetailsState> emit,
+  ) async {
+    emit(state.copyWith(assignmentStatus: TableAssignmentStatus.unassigning));
+
+    try {
+      final device = event.device;
+
+      await Future<void>.delayed(const Duration(seconds: 1));
+      final updatedDevice = await _deviceRepo.updateDevice(
+        device.copyWith(tableId: null),
+      );
+
+      emit(
+        state.copyWith(
+          assignmentStatus: TableAssignmentStatus.success,
+          device: updatedDevice,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          assignmentStatus: TableAssignmentStatus.failure,
           errorMessage: e.message,
         ),
       );

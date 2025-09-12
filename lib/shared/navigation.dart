@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 /// Checks if the stack contains single route
 /// and navigates to the previous route accordingly.
 void goToPreviousRoute(BuildContext context) {
-  final canPop = context.router.canPop(ignoreParentRoutes: true);
+  final scope = RouterScope.of(context);
+
+  final canPop = scope.controller.canPop();
 
   if (canPop) {
-    context.router.pop();
-  } else {
-    context.router.parent<StackRouter>()?.maybePop();
+    scope.controller.maybePopTop();
   }
 }

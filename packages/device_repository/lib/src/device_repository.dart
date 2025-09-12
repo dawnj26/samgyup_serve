@@ -103,4 +103,39 @@ class DeviceRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Retrieves all devices from the repository.
+  Future<List<Device>> getAllDevices({
+    int limit = 20,
+    String? cursor,
+  }) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+      );
+
+      return response.rows
+          .map((row) => Device.fromJson(_appwrite.rowToJson(row)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Updates an existing device in the repository.
+  Future<Device> updateDevice(Device device) async {
+    try {
+      final response = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: device.id,
+        data: device.toJson(),
+      );
+
+      return Device.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }

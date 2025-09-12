@@ -52,3 +52,21 @@ Future<bool> showDeleteDialog({
 
   return result ?? false;
 }
+
+Future<bool> showConfirmationDialog({
+  required BuildContext context,
+  String? title,
+  String? message,
+}) async {
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (ctx) {
+      return ConfirmationDialog(
+        title: title,
+        message: message,
+      );
+    },
+  );
+
+  return result ?? false;
+}
