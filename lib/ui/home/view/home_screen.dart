@@ -69,7 +69,11 @@ class _OrderButton extends StatelessWidget {
     return Column(
       children: [
         PrimaryButton(
-          onPressed: isRegistered ? () {} : null,
+          onPressed: isRegistered
+              ? () {
+                  context.router.push(const OrderRoute());
+                }
+              : null,
           child: const Text('Tap to start ordering'),
         ),
         if (warningLabel != null) ...[
