@@ -12,8 +12,9 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     return Listener(
       onPointerDown: (event) {
-        // TODO(pointer): implement timer events
-        log('Pointer down: ${event.position}', name: 'PointerEvent');
+        context.read<ActivityBloc>().add(
+          const ActivityEvent.started(),
+        );
       },
       child: const OrderScreen(),
     );
