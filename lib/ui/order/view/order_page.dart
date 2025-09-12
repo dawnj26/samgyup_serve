@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/order/view/order_screen.dart';
@@ -8,7 +10,12 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return const OrderScreen();
+    return Listener(
+      onPointerDown: (event) {
+        log('Pointer down: ${event.position}', name: 'PointerEvent');
+      },
+      child: const OrderScreen(),
+    );
   }
 
   @override
