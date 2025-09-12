@@ -24,26 +24,15 @@ class TableDetailsPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TableDeleteBloc, TableDeleteState>(
-      listener: (context, state) {
-        switch (state.status) {
-          case TableDeleteStatus.loading:
-            showLoadingDialog(context: context, message: 'Deleting table...');
-          case TableDeleteStatus.success:
-            context.router.pop();
-            goToPreviousRoute(context);
-            showSnackBar(context, 'Table deleted successfully');
-            onChanged?.call();
-          case TableDeleteStatus.failure:
-            context.router.pop();
-            showErrorDialog(
-              context: context,
-              message: state.errorMessage ?? 'An unknown error occurred',
-            );
-          case TableDeleteStatus.initial:
-            break;
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TableDeleteBloc, TableDeleteState>(
+          listener: _handleDeleteListener,
+        ),
+        BlocListener<TableDetailsBloc, TableDetailsState>(
+          listener: _handleDetailsListener,
+        ),
+      ],
       child: PopScope(
         onPopInvokedWithResult: (didPop, result) {
           final isDirty = context.read<TableDetailsBloc>().state.isDirty;
@@ -63,14 +52,58 @@ class TableDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         BlocProvider(
           create: (context) => TableDetailsBloc(
             tableRepository: context.read<t.TableRepository>(),
+            deviceRepository: context.read(),
             table: table,
-          ),
+          )..add(const TableDetailsEvent.started()),
         ),
         BlocProvider(
-          create: (context) => TableDeleteBloc(tableRepository: context.read()),
+          create: (context) => TableDeleteBloc(
+            tableRepository: context.read(),
+            deviceRepository: context.read(),
+          ),
         ),
       ],
       child: this,
     );
+  }
+
+  void _handleDeleteListener(BuildContext context, TableDeleteState state) {
+    switch (state.status) {
+      case TableDeleteStatus.loading:
+        showLoadingDialog(context: context, message: 'Deleting table...');
+      case TableDeleteStatus.success:
+        context.router.pop();
+        goToPreviousRoute(context);
+        showSnackBar(context, 'Table deleted successfully');
+        onChanged?.call();
+      case TableDeleteStatus.failure:
+        context.router.pop();
+        showErrorDialog(
+          context: context,
+          message: state.errorMessage ?? 'An unknown error occurred',
+        );
+      case TableDeleteStatus.initial:
+        break;
+    }
+  }
+
+  void _handleDetailsListener(BuildContext context, TableDetailsState state) {
+    switch (state.assignmentStatus) {
+      case TableAssignmentStatus.unassigning:
+        showLoadingDialog(context: context, message: 'Unassigning device...');
+      case TableAssignmentStatus.assigning:
+        showLoadingDialog(context: context, message: 'Assigning device...');
+      case TableAssignmentStatus.success:
+        context.router.pop();
+        showSnackBar(context, 'Device assigned successfully');
+      case TableAssignmentStatus.failure:
+        context.router.pop();
+        showErrorDialog(
+          context: context,
+          message: state.errorMessage ?? 'An unknown error occurred',
+        );
+      case TableAssignmentStatus.initial:
+        break;
+    }
   }
 }

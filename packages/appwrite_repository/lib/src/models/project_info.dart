@@ -12,6 +12,7 @@ class ProjectInfo {
     required this.storageBucketId,
     required this.packageCollectionId,
     required this.tableCollectionId,
+    required this.deviceCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -43,4 +44,7 @@ class ProjectInfo {
 
   /// The ID of the table collection.
   final String tableCollectionId;
+
+  /// The ID of the device collection.
+  final String deviceCollectionId;
 }

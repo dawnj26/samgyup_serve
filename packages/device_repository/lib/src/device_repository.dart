@@ -1,0 +1,141 @@
+import 'dart:io';
+
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:device_repository/src/exceptions/exceptions.dart';
+import 'package:device_repository/src/models/models.dart';
+
+/// {@template device_repository}
+/// A Repository which manages device information.
+/// {@endtemplate}
+class DeviceRepository {
+  /// {@macro device_repository}
+  DeviceRepository({
+    AppwriteRepository? appwrite,
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance,
+       _devicePlugin = DeviceInfoPlugin();
+
+  final AppwriteRepository _appwrite;
+  final DeviceInfoPlugin _devicePlugin;
+
+  String get _collectionId => _appwrite.environment.deviceCollectionId;
+  String get _databaseId => _appwrite.environment.databaseId;
+
+  /// Adds a new device to the repository.
+  Future<Device> addDevice() async {
+    try {
+      final device = await getDeviceInfo();
+
+      final response = await _appwrite.databases.createRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: device.id,
+        data: device.toJson(),
+      );
+
+      return Device.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Fetches device information based on the current device.
+  Future<Device> getDevice() async {
+    try {
+      final id = await _getDeviceId();
+
+      if (id == null) {
+        throw DeviceNotSupported();
+      }
+
+      final response = await _appwrite.databases.getRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: id,
+      );
+
+      final json = _appwrite.rowToJson(response);
+
+      return Device.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  Future<String?> _getDeviceId() async {
+    if (Platform.isAndroid) {
+      final androidInfo = await _devicePlugin.androidInfo;
+      return androidInfo.id;
+    }
+
+    return null;
+  }
+
+  /// Fetches detailed information about the current device.
+  Future<Device> getDeviceInfo() async {
+    final deviceInfo = await _devicePlugin.androidInfo;
+
+    return Device(
+      id: deviceInfo.id,
+      model: deviceInfo.model,
+      manufacturer: deviceInfo.manufacturer,
+    );
+  }
+
+  /// Retrieves a device associated with a specific table ID.
+  Future<Device?> getDeviceByTable(String tableId) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('tableId', tableId),
+          Query.limit(1),
+        ],
+      );
+
+      if (response.total == 0) return null;
+
+      final json = _appwrite.rowToJson(response.rows.first);
+      return Device.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Retrieves all devices from the repository.
+  Future<List<Device>> getAllDevices({
+    int limit = 20,
+    String? cursor,
+  }) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+      );
+
+      return response.rows
+          .map((row) => Device.fromJson(_appwrite.rowToJson(row)))
+          .toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Updates an existing device in the repository.
+  Future<Device> updateDevice(Device device) async {
+    try {
+      final response = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: device.id,
+        data: device.toJson(),
+      );
+
+      return Device.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+}

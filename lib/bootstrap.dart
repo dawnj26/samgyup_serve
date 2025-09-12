@@ -11,12 +11,26 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    log('onChange(${bloc.runtimeType}, $change)');
+    log(
+      '\n🔄 STATE CHANGE\n'
+      '   Bloc: ${bloc.runtimeType}\n'
+      '   From: ${change.currentState}\n'
+      '   To:   ${change.nextState}',
+      name: 'BlocObserver',
+    );
   }
 
   @override
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    log('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    log(
+      '\n❌ BLOC ERROR\n'
+      '   Bloc: ${bloc.runtimeType}\n'
+      '   Error: $error\n'
+      '   Stack: ${stackTrace.toString().split('\n').take(3).join('\n')}',
+      name: 'BlocObserver',
+      error: error,
+      stackTrace: stackTrace,
+    );
     super.onError(bloc, error, stackTrace);
   }
 }
@@ -42,6 +56,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       storageBucketId: '68a46eed00337cbc0a5f',
       packageCollectionId: '68b19d02000a97f35693',
       tableCollectionId: '68bad636002d8c251fd0',
+      deviceCollectionId: '68c13f6f0034f3a61008',
     ),
   );
 

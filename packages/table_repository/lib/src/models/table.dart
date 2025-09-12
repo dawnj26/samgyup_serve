@@ -34,9 +34,6 @@ abstract class Table with _$Table {
     /// ID of the reservation if table is reserved, null if available
     String? reservationId,
 
-    /// Identifier for the device associated with this table
-    String? deviceId,
-
     /// Timestamp when this table record was created
     DateTime? createdAt,
 
