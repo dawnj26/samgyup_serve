@@ -88,7 +88,9 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
           child: AutoRouter.declarative(
             routes: (_) {
               if (appStatus == AppStatus.loading ||
-                  appStatus == AppStatus.initial) {
+                  appStatus == AppStatus.initial ||
+                  authStatus == AuthStatus.unauthenticated ||
+                  authStatus == AuthStatus.initial) {
                 return [
                   const AppLoadingRoute(),
                 ];
