@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/tab/food_package_tab_bloc.dart';
+import 'package:samgyup_serve/bloc/order/order_bloc.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/bottom_loader.dart';
 import 'package:samgyup_serve/ui/components/layouts/infinite_scroll_layout.dart';
 import 'package:samgyup_serve/ui/food_package/components/components.dart';
+import 'package:samgyup_serve/ui/order/components/package_menu_list.dart';
 
 class PackageTab extends StatelessWidget {
   const PackageTab({super.key});
@@ -90,7 +93,23 @@ class _PackageList extends StatelessWidget {
                 final package = packages[i];
 
                 return PackageTile(
-                  onTap: () => {},
+                  onTap: () {
+                    final tableSize = context
+                        .read<OrderBloc>()
+                        .state
+                        .table
+                        .capacity;
+
+                    showAddCartItemDialog(
+                      context: context,
+                      name: package.name,
+                      description: package.description,
+                      price: package.price,
+                      maxQuantity: tableSize,
+                      imageId: package.imageFilename,
+                      content: PackageMenuList(menuIds: package.menuIds),
+                    );
+                  },
                   package: package,
                 );
               },
