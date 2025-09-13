@@ -125,6 +125,10 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
             message: state.errorMessage ?? 'An unknown error occurred',
           );
         }
+
+        if (state.authStatus == AuthStatus.unauthenticated) {
+          context.read<AppBloc>().add(const AppEvent.guestSessionStarted());
+        }
       },
       child: this,
     );
