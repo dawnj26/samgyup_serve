@@ -82,9 +82,18 @@ class _MenuList extends StatelessWidget {
                 final item = items[index];
                 return MenuListItem(
                   item: item,
-                  onTap: () {
-                    showConfirmationDialog(context: context);
-                  },
+                  onTap: item.isAvailable
+                      ? () {
+                          showAddCartItemDialog(
+                            context: context,
+                            name: item.name,
+                            description: item.description,
+                            price: item.price,
+                            maxQuantity: item.stock,
+                            imageId: item.imageFileName,
+                          );
+                        }
+                      : null,
                 );
               },
             );
