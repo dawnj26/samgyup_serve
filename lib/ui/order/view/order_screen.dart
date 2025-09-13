@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/ui/components/app_logo_icon.dart';
 import 'package:samgyup_serve/ui/order/view/tabs/menu_tab.dart';
 import 'package:samgyup_serve/ui/order/view/tabs/package_tab.dart';
@@ -53,9 +55,24 @@ class _OrderScreenState extends State<OrderScreen>
           isScrollable: true,
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: _tabViews,
+      body: BlocBuilder<OrderBloc, OrderState>(
+        builder: (context, state) {
+          if (state.status == OrderStatus.loading ||
+              state.status == OrderStatus.initial) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state.status == OrderStatus.failure) {
+            return Center(
+              child: Text(state.errorMessage ?? 'Something went wrong'),
+            );
+          }
+
+          return TabBarView(
+            controller: _tabController,
+            children: _tabViews,
+          );
+        },
       ),
     );
   }
