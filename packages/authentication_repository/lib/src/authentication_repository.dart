@@ -77,4 +77,13 @@ class AuthenticationRepository {
       throw const ResponseException('Unknown error occurred during logout.');
     }
   }
+
+  /// Creates a guest session (anonymous session).
+  Future<void> createGuestSession() async {
+    try {
+      await _appwrite.account.createAnonymousSession();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
 }
