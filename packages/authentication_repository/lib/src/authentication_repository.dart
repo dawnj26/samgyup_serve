@@ -54,6 +54,7 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
+      await _appwrite.account.deleteSession(sessionId: 'current');
       await _appwrite.account.createEmailPasswordSession(
         email: email,
         password: password,
