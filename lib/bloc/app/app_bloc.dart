@@ -55,6 +55,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             user: null,
           ),
         );
+      } else if (user.isGuest) {
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            authStatus: AuthStatus.guest,
+            deviceStatus: deviceStatus,
+            device: device,
+            user: user,
+          ),
+        );
       } else {
         emit(
           state.copyWith(
