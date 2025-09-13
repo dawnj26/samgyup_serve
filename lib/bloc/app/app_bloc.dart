@@ -18,6 +18,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<_Started>(_onStarted);
     on<_Logout>(_onLogout);
     on<_Login>(_onLogin);
+    on<_GuestSessionStarted>(_onGuestSessionStarted);
   }
 
   final DeviceRepository _deviceRepository;
@@ -107,6 +108,26 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       state.copyWith(
         authStatus: AuthStatus.unauthenticated,
         user: null,
+      ),
+    );
+  }
+
+  Future<void> _onGuestSessionStarted(
+    _GuestSessionStarted event,
+    Emitter<AppState> emit,
+  ) async {
+    if (state.authStatus == AuthStatus.guest ||
+        state.authStatus == AuthStatus.authenticated) {
+      return;
+    }
+
+    await _authenticationRepository.createGuestSession();
+    final user = await _authenticationRepository.currentUser;
+
+    emit(
+      state.copyWith(
+        authStatus: AuthStatus.guest,
+        user: user,
       ),
     );
   }
