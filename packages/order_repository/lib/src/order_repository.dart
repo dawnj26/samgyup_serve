@@ -11,5 +11,7 @@ class OrderRepository {
 
   final AppwriteRepository _appwrite;
 
+  //
+  // ignore: unused_element
   String get _collectionId => _appwrite.environment.orderCollectionId;
 }
