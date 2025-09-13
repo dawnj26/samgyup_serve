@@ -16,6 +16,7 @@ abstract class MenuItem with _$MenuItem {
     required double price,
     required MenuCategory category,
     required DateTime createdAt,
+    @Default(1) int stock,
     @Default(true) bool isAvailable,
     @Default('') String id,
     DateTime? updatedAt,
