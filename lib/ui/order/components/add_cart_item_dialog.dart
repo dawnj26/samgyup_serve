@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
+import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
 class AddCartItemDialog extends StatelessWidget {
@@ -11,6 +12,8 @@ class AddCartItemDialog extends StatelessWidget {
     super.key,
     this.imageId,
     this.content,
+    this.initialValue = 1,
+    this.onTap,
   });
 
   final String? imageId;
@@ -19,49 +22,68 @@ class AddCartItemDialog extends StatelessWidget {
   final double price;
   final int maxQuantity;
   final Widget? content;
+  final int initialValue;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Dialog.fullscreen(
-      child: Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Image(
-              imageId: imageId,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: _ItemDetails(
-                      name: name,
-                      price: price,
-                      description: description,
-                    ),
-                  ),
-                  Expanded(child: content ?? const SizedBox.shrink()),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: Column(
-                      children: [
-                        _Quantity(
-                          maxQuantity: maxQuantity,
-                        ),
-                        const SizedBox(height: 16),
-                        _Action(
-                          onCancelled: () => Navigator.of(context).pop(),
-                          onSaved: () {},
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+    final controller = TextEditingController();
+
+    return Listener(
+      onPointerDown: (_) => onTap?.call(),
+      child: Dialog.fullscreen(
+        child: Scaffold(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _Image(
+                imageId: imageId,
               ),
-            ),
-          ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: _ItemDetails(
+                        name: name,
+                        price: price,
+                        description: description,
+                      ),
+                    ),
+                    Expanded(child: content ?? const SizedBox.shrink()),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Column(
+                        children: [
+                          _Quantity(
+                            initialValue: initialValue,
+                            controller: controller,
+                            maxQuantity: maxQuantity,
+                          ),
+                          const SizedBox(height: 16),
+                          _Action(
+                            onCancelled: () => Navigator.of(context).pop(),
+                            onSaved: () {
+                              final quantity = int.tryParse(controller.text);
+                              if (quantity == null ||
+                                  quantity < 1 ||
+                                  quantity > maxQuantity) {
+                                showSnackBar(context, 'Invalid quantity');
+                                return;
+                              }
+
+                              Navigator.of(context).pop(quantity);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -104,9 +126,13 @@ class _Action extends StatelessWidget {
 class _Quantity extends StatelessWidget {
   const _Quantity({
     required this.maxQuantity,
+    required this.controller,
+    required this.initialValue,
   });
 
   final int maxQuantity;
+  final TextEditingController controller;
+  final int initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +146,8 @@ class _Quantity extends StatelessWidget {
           style: textTheme.labelLarge,
         ),
         QuantityInput(
+          initialValue: initialValue,
+          controller: controller,
           width: 150,
           minValue: 1,
           maxValue: maxQuantity,
@@ -180,21 +208,9 @@ class _Image extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-
     return AspectRatio(
       aspectRatio: 5 / 4,
-      child: imageId != null
-          ? BucketImage(fileId: imageId!)
-          : Container(
-              color: Colors.grey[300],
-              child: Center(
-                child: AppLogoIcon(
-                  variant: AppLogoIconVariant.blackAndWhite,
-                  size: screenWidth * 0.25,
-                ),
-              ),
-            ),
+      child: BucketImage(fileId: imageId),
     );
   }
 }
