@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
+import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/tab/food_package_tab_bloc.dart';
+import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/bottom_loader.dart';
@@ -92,26 +95,7 @@ class _PackageList extends StatelessWidget {
               itemBuilder: (ctx, i) {
                 final package = packages[i];
 
-                return PackageTile(
-                  onTap: () {
-                    final tableSize = context
-                        .read<OrderBloc>()
-                        .state
-                        .table
-                        .capacity;
-
-                    showAddCartItemDialog(
-                      context: context,
-                      name: package.name,
-                      description: package.description,
-                      price: package.price,
-                      maxQuantity: tableSize,
-                      imageId: package.imageFilename,
-                      content: PackageMenuList(menuIds: package.menuIds),
-                    );
-                  },
-                  package: package,
-                );
+                return _Item(package: package);
               },
             );
           case FoodPackageTabStatus.failure:
@@ -140,5 +124,71 @@ class _BottomLoader extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return const BottomLoader();
+  }
+}
+
+class _Item extends StatelessWidget {
+  const _Item({required this.package});
+
+  final FoodPackage package;
+
+  @override
+  Widget build(BuildContext context) {
+    final cartItems = context.select(
+      (OrderCartBloc bloc) => bloc.state.packages,
+    );
+    final cartIndex = cartItems.indexWhere((e) => e.item.id == package.id);
+
+    if (cartIndex == -1) {
+      return PackageTile(
+        onTap: () => _handlePackageTap(context, package),
+        package: package,
+      );
+    }
+
+    final cart = cartItems[cartIndex];
+
+    return Badge.count(
+      count: cart.quantity,
+      alignment: Alignment.bottomRight,
+      offset: const Offset(-16, -12),
+      child: PackageTile(
+        onTap: () => _handlePackageTap(context, package, cart.quantity),
+        package: package,
+      ),
+    );
+  }
+
+  Future<void> _handlePackageTap(
+    BuildContext context,
+    FoodPackage package, [
+    int? initialValue,
+  ]) async {
+    final tableSize = context.read<OrderBloc>().state.table.capacity;
+
+    final quantity = await showAddCartItemDialog(
+      initialValue: initialValue,
+      context: context,
+      name: package.name,
+      description: package.description,
+      price: package.price,
+      maxQuantity: tableSize,
+      imageId: package.imageFilename,
+      content: PackageMenuList(menuIds: package.menuIds),
+      onTap: () => context.read<ActivityBloc>().add(
+        const ActivityEvent.started(),
+      ),
+    );
+
+    if (!context.mounted || quantity == null) return;
+
+    context.read<OrderCartBloc>().add(
+      OrderCartEvent.addPackage(
+        CartItem(
+          item: package,
+          quantity: quantity,
+        ),
+      ),
+    );
   }
 }
