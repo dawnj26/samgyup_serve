@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
+import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:table_repository/table_repository.dart';
 
@@ -25,11 +26,18 @@ class OrderShellPage extends AutoRouter implements AutoRouteWrapper {
           create: (context) => TableRepository(),
         ),
       ],
-      child: BlocProvider(
-        create: (context) => OrderBloc(
-          tableRepository: context.read<TableRepository>(),
-          tableId: context.read<AppBloc>().state.device!.tableId!,
-        )..add(const OrderEvent.started()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => OrderBloc(
+              tableRepository: context.read<TableRepository>(),
+              tableId: context.read<AppBloc>().state.device!.tableId!,
+            )..add(const OrderEvent.started()),
+          ),
+          BlocProvider(
+            create: (context) => OrderCartBloc(),
+          ),
+        ],
         child: this,
       ),
     );
