@@ -32,15 +32,23 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
       menuItems.add(event.cartItem);
     }
 
-    emit(state.copyWith(menuItems: menuItems));
+    emit(
+      state.copyWith(
+        menuItems: menuItems,
+        totalPrice: _getTotalPrice(menuItems, state.packages),
+      ),
+    );
   }
 
   void _onRemoveMenuItem(_RemoveMenuItem event, Emitter<OrderCartState> emit) {
+    final menuItems = state.menuItems
+        .where((item) => item.item.id != event.cartItem.item.id)
+        .toList();
+
     emit(
       state.copyWith(
-        menuItems: state.menuItems
-            .where((item) => item.item.id != event.cartItem.item.id)
-            .toList(),
+        menuItems: menuItems,
+        totalPrice: _getTotalPrice(menuItems, state.packages),
       ),
     );
   }
@@ -57,15 +65,23 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
       packages.add(event.cartItem);
     }
 
-    emit(state.copyWith(packages: packages));
+    emit(
+      state.copyWith(
+        packages: packages,
+        totalPrice: _getTotalPrice(state.menuItems, packages),
+      ),
+    );
   }
 
   void _onRemovePackage(_RemovePackage event, Emitter<OrderCartState> emit) {
+    final packages = state.packages
+        .where((item) => item.item.id != event.cartItem.item.id)
+        .toList();
+
     emit(
       state.copyWith(
-        packages: state.packages
-            .where((item) => item.item.id != event.cartItem.item.id)
-            .toList(),
+        packages: packages,
+        totalPrice: _getTotalPrice(state.menuItems, packages),
       ),
     );
   }
@@ -75,6 +91,7 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
       state.copyWith(
         menuItems: [],
         packages: [],
+        totalPrice: 0,
       ),
     );
   }
@@ -90,9 +107,12 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
       quantity: event.quantity,
     );
 
-    if (event.quantity <= 0) {
-      menuItems.removeAt(event.index);
-    }
+    emit(
+      state.copyWith(
+        menuItems: menuItems,
+        totalPrice: _getTotalPrice(menuItems, state.packages),
+      ),
+    );
   }
 
   void _onUpdatePackageQuantity(
@@ -106,8 +126,28 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
       quantity: event.quantity,
     );
 
-    if (event.quantity <= 0) {
-      packages.removeAt(event.index);
+    emit(
+      state.copyWith(
+        packages: packages,
+        totalPrice: _getTotalPrice(state.menuItems, packages),
+      ),
+    );
+  }
+
+  double _getTotalPrice(
+    List<CartItem<MenuItem>> menuItems,
+    List<CartItem<FoodPackage>> packages,
+  ) {
+    double total = 0;
+
+    for (final cartItem in menuItems) {
+      total += cartItem.item.price * cartItem.quantity;
     }
+
+    for (final cartPackage in packages) {
+      total += cartPackage.item.price * cartPackage.quantity;
+    }
+
+    return total;
   }
 }

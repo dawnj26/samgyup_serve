@@ -8,5 +8,6 @@ abstract class OrderCartState with _$OrderCartState {
     @Default(OrderCartStatus.initial) OrderCartStatus status,
     @Default([]) List<CartItem<MenuItem>> menuItems,
     @Default([]) List<CartItem<FoodPackage>> packages,
+    @Default(0) double totalPrice,
   }) = _Initial;
 }
