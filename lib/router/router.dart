@@ -47,6 +47,7 @@ class AppRouter extends RootStackRouter {
               page: OrderShellRoute.page,
               children: [
                 AutoRoute(page: OrderRoute.page, initial: true),
+                AutoRoute(page: OrderCartRoute.page),
               ],
             ),
           ],
