@@ -24,9 +24,11 @@ class QuantityInput extends StatefulWidget {
     this.padding,
     this.borderWidth = 1.0,
     this.borderColor,
+    this.controller,
   });
 
   final int initialValue;
+  final TextEditingController? controller;
   final int minValue;
   final int maxValue;
   final int step;
@@ -59,7 +61,12 @@ class _QuantityInputState extends State<QuantityInput> {
   void initState() {
     super.initState();
     _currentValue = widget.initialValue.clamp(widget.minValue, widget.maxValue);
-    _controller = TextEditingController(text: _currentValue.toString());
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _controller.text = _currentValue.toString();
+    } else {
+      _controller = TextEditingController(text: _currentValue.toString());
+    }
   }
 
   @override
