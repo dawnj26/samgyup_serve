@@ -78,6 +78,8 @@ Future<int?> showAddCartItemDialog({
   required String description,
   required double price,
   required int maxQuantity,
+  VoidCallback? onTap,
+  int? initialValue,
   String? imageId,
   Widget? content,
 }) async {
@@ -86,6 +88,8 @@ Future<int?> showAddCartItemDialog({
     useRootNavigator: false,
     builder: (ctx) {
       return AddCartItemDialog(
+        onTap: onTap,
+        initialValue: initialValue ?? 1,
         name: name,
         description: description,
         price: price,
