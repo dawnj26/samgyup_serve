@@ -3,12 +3,11 @@ targets:
     builders:
       json_serializable:
         generate_for:
-          # Only run `json_serializable` on source under `lib/models`.
-          - lib/models/**/*.dart
+          - lib/data/models/*.dart
       freezed:
         generate_for:
-          # Only run `freezed` on source under `lib/bloc`.
           - lib/bloc/**/*.dart
+          - lib/data/models/*.dart
         options:
           format: false
       auto_route_generator:auto_router_generator:

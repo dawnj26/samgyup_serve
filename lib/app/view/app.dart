@@ -7,6 +7,7 @@ import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/l10n/l10n.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:table_repository/table_repository.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -18,6 +19,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
   late final DeviceRepository _deviceRepository;
+  late final TableRepository _tableRepository;
   late final AppRouter _router;
 
   @override
@@ -25,6 +27,7 @@ class _AppState extends State<App> {
     _router = AppRouter();
     _authenticationRepository = AuthenticationRepository();
     _deviceRepository = DeviceRepository();
+    _tableRepository = TableRepository();
 
     super.initState();
   }
@@ -35,6 +38,7 @@ class _AppState extends State<App> {
       providers: [
         RepositoryProvider.value(value: _authenticationRepository),
         RepositoryProvider.value(value: _deviceRepository),
+        RepositoryProvider.value(value: _tableRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -42,6 +46,7 @@ class _AppState extends State<App> {
             create: (context) => AppBloc(
               authenticationRepository: _authenticationRepository,
               deviceRepository: _deviceRepository,
+              tableRepository: _tableRepository,
             )..add(const AppEvent.started()),
           ),
         ],
@@ -88,9 +93,11 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
           child: AutoRouter.declarative(
             routes: (_) {
               if (appStatus == AppStatus.loading ||
-                  appStatus == AppStatus.initial) {
+                  appStatus == AppStatus.initial ||
+                  authStatus == AuthStatus.unauthenticated ||
+                  authStatus == AuthStatus.initial) {
                 return [
-                  const AppLoadingRoute(),
+                  LoadingRoute(message: 'Cooking things up...'),
                 ];
               }
 
@@ -99,7 +106,7 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
                   : const HomeRoute();
 
               return [
-                if (authStatus == AuthStatus.unauthenticated)
+                if (authStatus == AuthStatus.guest)
                   home
                 else if (authStatus == AuthStatus.unauthenticating)
                   LoadingRoute(message: 'Logging out...')
@@ -122,6 +129,10 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
             context: context,
             message: state.errorMessage ?? 'An unknown error occurred',
           );
+        }
+
+        if (state.authStatus == AuthStatus.unauthenticated) {
+          context.read<AppBloc>().add(const AppEvent.guestSessionStarted());
         }
       },
       child: this,
