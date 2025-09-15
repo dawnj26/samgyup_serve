@@ -3,6 +3,8 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:device_repository/device_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:samgyup_serve/data/models/device_data.dart';
+import 'package:table_repository/table_repository.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -31,17 +33,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(state.copyWith(status: AppStatus.loading));
 
     var deviceStatus = DeviceStatus.unregistered;
-    Device? device;
+    final deviceData = await _getDeviceData();
 
-    try {
-      device = await _deviceRepository.getDevice();
-    } on ResponseException {
-      device = await _deviceRepository.addDevice();
-    } on DeviceNotSupported {
+    if (deviceData == null) {
       deviceStatus = DeviceStatus.unknown;
-    }
-
-    if (device != null && device.tableId != null) {
+    } else if (deviceData.table != null) {
       deviceStatus = DeviceStatus.registered;
     }
 
@@ -54,7 +50,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             status: AppStatus.success,
             authStatus: AuthStatus.unauthenticated,
             deviceStatus: deviceStatus,
-            device: device,
+            deviceData: deviceData,
             user: null,
           ),
         );
@@ -64,7 +60,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             status: AppStatus.success,
             authStatus: AuthStatus.guest,
             deviceStatus: deviceStatus,
-            device: device,
+            deviceData: deviceData,
             user: user,
           ),
         );
@@ -74,7 +70,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             status: AppStatus.success,
             authStatus: AuthStatus.authenticated,
             deviceStatus: deviceStatus,
-            device: device,
+            deviceData: deviceData,
             user: user,
           ),
         );
@@ -85,7 +81,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           status: AppStatus.failure,
           authStatus: AuthStatus.unauthenticated,
           deviceStatus: deviceStatus,
-          device: device,
+          deviceData: deviceData,
           errorMessage: e.toString(),
           user: null,
         ),
@@ -143,5 +139,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         user: user,
       ),
     );
+  }
+
+  Future<DeviceData?> _getDeviceData() async {
+    Device? device;
+    Table? table;
+
+    try {
+      device = await _deviceRepository.getDevice();
+    } on ResponseException {
+      device = await _deviceRepository.addDevice();
+    } on DeviceNotSupported {
+      return null;
+    }
+
+    if (device.tableId != null) {
+      try {
+        table = await _tableRepository.fetchTable(device.tableId!);
+      } on ResponseException {
+        table = null;
+      }
+    }
+
+    return DeviceData(device: device, table: table);
   }
 }
