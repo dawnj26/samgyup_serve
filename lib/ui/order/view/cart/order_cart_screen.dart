@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
@@ -19,6 +20,12 @@ class OrderCartScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Cart'),
+        actions: [
+          TextButton(
+            onPressed: () => _handleClearCart(context),
+            child: const Text('Clear All'),
+          ),
+        ],
       ),
       body: CustomScrollView(
         slivers: [
@@ -65,6 +72,20 @@ class OrderCartScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _handleClearCart(BuildContext context) async {
+    final confirm = await showConfirmationDialog(
+      context: context,
+      message: 'Clear all items in cart?',
+      title: 'Clear Cart',
+    );
+
+    if (!context.mounted || !confirm) return;
+
+    context.read<OrderCartBloc>().add(
+      const OrderCartEvent.clearCart(),
     );
   }
 }
@@ -119,7 +140,7 @@ class _PackageItems extends StatelessWidget {
       (OrderCartBloc bloc) => bloc.state.packages,
     );
     final capacity = context.select(
-      (OrderBloc bloc) => bloc.state.table.capacity,
+      (AppBloc bloc) => bloc.state.deviceData!.table!.capacity,
     );
 
     if (packageItems.isEmpty) {
