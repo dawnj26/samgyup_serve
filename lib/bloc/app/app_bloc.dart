@@ -12,8 +12,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required AuthenticationRepository authenticationRepository,
     required DeviceRepository deviceRepository,
+    required TableRepository tableRepository,
   }) : _authenticationRepository = authenticationRepository,
        _deviceRepository = deviceRepository,
+       _tableRepository = tableRepository,
        super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_Logout>(_onLogout);
@@ -23,6 +25,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   final DeviceRepository _deviceRepository;
   final AuthenticationRepository _authenticationRepository;
+  final TableRepository _tableRepository;
 
   Future<void> _onStarted(_Started event, Emitter<AppState> emit) async {
     emit(state.copyWith(status: AppStatus.loading));
