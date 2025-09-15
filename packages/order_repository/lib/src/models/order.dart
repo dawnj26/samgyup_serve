@@ -1,38 +1,35 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:order_repository/src/enums/enums.dart';
 
 part 'order.freezed.dart';
 part 'order.g.dart';
 
-/// {@template order}
-/// Creates a new Order.
-///
-/// - [menuIds]: list of menu item ids included in the order.
-/// - [packageIds]: list of package ids included in the order.
-/// - [totalPrice]: total price of the order.
-/// - [id]: optional unique identifier for the order (defaults to empty string).
-/// - [createdAt]: optional creation timestamp.
-/// - [updatedAt]: optional last-update timestamp.
-/// {@endtemplate}
 @freezed
+/// {@template order}
+/// A model representing an order created from a cart.
+///
+/// Contains the cart identifier, the kind of order, an optional persistent
+/// identifier, and optional timestamps for creation and last update.
+/// {@endtemplate}
 abstract class Order with _$Order {
-  /// {@macro order}
+  ///{@macro order}
   const factory Order({
-    /// IDs of individual menu items included in this order.
-    required List<String> menuIds,
+    /// The identifier of the cart that this order was created from.
+    required String cartId,
 
-    /// IDs of package items included in this order.
-    required List<String> packageIds,
+    /// The kind of order (e.g. menu item or pre-defined package).
+    required OrderType type,
 
-    /// Total price for the order.
+    /// The total price of the order at the time of creation.
     required double totalPrice,
 
-    /// Unique identifier for the order.
+    /// The unique identifier for this Order. Empty when not yet persisted.
     @Default('') String id,
 
-    /// When the order was created.
+    /// The time when the order was created (if known).
     DateTime? createdAt,
 
-    /// When the order was last updated.
+    /// The time when the order was last updated (if known).
     DateTime? updatedAt,
   }) = _Order;
 
