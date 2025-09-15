@@ -19,7 +19,7 @@ abstract class AppState with _$AppState {
     @Default(AppStatus.initial) AppStatus status,
     @Default(AuthStatus.initial) AuthStatus authStatus,
     @Default(DeviceStatus.unregistered) DeviceStatus deviceStatus,
-    Device? device,
+    DeviceData? deviceData,
     User? user,
     String? errorMessage,
   }) = _Initial;
