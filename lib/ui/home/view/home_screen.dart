@@ -54,7 +54,7 @@ class _OrderButton extends StatelessWidget {
       (AppBloc bloc) => bloc.state.deviceStatus,
     );
     final device = context.select(
-      (AppBloc bloc) => bloc.state.device,
+      (AppBloc bloc) => bloc.state.deviceData?.device,
     );
 
     final isRegistered = deviceStatus == DeviceStatus.registered;
