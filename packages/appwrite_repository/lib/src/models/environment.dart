@@ -17,6 +17,8 @@ class Environment {
     required this.tableCollectionId,
     required this.deviceCollectionId,
     required this.orderCollectionId,
+    required this.invoiceCollectionId,
+    required this.reservationCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -54,4 +56,10 @@ class Environment {
 
   /// The ID of order collection.
   final String orderCollectionId;
+
+  /// The ID of billing collection.
+  final String invoiceCollectionId;
+
+  /// The ID of reservation collection.
+  final String reservationCollectionId;
 }
