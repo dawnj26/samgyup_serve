@@ -1,7 +1,16 @@
+import 'package:appwrite_repository/appwrite_repository.dart';
+
 /// {@template billing_repository}
-/// A Very Good Project created by Very Good CLI.
+/// Repository for managing billing operations.
 /// {@endtemplate}
 class BillingRepository {
   /// {@macro billing_repository}
-  const BillingRepository();
+  BillingRepository({
+    AppwriteRepository? appwrite,
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance;
+
+  final AppwriteRepository _appwrite;
+
+  String get _collectionId => _appwrite.environment.invoiceCollectionId;
+  String get _databaseId => _appwrite.environment.databaseId;
 }

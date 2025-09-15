@@ -1,7 +1,16 @@
+import 'package:appwrite_repository/appwrite_repository.dart';
+
 /// {@template reservation_repository}
-/// A Very Good Project created by Very Good CLI.
+/// Repository for managing reservations.
 /// {@endtemplate}
 class ReservationRepository {
   /// {@macro reservation_repository}
-  const ReservationRepository();
+  ReservationRepository({
+    AppwriteRepository? appwrite,
+  }) : _appwrite = appwrite ?? AppwriteRepository.instance;
+
+  final AppwriteRepository _appwrite;
+
+  String get _collectionId => _appwrite.environment.reservationCollectionId;
+  String get _databaseId => _appwrite.environment.databaseId;
 }
