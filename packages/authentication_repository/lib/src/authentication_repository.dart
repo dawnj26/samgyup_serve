@@ -54,6 +54,7 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
+      await _appwrite.account.deleteSession(sessionId: 'current');
       await _appwrite.account.createEmailPasswordSession(
         email: email,
         password: password,
@@ -74,6 +75,15 @@ class AuthenticationRepository {
       throw ResponseException.fromCode(e.code ?? -1);
     } on Exception catch (_) {
       throw const ResponseException('Unknown error occurred during logout.');
+    }
+  }
+
+  /// Creates a guest session (anonymous session).
+  Future<void> createGuestSession() async {
+    try {
+      await _appwrite.account.createAnonymousSession();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
     }
   }
 }

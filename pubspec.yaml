@@ -1,6 +1,6 @@
 name: samgyup_serve
 description: An ordering app for a Korean BBQ restaurant.
-version: 1.4.0+7
+version: 1.5.0+8
 publish_to: none
 
 environment:
@@ -33,6 +33,8 @@ dependencies:
   json_annotation: ^4.9.0
   menu_repository:
     path: packages/menu_repository
+  order_repository:
+    path: packages/order_repository
   package_repository:
     path: packages/package_repository
   shared_preferences: ^2.5.3

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -53,7 +54,7 @@ class _OrderButton extends StatelessWidget {
       (AppBloc bloc) => bloc.state.deviceStatus,
     );
     final device = context.select(
-      (AppBloc bloc) => bloc.state.device,
+      (AppBloc bloc) => bloc.state.deviceData?.device,
     );
 
     final isRegistered = deviceStatus == DeviceStatus.registered;
@@ -69,7 +70,14 @@ class _OrderButton extends StatelessWidget {
     return Column(
       children: [
         PrimaryButton(
-          onPressed: isRegistered ? () {} : null,
+          onPressed: isRegistered
+              ? () {
+                  context.router.push(const OrderRoute());
+                  context.read<ActivityBloc>().add(
+                    const ActivityEvent.started(),
+                  );
+                }
+              : null,
           child: const Text('Tap to start ordering'),
         ),
         if (warningLabel != null) ...[

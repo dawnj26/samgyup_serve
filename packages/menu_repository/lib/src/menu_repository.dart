@@ -58,6 +58,7 @@ class MenuRepository {
 
   /// Fetches a list of menu items with optional filtering by category.
   Future<List<MenuItem>> fetchItems({
+    List<String>? menuIds,
     List<MenuCategory>? category,
     int limit = 20,
     String? cursor,
@@ -67,6 +68,8 @@ class MenuRepository {
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.menuCollectionId,
         queries: [
+          if (menuIds != null && menuIds.isNotEmpty)
+            Query.equal(r'$id', menuIds),
           if (category != null && category.isNotEmpty)
             Query.equal('category', category.map((e) => e.name).toList()),
           Query.limit(limit),

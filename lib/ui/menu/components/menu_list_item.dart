@@ -38,7 +38,11 @@ class MenuListItem extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Expanded(child: _MenuTitle(title: item.name)),
+                          Expanded(
+                            child: _MenuTitle(
+                              title: '${item.name} (${item.stock})',
+                            ),
+                          ),
                           const SizedBox(width: 8),
                           _MenuState(isAvailable: item.isAvailable),
                         ],

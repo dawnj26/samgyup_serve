@@ -7,4 +7,5 @@ class AppEvent with _$AppEvent {
   const factory AppEvent.login({
     required User user,
   }) = _Login;
+  const factory AppEvent.guestSessionStarted() = _GuestSessionStarted;
 }
