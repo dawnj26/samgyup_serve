@@ -3,7 +3,6 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/src/enums/order_type.dart';
 import 'package:order_repository/src/models/models.dart';
-import 'package:order_repository/src/models/order.dart';
 import 'package:package_repository/package_repository.dart';
 
 /// {@template order_repository}
@@ -35,7 +34,7 @@ class OrderRepository {
         rowId: order.id,
         data: order.toJson(),
       );
-      return Order.fromJson(document.data);
+      return Order.fromJson(_appwrite.rowToJson(document));
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }
@@ -56,7 +55,7 @@ class OrderRepository {
         rowId: order.id,
         data: order.toJson(),
       );
-      return Order.fromJson(document.data);
+      return Order.fromJson(_appwrite.rowToJson(document));
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }
