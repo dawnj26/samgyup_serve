@@ -87,6 +87,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.2.4"
+  billing_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/billing_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   bloc:
     dependency: "direct main"
     description:
@@ -886,6 +893,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  reservation_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/reservation_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   rxdart:
     dependency: transitive
     description:

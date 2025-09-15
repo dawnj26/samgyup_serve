@@ -12,6 +12,8 @@ dependencies:
   authentication_repository:
     path: packages/authentication_repository
   auto_route: ^10.1.2
+  billing_repository:
+    path: packages/billing_repository
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
   cached_network_image: ^3.4.1
@@ -37,6 +39,8 @@ dependencies:
     path: packages/order_repository
   package_repository:
     path: packages/package_repository
+  reservation_repository:
+    path: packages/reservation_repository
   shared_preferences: ^2.5.3
   stream_transform: ^2.1.1
   string_validator: ^1.2.0
