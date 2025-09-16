@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -27,6 +29,7 @@ class OrderRepository {
         cartId: cart.item.id,
         type: OrderType.menu,
         totalPrice: cart.item.price * cart.quantity,
+        quantity: cart.quantity,
       );
       final document = await _appwrite.databases.createRow(
         databaseId: _databaseId,
@@ -36,6 +39,7 @@ class OrderRepository {
       );
       return Order.fromJson(_appwrite.rowToJson(document));
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'OrderRepository.createMenuOrder');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
@@ -48,6 +52,7 @@ class OrderRepository {
         cartId: cart.item.id,
         type: OrderType.package,
         totalPrice: cart.item.price * cart.quantity,
+        quantity: cart.quantity,
       );
       final document = await _appwrite.databases.createRow(
         databaseId: _databaseId,
@@ -57,6 +62,7 @@ class OrderRepository {
       );
       return Order.fromJson(_appwrite.rowToJson(document));
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'OrderRepository.createPackageOrder');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
