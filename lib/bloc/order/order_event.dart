@@ -1,6 +1,10 @@
 part of 'order_bloc.dart';
 
 @freezed
-class OrderEvent with _$OrderEvent {
-  const factory OrderEvent.started() = _Started;
+abstract class OrderEvent with _$OrderEvent {
+  const factory OrderEvent.started({
+    required String tableId,
+    required List<CartItem<MenuItem>> menuItems,
+    required List<CartItem<FoodPackage>> packages,
+  }) = _Started;
 }

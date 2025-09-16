@@ -45,6 +45,7 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
     try {
       final items = await _menuRepository.fetchItems(
         limit: _itemsPerPage,
+        category: [MenuCategory.grilledMeats, MenuCategory.sideDishes],
       );
 
       emit(

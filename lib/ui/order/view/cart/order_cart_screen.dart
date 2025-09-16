@@ -5,6 +5,7 @@ import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
+import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/order/components/components.dart';
@@ -124,8 +125,22 @@ class _CheckoutButton extends StatelessWidget {
     final canCheckout = menuCart.isNotEmpty || packageCart.isNotEmpty;
 
     return FilledButton(
-      onPressed: canCheckout ? () {} : null,
+      onPressed: canCheckout ? () => _handleCheckout(context) : null,
       child: const Text('Start Order'),
+    );
+  }
+
+  Future<void> _handleCheckout(BuildContext context) async {
+    final menuCart = context.read<OrderCartBloc>().state.menuItems;
+    final packageCart = context.read<OrderCartBloc>().state.packages;
+    final tableId = context.read<AppBloc>().state.deviceData!.table!.id;
+
+    context.read<OrderBloc>().add(
+      OrderEvent.started(
+        tableId: tableId,
+        menuItems: menuCart,
+        packages: packageCart,
+      ),
     );
   }
 }

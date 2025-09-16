@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:samgyup_serve/bloc/ingredient/edit/ingredient_edit_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/delete/menu_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/details/menu_details_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
@@ -46,8 +49,14 @@ class _MenuDetailsScreenState extends State<MenuDetailsScreen> {
           ),
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: InfoCard(title: 'Description', child: _MenuDescription()),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: _Stock(),
             ),
           ),
           const SliverToBoxAdapter(
@@ -71,6 +80,94 @@ class _MenuDetailsScreenState extends State<MenuDetailsScreen> {
   bool get _isAppBarExpanded {
     return _scrollController.hasClients &&
         _scrollController.offset < (_expandedHeight - kToolbarHeight);
+  }
+}
+
+class _Stock extends StatelessWidget {
+  const _Stock();
+
+  @override
+  Widget build(BuildContext context) {
+    final stock = context.select(
+      (MenuDetailsBloc bloc) => bloc.state.menuItem.stock,
+    );
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Available stock: $stock',
+                style: textTheme.labelLarge,
+              ),
+              Builder(
+                builder: (context) {
+                  final isLoading = context.select(
+                    (MenuDetailsBloc bloc) =>
+                        bloc.state is MenuDetailsLoading ||
+                        bloc.state is MenuDetailsUpdating ||
+                        bloc.state is MenuDetailsInitial,
+                  );
+
+                  return IconButton(
+                    onPressed: () =>
+                        isLoading ? null : _handleEditStock(context, stock),
+                    icon: const Icon(Icons.edit_outlined),
+                    iconSize: 20,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleEditStock(BuildContext context, int currentStock) async {
+    final ingredientItems = context.read<MenuDetailsBloc>().state.ingredients;
+    final inventoryItems = context.read<MenuDetailsBloc>().state.inventoryItems;
+
+    var maxStock = double.infinity;
+
+    for (final ingredient in ingredientItems) {
+      final inventoryItem = inventoryItems[ingredient.inventoryItemId];
+      if (inventoryItem == null || ingredient.quantity <= 0) continue;
+
+      final possibleStock = (inventoryItem.stock / ingredient.quantity).floor();
+      if (possibleStock < maxStock) {
+        maxStock = possibleStock.toDouble();
+      }
+    }
+
+    final minServings = maxStock.isFinite ? maxStock.toInt() : 0;
+
+    final newStock = await showQuantityDialog(
+      context: context,
+      initialValue: currentStock,
+      maxValue: minServings,
+      title: 'Set Stock',
+    );
+
+    log('Max servings: $minServings, New stock: $newStock', name: '_Stock');
+
+    if (!context.mounted || newStock == null || newStock == currentStock) {
+      return;
+    }
+
+    context.read<MenuDetailsBloc>().add(
+      MenuDetailsEvent.stockUpdated(newStock),
+    );
   }
 }
 
@@ -126,7 +223,28 @@ class _IngredientList extends StatelessWidget {
     return BlocBuilder<MenuDetailsBloc, MenuDetailsState>(
       builder: (context, state) {
         switch (state) {
-          case MenuDetailsLoaded(:final ingredients):
+          case MenuDetailsLoading() || MenuDetailsInitial():
+            return const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          case MenuDetailsError(:final message):
+            return SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(
+                  'Error: $message',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.error,
+                  ),
+                ),
+              ),
+            );
+          default:
+            final ingredients = state.ingredients;
+
             if (ingredients.isEmpty) {
               return const SliverFillRemaining(
                 hasScrollBody: false,
@@ -143,28 +261,15 @@ Tap the Edit button to add some.
             return SliverList.builder(
               itemBuilder: (context, index) {
                 final ingredient = ingredients[index];
-                return IngredientTile(ingredient: ingredient);
+                final inventoryItem =
+                    state.inventoryItems[ingredient.inventoryItemId];
+
+                return IngredientTile(
+                  ingredient: ingredient,
+                  inventoryItem: inventoryItem,
+                );
               },
               itemCount: ingredients.length,
-            );
-          case MenuDetailsError(:final message):
-            return SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Text(
-                  'Error: $message',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.error,
-                  ),
-                ),
-              ),
-            );
-          default:
-            return const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
             );
         }
       },

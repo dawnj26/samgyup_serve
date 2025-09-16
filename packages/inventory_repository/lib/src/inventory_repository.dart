@@ -32,6 +32,7 @@ class InventoryRepository {
     int? limit,
     InventoryItemStatus? status,
     InventoryCategory? category,
+    List<String>? itemIds,
   }) async {
     try {
       String? statusQuery;
@@ -50,6 +51,7 @@ class InventoryRepository {
         if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
         if (statusQuery != null) statusQuery,
         if (category != null) Query.equal('category', category.name),
+        if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
         Query.limit(limit ?? 500),
       ];
       final response = await _appwrite.databases.listRows(
@@ -184,6 +186,26 @@ class InventoryRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
       throw Exception('Failed to update inventory item: $e');
+    }
+  }
+
+  /// Decrements the stock of an inventory item by a specified quantity.
+  Future<void> decrementStock({
+    required String itemId,
+    required int quantity,
+  }) async {
+    try {
+      await _appwrite.databases.decrementRowColumn(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: itemId,
+        column: 'stock',
+        value: quantity.toDouble(),
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to decrement stock: $e');
     }
   }
 

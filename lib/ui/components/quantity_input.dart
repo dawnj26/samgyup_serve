@@ -71,7 +71,9 @@ class _QuantityInputState extends State<QuantityInput> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
-import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
 @RoutePage()
@@ -20,7 +20,9 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              context.router.push(const LoginRoute());
+              context.read<HomeBloc>().add(
+                const HomeEvent.statusChanged(HomeStatus.login),
+              );
             },
           ),
         ],
@@ -72,7 +74,9 @@ class _OrderButton extends StatelessWidget {
         PrimaryButton(
           onPressed: isRegistered
               ? () {
-                  context.router.push(const OrderRoute());
+                  context.read<HomeBloc>().add(
+                    const HomeEvent.statusChanged(HomeStatus.order),
+                  );
                   context.read<ActivityBloc>().add(
                     const ActivityEvent.started(),
                   );
