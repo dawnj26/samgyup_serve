@@ -27,7 +27,7 @@ class _OrderScreenState extends State<OrderScreen>
 
     // Exclude menu categories that are included in unli packages
     final categories = MenuCategory.values.where(
-      (c) => c != MenuCategory.grilledMeats || c != MenuCategory.sideDishes,
+      (c) => c != MenuCategory.grilledMeats && c != MenuCategory.sideDishes,
     );
 
     _tabs = [
