@@ -32,6 +32,7 @@ class InventoryRepository {
     int? limit,
     InventoryItemStatus? status,
     InventoryCategory? category,
+    List<String>? itemIds,
   }) async {
     try {
       String? statusQuery;
@@ -50,6 +51,7 @@ class InventoryRepository {
         if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
         if (statusQuery != null) statusQuery,
         if (category != null) Query.equal('category', category.name),
+        if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
         Query.limit(limit ?? 500),
       ];
       final response = await _appwrite.databases.listRows(
