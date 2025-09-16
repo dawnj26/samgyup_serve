@@ -20,6 +20,9 @@ abstract class Order with _$Order {
     /// The kind of order (e.g. menu item or pre-defined package).
     required OrderType type,
 
+    /// The count of items in this order.
+    required int quantity,
+
     /// The total price of the order at the time of creation.
     required double totalPrice,
 
