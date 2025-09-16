@@ -17,8 +17,8 @@ class MenuRepository {
   final AppwriteRepository _appwrite;
 
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
-  String get _availabilityEndpoint =>
-      'https://68aed0320022a720ec79.syd.appwrite.run';
+  // String get _availabilityEndpoint =>
+  //     'https://68aed0320022a720ec79.syd.appwrite.run';
   String get _ingredientBulkEndpoint =>
       'https://68b14af7003e3eb10829.syd.appwrite.run';
 
@@ -50,7 +50,7 @@ class MenuRepository {
         await _bulkAddIngredients(ingredients, m.id);
       }
 
-      await _checkMenuAvailability(m.id);
+      // await _checkMenuAvailability(m.id);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
@@ -144,7 +144,7 @@ class MenuRepository {
       if (ingredients.isNotEmpty) {
         await _bulkAddIngredients(ingredients, menuId);
       }
-      await _checkMenuAvailability(menuId);
+      // await _checkMenuAvailability(menuId);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
@@ -209,7 +209,7 @@ class MenuRepository {
         data: m.toJson(),
       );
 
-      await _checkMenuAvailability(m.id);
+      // await _checkMenuAvailability(m.id);
 
       return MenuItem.fromJson(_appwrite.rowToJson(menuDocument));
     } on AppwriteException catch (e) {
@@ -229,16 +229,19 @@ class MenuRepository {
     );
   }
 
-  Future<void> _checkMenuAvailability(String menuId) async {
-    try {
-      await _appwrite.executeFunction(
-        endpoint: _availabilityEndpoint,
-        data: {'menuId': menuId, 'databaseId': _projectInfo.databaseId},
-      );
-    } on AppwriteException catch (e) {
-      throw ResponseException.fromCode(e.code ?? -1);
-    }
-  }
+  // Future<void> _checkMenuAvailability(String menuId) async {
+  //   try {
+  //     await _appwrite.executeFunction(
+  //       endpoint: _availabilityEndpoint,
+  //       data: {
+  //         'menuId': menuId,
+  //         'databaseId': _projectInfo.databaseId,
+  //       },
+  //     );
+  //   } on AppwriteException catch (e) {
+  //     throw ResponseException.fromCode(e.code ?? -1);
+  //   }
+  // }
 
   Future<void> _bulkDeleteIngredients(String menuId) async {
     try {
