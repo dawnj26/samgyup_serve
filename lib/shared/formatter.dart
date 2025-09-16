@@ -21,3 +21,9 @@ String formatNumber(double number) {
     return number.toStringAsFixed(2);
   }
 }
+
+/// Formats a DateTime object to a readable string format.
+String formatDateTime(DateTime dateTime) {
+  final formatter = DateFormat('yyyy-MM-dd');
+  return formatter.format(dateTime);
+}
