@@ -5,7 +5,6 @@ import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
-import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/order/view/order_screen.dart';
 
 @RoutePage()

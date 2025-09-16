@@ -135,6 +135,16 @@ class _CheckoutButton extends StatelessWidget {
     final packageCart = context.read<OrderCartBloc>().state.packages;
     final tableId = context.read<AppBloc>().state.deviceData!.table!.id;
 
+    final confirm = await showConfirmationDialog(
+      context: context,
+      message:
+          'Proceed to start order with ${menuCart.length} menu '
+          'items and ${packageCart.length} packages?',
+      title: 'Confirm Order',
+    );
+
+    if (!context.mounted || !confirm) return;
+
     context.read<OrderBloc>().add(
       OrderEvent.started(
         tableId: tableId,
