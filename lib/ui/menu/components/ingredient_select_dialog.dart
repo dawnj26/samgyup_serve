@@ -16,6 +16,12 @@ class _IngredientSelectDialogState extends State<IngredientSelectDialog> {
   String? _errorText;
 
   @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.item.name),
