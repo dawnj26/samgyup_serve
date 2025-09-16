@@ -20,6 +20,12 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
               return [const OrderShellRoute()];
             }
 
+            if (status == HomeStatus.reservation) {
+              return [
+                ReservationOrderRoute(reservationId: state.reservationId),
+              ];
+            }
+
             return [
               const HomeRoute(),
               if (status == HomeStatus.login) const LoginRoute(),
