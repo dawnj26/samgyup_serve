@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
+import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/bloc/login/login_bloc.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -21,7 +22,16 @@ class LoginScreen extends StatelessWidget {
         }
       },
       child: FormScaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              context.read<HomeBloc>().add(
+                const HomeEvent.statusChanged(HomeStatus.initial),
+              );
+            },
+          ),
+        ),
         body: const Padding(
           padding: EdgeInsets.all(16),
           child: Column(
