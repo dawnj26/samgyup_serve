@@ -5,4 +5,5 @@ class MenuDetailsEvent with _$MenuDetailsEvent {
   const factory MenuDetailsEvent.started() = _Started;
   const factory MenuDetailsEvent.reloaded() = _Reloaded;
   const factory MenuDetailsEvent.menuReloaded() = _MenuReloaded;
+  const factory MenuDetailsEvent.stockUpdated(int newStock) = _StockUpdated;
 }
