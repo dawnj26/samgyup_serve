@@ -47,7 +47,9 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
                 showLoadingDialog(context: context);
               case OrderStatus.success:
                 context.router.pop();
-                showSnackBar(context, 'Order placed successfully');
+                context.read<HomeBloc>().add(
+                  HomeEvent.reservationCreated(state.reservationId),
+                );
               case OrderStatus.failure:
                 context.router.pop();
                 showErrorDialog(
