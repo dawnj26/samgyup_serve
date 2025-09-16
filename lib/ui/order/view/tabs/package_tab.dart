@@ -165,11 +165,12 @@ class _Item extends StatelessWidget {
     int? initialValue,
   ]) async {
     final tableSize = context.read<AppBloc>().state.deviceData!.table!.capacity;
+    final timeLimit = package.timeLimit / 60;
 
     final quantity = await showAddCartItemDialog(
       initialValue: initialValue,
       context: context,
-      name: package.name,
+      name: '${package.name} (${timeLimit.toStringAsFixed(1)} hr)',
       description: package.description,
       price: package.price,
       maxQuantity: tableSize,
