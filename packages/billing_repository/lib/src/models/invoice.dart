@@ -17,9 +17,6 @@ abstract class Invoice with _$Invoice {
     /// The generated code for this invoice
     required String code,
 
-    /// The ID of the reservation this invoice belongs to
-    required String reservationId,
-
     /// List of order IDs included in this invoice
     required List<String> orderIds,
 
@@ -35,11 +32,14 @@ abstract class Invoice with _$Invoice {
     /// Subtotal amount before tax and discounts
     required double subtotalAmount,
 
-    /// Amount that has been paid towards this invoice
-    required double amountPaid,
-
     /// Current status of the invoice
     required InvoiceStatus status,
+
+    /// Number to track invoice sequence
+    required int number,
+
+    /// Amount that has been paid towards this invoice
+    @Default(0) double amountPaid,
 
     /// ID of the Invoice
     @Default('') String id,
