@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/bloc/ingredient/edit/ingredient_edit_bloc.dart';
 import 'package:samgyup_serve/bloc/menu/delete/menu_delete_bloc.dart';
@@ -61,6 +62,20 @@ class MenuDetailsPage extends StatelessWidget implements AutoRouteWrapper {
             }
           },
         ),
+        BlocListener<MenuDetailsBloc, MenuDetailsState>(
+          listener: (context, state) {
+            switch (state) {
+              case MenuDetailsUpdating():
+                showLoadingDialog(
+                  context: context,
+                  message: 'Updating stock...',
+                );
+              case MenuDetailsUpdated():
+                context.router.pop();
+                showSnackBar(context, 'Stock updated successfully');
+            }
+          },
+        ),
       ],
       child: PopScope(
         onPopInvokedWithResult: (didPop, result) {
@@ -81,6 +96,7 @@ class MenuDetailsPage extends StatelessWidget implements AutoRouteWrapper {
         BlocProvider(
           create: (context) => MenuDetailsBloc(
             menuRepository: context.read<MenuRepository>(),
+            inventoryRepository: context.read<InventoryRepository>(),
             menuItem: menuItem,
           )..add(const MenuDetailsEvent.started()),
         ),
