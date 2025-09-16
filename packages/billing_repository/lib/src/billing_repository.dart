@@ -47,6 +47,8 @@ class BillingRepository {
         number: lastNumber + 1,
       );
 
+      log('invoice: $invoice', name: 'BillingRepository.createInvoice');
+
       final doc = await _appwrite.databases.createRow(
         databaseId: _databaseId,
         tableId: _collectionId,
@@ -80,6 +82,7 @@ class BillingRepository {
 
       return number;
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository._getLastInvoiceNumber');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
