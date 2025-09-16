@@ -3,7 +3,7 @@ import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
-class AddCartItemDialog extends StatelessWidget {
+class AddCartItemDialog extends StatefulWidget {
   const AddCartItemDialog({
     required this.name,
     required this.description,
@@ -26,18 +26,29 @@ class AddCartItemDialog extends StatelessWidget {
   final void Function()? onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final controller = TextEditingController();
+  State<AddCartItemDialog> createState() => _AddCartItemDialogState();
+}
 
+class _AddCartItemDialogState extends State<AddCartItemDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: (_) => onTap?.call(),
+      onPointerDown: (_) => widget.onTap?.call(),
       child: Dialog.fullscreen(
         child: Scaffold(
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _Image(
-                imageId: imageId,
+                imageId: widget.imageId,
               ),
               Expanded(
                 child: Column(
@@ -46,29 +57,29 @@ class AddCartItemDialog extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: _ItemDetails(
-                        name: name,
-                        price: price,
-                        description: description,
+                        name: widget.name,
+                        price: widget.price,
+                        description: widget.description,
                       ),
                     ),
-                    Expanded(child: content ?? const SizedBox.shrink()),
+                    Expanded(child: widget.content ?? const SizedBox.shrink()),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                       child: Column(
                         children: [
                           _Quantity(
-                            initialValue: initialValue,
-                            controller: controller,
-                            maxQuantity: maxQuantity,
+                            initialValue: widget.initialValue,
+                            controller: _controller,
+                            maxQuantity: widget.maxQuantity,
                           ),
                           const SizedBox(height: 16),
                           _Action(
                             onCancelled: () => Navigator.of(context).pop(),
                             onSaved: () {
-                              final quantity = int.tryParse(controller.text);
+                              final quantity = int.tryParse(_controller.text);
                               if (quantity == null ||
                                   quantity < 1 ||
-                                  quantity > maxQuantity) {
+                                  quantity > widget.maxQuantity) {
                                 showSnackBar(context, 'Invalid quantity');
                                 return;
                               }
