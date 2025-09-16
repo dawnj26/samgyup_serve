@@ -102,3 +102,24 @@ Future<int?> showAddCartItemDialog({
 
   return result;
 }
+
+Future<int?> showQuantityDialog({
+  required BuildContext context,
+  required int initialValue,
+  String? title,
+  int? maxValue,
+}) async {
+  final result = await showDialog<int>(
+    context: context,
+    useRootNavigator: false,
+    builder: (ctx) {
+      return QuantityDialog(
+        initialValue: initialValue,
+        title: title,
+        maxValue: maxValue,
+      );
+    },
+  );
+
+  return result;
+}
