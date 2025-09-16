@@ -189,6 +189,26 @@ class InventoryRepository {
     }
   }
 
+  /// Decrements the stock of an inventory item by a specified quantity.
+  Future<void> decrementStock({
+    required String itemId,
+    required int quantity,
+  }) async {
+    try {
+      await _appwrite.databases.decrementRowColumn(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: itemId,
+        column: 'stock',
+        value: quantity.toDouble(),
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to decrement stock: $e');
+    }
+  }
+
   InventoryInfo _queryInventoryInfo(List<InventoryItem> items) {
     final totalItems = items.length;
     final inStockItems = items
