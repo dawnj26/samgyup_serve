@@ -24,13 +24,19 @@ class _OrderScreenState extends State<OrderScreen>
   @override
   void initState() {
     super.initState();
+
+    // Exclude menu categories that are included in unli packages
+    final categories = MenuCategory.values.where(
+      (c) => c != MenuCategory.grilledMeats || c != MenuCategory.sideDishes,
+    );
+
     _tabs = [
       const Tab(text: 'Unli Packages'),
-      ...MenuCategory.values.map((c) => Tab(text: c.label)),
+      ...categories.map((c) => Tab(text: c.label)),
     ];
     _tabViews = [
       const PackageTab(),
-      ...MenuCategory.values.map((c) => MenuTab(category: c)),
+      ...categories.map((c) => MenuTab(category: c)),
     ];
 
     _tabController = TabController(length: _tabs.length, vsync: this);
