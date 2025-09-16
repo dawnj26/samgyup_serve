@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -213,6 +214,29 @@ class MenuRepository {
 
       return MenuItem.fromJson(_appwrite.rowToJson(menuDocument));
     } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? -1);
+    }
+  }
+
+  /// Decrements the stock of a menu item by a specified quantity.
+  Future<void> decrementStock({
+    required String menuId,
+    required int quantity,
+  }) async {
+    try {
+      final menu = await fetchItem(menuId);
+
+      if (menu.stock == 0) return;
+
+      await _appwrite.databases.decrementRowColumn(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _projectInfo.menuCollectionId,
+        rowId: menuId,
+        column: 'stock',
+        value: quantity.toDouble(),
+      );
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'MenuRepository.decrementStock');
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
