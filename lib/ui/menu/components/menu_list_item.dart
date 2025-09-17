@@ -20,7 +20,7 @@ class MenuListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final price = CurrencyFormatter.formatToPHP(item.price);
+    final price = formatToPHP(item.price);
 
     return AspectRatio(
       aspectRatio: 3,
