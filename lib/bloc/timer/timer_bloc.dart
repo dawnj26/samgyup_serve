@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,18 +20,10 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _Started event,
     Emitter<TimerState> emit,
   ) async {
-    _ticker?.cancel();
-    emit(
-      state.copyWith(
-        duration: event.duration,
-        isFinished: false,
-      ),
-    );
+    final endTime = event.startTime.add(event.duration);
 
     _ticker = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final duration = event.startTime
-          .add(event.duration)
-          .difference(DateTime.now());
+      final duration = endTime.difference(DateTime.now());
 
       add(TimerEvent.tick(duration: duration));
     });
