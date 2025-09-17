@@ -29,7 +29,7 @@ class ReservationRepository {
       final reservation = Reservation(
         id: ID.unique(),
         tableId: tableId,
-        startTime: startTime,
+        startTime: startTime.toUtc(),
         invoiceId: invoiceId,
       );
 
