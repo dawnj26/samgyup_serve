@@ -64,6 +64,6 @@ class _TimeStarted extends StatelessWidget {
       (ReservationBloc bloc) => bloc.state.reservation.startTime,
     );
 
-    return Text('Time started: ${formatTime(timeStarted)}');
+    return Text('Time started: ${formatTime(timeStarted.toLocal())}');
   }
 }
