@@ -62,7 +62,28 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
           create: (context) => ReservationRepository(),
         ),
       ],
-      child: this,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ActivityBloc(),
+          ),
+          BlocProvider(
+            create: (context) {
+              final tableId = context
+                  .read<AppBloc>()
+                  .state
+                  .deviceData
+                  ?.table
+                  ?.id;
+
+              return HomeBloc(
+                reservationRepo: context.read<ReservationRepository>(),
+              )..add(HomeEvent.started(tableId: tableId));
+            },
+          ),
+        ],
+        child: this,
+      ),
     );
   }
 }
