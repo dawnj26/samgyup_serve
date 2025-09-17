@@ -53,6 +53,7 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
         (package) {
           final order = packageOrderMap[package.id]!;
           return CartItem<FoodPackage>(
+            id: order.id,
             item: package,
             quantity: order.quantity,
           );
@@ -62,6 +63,7 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
         (menuItem) {
           final order = menuOrderMap[menuItem.id]!;
           return CartItem<MenuItem>(
+            id: order.id,
             item: menuItem,
             quantity: order.quantity,
           );
