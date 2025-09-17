@@ -1,7 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:billing_repository/billing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
+import 'package:order_repository/order_repository.dart';
+import 'package:package_repository/package_repository.dart';
+import 'package:reservation_repository/reservation_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 
@@ -38,13 +44,22 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ActivityBloc(),
+        RepositoryProvider(
+          create: (context) => MenuRepository(),
         ),
-        BlocProvider(
-          create: (context) => HomeBloc(),
+        RepositoryProvider(
+          create: (context) => PackageRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => OrderRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => BillingRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => ReservationRepository(),
         ),
       ],
       child: this,
