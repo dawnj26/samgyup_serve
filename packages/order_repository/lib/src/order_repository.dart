@@ -83,4 +83,25 @@ class OrderRepository {
     }
     return orders;
   }
+
+  /// Fetches orders by their IDs.
+  Future<List<Order>> fetchOrdersByIds(List<String> orderIds) async {
+    try {
+      if (orderIds.isEmpty) return [];
+      final documents = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal(r'$id', orderIds),
+        ],
+      );
+
+      return documents.rows
+          .map((e) => Order.fromJson(_appwrite.rowToJson(e)))
+          .toList();
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'OrderRepository.fetchOrdersByIds');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }
