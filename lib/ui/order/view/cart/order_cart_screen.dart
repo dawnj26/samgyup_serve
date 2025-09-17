@@ -101,7 +101,7 @@ class _TotalPrice extends StatelessWidget {
     );
 
     return Text(
-      CurrencyFormatter.formatToPHP(total),
+      formatToPHP(total),
       style: textTheme.titleMedium?.copyWith(
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,

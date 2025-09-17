@@ -47,7 +47,7 @@ class _MenuSelectBottomSheetState extends State<MenuSelectBottomSheet> {
                 final item = _items[i];
                 return ListTile(
                   title: Text(item.name),
-                  subtitle: Text(CurrencyFormatter.formatToPHP(item.price)),
+                  subtitle: Text(formatToPHP(item.price)),
                   trailing: IconButton(
                     onPressed: () {
                       final updatedItems = _items

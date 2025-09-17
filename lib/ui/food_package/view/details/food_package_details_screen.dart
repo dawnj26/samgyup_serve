@@ -225,7 +225,7 @@ class _Details extends StatelessWidget {
                 );
 
                 return Text(
-                  CurrencyFormatter.formatToPHP(price),
+                  formatToPHP(price),
                   style: textTheme.titleMedium?.copyWith(
                     color: colorScheme.primary,
                   ),
