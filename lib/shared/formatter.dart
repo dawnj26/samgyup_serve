@@ -1,17 +1,15 @@
 import 'package:intl/intl.dart';
 
-class CurrencyFormatter {
-  static final NumberFormat _phpFormatter = NumberFormat.currency(
+/// Formats a double value as Philippine peso currency with 2 decimal places
+/// Example: 1234.5 -> "₱ 1,234.50"
+String formatToPHP(double amount) {
+  final phpFormatter = NumberFormat.currency(
     locale: 'en_PH',
     symbol: '₱ ',
     decimalDigits: 2,
   );
 
-  /// Formats a double value as Philippine peso currency with 2 decimal places
-  /// Example: 1234.5 -> "₱ 1,234.50"
-  static String formatToPHP(double amount) {
-    return _phpFormatter.format(amount);
-  }
+  return phpFormatter.format(amount);
 }
 
 String formatNumber(double number) {
@@ -23,7 +21,12 @@ String formatNumber(double number) {
 }
 
 /// Formats a DateTime object to a readable string format.
-String formatDateTime(DateTime dateTime) {
+String formatDate(DateTime dateTime) {
   final formatter = DateFormat('yyyy-MM-dd');
+  return formatter.format(dateTime);
+}
+
+String formatTime(DateTime dateTime) {
+  final formatter = DateFormat('hh:mm a');
   return formatter.format(dateTime);
 }
