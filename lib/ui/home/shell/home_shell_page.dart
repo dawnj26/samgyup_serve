@@ -19,14 +19,22 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        final session = state.session;
         final status = state.status;
+
         return AutoRouter.declarative(
           routes: (handler) {
-            if (status == HomeStatus.order) {
+            if (status == HomeStatus.loading || status == HomeStatus.initial) {
+              return [
+                LoadingRoute(message: 'Preparing ingredients...'),
+              ];
+            }
+
+            if (session == SessionStatus.order) {
               return [const OrderShellRoute()];
             }
 
-            if (status == HomeStatus.reservation) {
+            if (session == SessionStatus.reservation) {
               return [
                 ReservationOrderRoute(reservationId: state.reservationId),
               ];
@@ -34,7 +42,7 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
 
             return [
               const HomeRoute(),
-              if (status == HomeStatus.login) const LoginRoute(),
+              if (session == SessionStatus.login) const LoginRoute(),
             ];
           },
         );
