@@ -33,7 +33,7 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
             if (state.status == ActivityStatus.inactive) {
               context.read<ActivityBloc>().add(const ActivityEvent.reset());
               context.read<HomeBloc>().add(
-                const HomeEvent.statusChanged(HomeStatus.initial),
+                const HomeEvent.statusChanged(SessionStatus.initial),
               );
             }
           },
