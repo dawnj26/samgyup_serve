@@ -19,6 +19,7 @@ class RefillButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
+      key: key,
       create: (context) => TimerBloc()
         ..add(
           TimerEvent.started(
@@ -47,6 +48,7 @@ class _Button extends StatelessWidget {
 
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) {
+        final hours = state.duration.inHours.toString().padLeft(2, '0');
         final minutes = state.duration.inMinutes
             .remainder(60)
             .toString()
@@ -65,7 +67,7 @@ class _Button extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '$minutes:$seconds',
+              '$hours:$minutes:$seconds',
               style: textTheme.bodyMedium?.copyWith(
                 color: state.isFinished ? Colors.red : colorScheme.primary,
               ),
