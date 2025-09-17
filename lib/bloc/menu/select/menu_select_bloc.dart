@@ -12,7 +12,11 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
   MenuSelectBloc({
     required MenuRepository menuRepository,
     required List<MenuItem> initialSelectedItems,
+    required List<MenuCategory> allowedCategories,
+    List<String>? menuIds,
   }) : _menuRepository = menuRepository,
+       _allowedCategories = allowedCategories,
+       _menuIds = menuIds,
        super(
          MenuSelectInitial(
            selectedItems: initialSelectedItems,
@@ -30,6 +34,8 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
 
   final MenuRepository _menuRepository;
   final int _itemsPerPage = 20;
+  final List<MenuCategory> _allowedCategories;
+  final List<String>? _menuIds;
 
   Future<void> _onStarted(
     _Started event,
@@ -45,7 +51,8 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
     try {
       final items = await _menuRepository.fetchItems(
         limit: _itemsPerPage,
-        category: [MenuCategory.grilledMeats, MenuCategory.sideDishes],
+        category: _allowedCategories,
+        menuIds: _menuIds,
       );
 
       emit(
@@ -90,6 +97,8 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
       final items = await _menuRepository.fetchItems(
         limit: _itemsPerPage,
         cursor: lastDocumentId,
+        category: _allowedCategories,
+        menuIds: _menuIds,
       );
 
       emit(
