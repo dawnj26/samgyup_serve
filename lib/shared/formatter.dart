@@ -30,3 +30,8 @@ String formatTime(DateTime dateTime) {
   final formatter = DateFormat('hh:mm a');
   return formatter.format(dateTime);
 }
+
+String formatDateTime(DateTime dateTime) {
+  final formatter = DateFormat('yyyy-MM-dd hh:mm a');
+  return formatter.format(dateTime);
+}
