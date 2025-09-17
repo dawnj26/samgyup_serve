@@ -173,6 +173,10 @@ class _MenuHeader extends StatelessWidget {
                       context.router.push(
                         MenuSelectRoute(
                           initialItems: state.menuItems,
+                          allowedCategories: const [
+                            MenuCategory.grilledMeats,
+                            MenuCategory.sideDishes,
+                          ],
                           onSave: (items) => _handleChange(context, items),
                         ),
                       );
