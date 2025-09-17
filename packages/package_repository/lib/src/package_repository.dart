@@ -47,15 +47,21 @@ class PackageRepository {
   /// Fetches a list of food packages with pagination support.
   Future<List<FoodPackage>> fetchPackages({
     int limit = 20,
+    List<String>? ids,
     String? cursor,
   }) async {
     try {
+      if (ids != null && ids.isEmpty) {
+        return [];
+      }
+
       final result = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.packageCollectionId,
         queries: [
           Query.limit(limit),
           if (cursor != null) Query.cursorAfter(cursor),
+          if (ids != null && ids.isNotEmpty) Query.equal(r'$id', ids),
           Query.orderDesc(r'$createdAt'),
         ],
       );
