@@ -16,9 +16,10 @@ class CartList extends StatelessWidget {
   final List<CartItem<MenuItem>> menus;
   final List<CartItem<FoodPackage>> packages;
 
-  final Widget Function(BuildContext context, FoodPackage package)?
+  final Widget Function(BuildContext context, CartItem<FoodPackage> cart)?
   packageTrailing;
-  final Widget Function(BuildContext context, MenuItem menu)? menuTrailing;
+  final Widget Function(BuildContext context, CartItem<MenuItem> cart)?
+  menuTrailing;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class CartList extends StatelessWidget {
                 price: package.price,
                 quantity: cartItem.quantity,
                 imageId: package.imageFilename,
-                trailing: packageTrailing?.call(context, package),
+                trailing: packageTrailing?.call(context, cartItem),
               );
             },
           ),
@@ -80,7 +81,7 @@ class CartList extends StatelessWidget {
                 price: menu.price,
                 quantity: cartItem.quantity,
                 imageId: menu.imageFileName,
-                trailing: menuTrailing?.call(context, menu),
+                trailing: menuTrailing?.call(context, cartItem),
               );
             },
           ),
