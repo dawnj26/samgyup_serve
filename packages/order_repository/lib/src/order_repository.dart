@@ -96,6 +96,11 @@ class OrderRepository {
         ],
       );
 
+      log(
+        'Fetched ${documents.total} orders',
+        name: 'OrderRepository.fetchOrdersByIds',
+      );
+
       return documents.rows
           .map((e) => Order.fromJson(_appwrite.rowToJson(e)))
           .toList();
