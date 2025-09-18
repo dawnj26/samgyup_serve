@@ -77,6 +77,40 @@ class BillingRepository {
     }
   }
 
+  /// Updates the orders associated with an invoice.
+  Future<Invoice> addOrders({
+    required Invoice invoice,
+    required List<Order> orders,
+  }) async {
+    try {
+      final orderIds = orders.map((order) => order.id).toList();
+      final subtotalAmount =
+          orders.fold<double>(
+            0,
+            (sum, order) => sum + (order.totalPrice),
+          ) +
+          invoice.totalAmount;
+
+      final updatedInvoice = invoice.copyWith(
+        orderIds: [...invoice.orderIds, ...orderIds],
+        subtotalAmount: subtotalAmount,
+        totalAmount: subtotalAmount,
+      );
+
+      final doc = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: updatedInvoice.id,
+        data: updatedInvoice.toJson(),
+      );
+
+      return Invoice.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository.updateOrders');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
   Future<int> _getLastInvoiceNumber() async {
     try {
       final documents = await _appwrite.databases.listRows(
