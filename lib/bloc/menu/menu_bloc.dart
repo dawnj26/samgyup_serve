@@ -39,7 +39,9 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     );
 
     try {
-      final items = await _menuRepository.fetchItems();
+      final items = await _menuRepository.fetchItems(
+        category: event.initialCategories,
+      );
       final menuInfo = await _menuRepository.fetchMenuInfo();
 
       emit(
@@ -47,7 +49,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
           items: items,
           hasReachedMax: items.length < _pageSize,
           menuInfo: menuInfo,
-          selectedCategories: state.selectedCategories,
+          selectedCategories: event.initialCategories ?? [],
         ),
       );
     } on ResponseException catch (e) {
