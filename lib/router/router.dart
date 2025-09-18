@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:billing_repository/billing_repository.dart';
 import 'package:collection/collection.dart';
 import 'package:device_repository/device_repository.dart';
 import 'package:flutter/material.dart' hide Table;
@@ -58,6 +59,15 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: ReservationOrderRoute.page),
                 AutoRoute(page: MenuSelectRoute.page),
+                AutoRoute(
+                  page: ReservationAddOrderWrapperRoute.page,
+                  children: [
+                    AutoRoute(
+                      page: ReservationAddOrderRoute.page,
+                    ),
+                    AutoRoute(page: OrderCartRoute.page),
+                  ],
+                ),
               ],
             ),
             CustomRoute<void>(
