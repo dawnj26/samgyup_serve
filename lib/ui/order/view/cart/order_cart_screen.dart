@@ -101,7 +101,7 @@ class _TotalPrice extends StatelessWidget {
     );
 
     return Text(
-      CurrencyFormatter.formatToPHP(total),
+      formatToPHP(total),
       style: textTheme.titleMedium?.copyWith(
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,
@@ -134,6 +134,16 @@ class _CheckoutButton extends StatelessWidget {
     final menuCart = context.read<OrderCartBloc>().state.menuItems;
     final packageCart = context.read<OrderCartBloc>().state.packages;
     final tableId = context.read<AppBloc>().state.deviceData!.table!.id;
+
+    final confirm = await showConfirmationDialog(
+      context: context,
+      message:
+          'Proceed to start order with ${menuCart.length} menu '
+          'items and ${packageCart.length} packages?',
+      title: 'Confirm Order',
+    );
+
+    if (!context.mounted || !confirm) return;
 
     context.read<OrderBloc>().add(
       OrderEvent.started(

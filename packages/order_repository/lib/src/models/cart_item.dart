@@ -13,6 +13,7 @@ abstract class CartItem<T> with _$CartItem<T> {
   /// [quantity] The number of this item in the cart, defaults to 1.
   factory CartItem({
     required T item,
+    @Default('') String id,
     @Default(1) int quantity,
   }) = _CartItem;
 }

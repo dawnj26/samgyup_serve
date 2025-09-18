@@ -13,7 +13,7 @@ part 'invoice.g.dart';
 @freezed
 abstract class Invoice with _$Invoice {
   /// {@macro invoice}
-  factory Invoice({
+  const factory Invoice({
     /// The generated code for this invoice
     required String code,
 
@@ -53,6 +53,18 @@ abstract class Invoice with _$Invoice {
     /// When the invoice was last updated
     DateTime? updatedAt,
   }) = _Invoice;
+
+  /// An empty invoice instance.
+  factory Invoice.empty() => const Invoice(
+    code: '',
+    orderIds: [],
+    subtotalAmount: 0,
+    taxAmount: 0,
+    discountAmount: 0,
+    totalAmount: 0,
+    status: InvoiceStatus.pending,
+    number: 0,
+  );
 
   /// Creates an Invoice from a JSON map.
   factory Invoice.fromJson(Map<String, dynamic> json) =>

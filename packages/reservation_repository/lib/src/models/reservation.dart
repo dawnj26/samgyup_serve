@@ -13,7 +13,7 @@ part 'reservation.g.dart';
 @freezed
 abstract class Reservation with _$Reservation {
   /// {@macro reservation}
-  factory Reservation({
+  const factory Reservation({
     /// The ID of the table being reserved
     required String tableId,
 
@@ -38,6 +38,13 @@ abstract class Reservation with _$Reservation {
     /// When the reservation was last updated
     DateTime? updatedAt,
   }) = _Reservation;
+
+  /// An empty reservation object.
+  factory Reservation.empty() => _Reservation(
+    tableId: '',
+    startTime: DateTime.now(),
+    invoiceId: '',
+  );
 
   /// Creates a Reservation from a JSON map.
   factory Reservation.fromJson(Map<String, dynamic> json) =>

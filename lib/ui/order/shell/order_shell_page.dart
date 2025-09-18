@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
-import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
+import 'package:table_repository/table_repository.dart';
 
 @RoutePage()
 class OrderShellPage extends AutoRouter implements AutoRouteWrapper {
@@ -15,40 +15,22 @@ class OrderShellPage extends AutoRouter implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        RepositoryProvider(
-          create: (context) => MenuRepository(),
+        BlocProvider(
+          create: (context) => OrderCartBloc(),
         ),
-        RepositoryProvider(
-          create: (context) => PackageRepository(),
-        ),
-        RepositoryProvider(
-          create: (context) => OrderRepository(),
-        ),
-        RepositoryProvider(
-          create: (context) => BillingRepository(),
-        ),
-        RepositoryProvider(
-          create: (context) => ReservationRepository(),
+        BlocProvider(
+          create: (context) => OrderBloc(
+            menuRepository: context.read<MenuRepository>(),
+            orderRepository: context.read<OrderRepository>(),
+            billingRepository: context.read<BillingRepository>(),
+            reservationRepository: context.read<ReservationRepository>(),
+            tableRepository: context.read<TableRepository>(),
+          ),
         ),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => OrderCartBloc(),
-          ),
-          BlocProvider(
-            create: (context) => OrderBloc(
-              menuRepository: context.read<MenuRepository>(),
-              orderRepository: context.read<OrderRepository>(),
-              billingRepository: context.read<BillingRepository>(),
-              reservationRepository: context.read<ReservationRepository>(),
-            ),
-          ),
-        ],
-        child: this,
-      ),
+      child: this,
     );
   }
 }

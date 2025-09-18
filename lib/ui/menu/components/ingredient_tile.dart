@@ -19,9 +19,13 @@ class IngredientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var name = ingredient.name;
+
     final isSufficient =
-        inventoryItem != null && inventoryItem!.stock >= ingredient.quantity;
-    final name = ingredient.name + (isSufficient ? '' : ' (Insufficient)');
+        inventoryItem != null && inventoryItem!.stock < ingredient.quantity;
+    if (isSufficient) {
+      name = '${ingredient.name} (Insufficient stock)';
+    }
 
     log('inventoryItem: $inventoryItem', name: 'IngredientTile');
 

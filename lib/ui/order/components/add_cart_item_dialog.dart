@@ -194,7 +194,7 @@ class _ItemDetails extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          CurrencyFormatter.formatToPHP(price),
+          formatToPHP(price),
           style: textTheme.titleMedium?.copyWith(
             color: colorScheme.primary,
             fontWeight: FontWeight.bold,

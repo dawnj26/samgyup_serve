@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
-import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:samgyup_serve/ui/components/bucket_image.dart';
 
-class CartTile extends StatelessWidget {
-  const CartTile({
+class OrderTile extends StatelessWidget {
+  const OrderTile({
     required this.name,
     required this.price,
     required this.quantity,
-    required this.maxValue,
     super.key,
     this.imageId,
-    this.onQuantityChanged,
-    this.onDelete,
+    this.trailing,
   });
 
   final String? imageId;
   final String name;
   final double price;
   final int quantity;
-  final int maxValue;
-  final void Function(int quantity)? onQuantityChanged;
-  final void Function()? onDelete;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -61,22 +57,15 @@ class CartTile extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    QuantityInput(
-                      minValue: 1,
-                      initialValue: quantity,
-                      maxValue: maxValue,
-                      onChanged: onQuantityChanged,
-                      width: 100,
-                      height: 32,
+                    Text(
+                      'Quantity: $quantity',
+                      style: textTheme.labelMedium,
                     ),
                   ],
                 ),
               ],
             ),
-            IconButton(
-              onPressed: onDelete,
-              icon: const Icon(Icons.delete_outline),
-            ),
+            trailing ?? const SizedBox.shrink(),
           ],
         ),
       ),

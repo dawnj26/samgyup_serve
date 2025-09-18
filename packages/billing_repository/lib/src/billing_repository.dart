@@ -47,8 +47,6 @@ class BillingRepository {
         number: lastNumber + 1,
       );
 
-      log('invoice: $invoice', name: 'BillingRepository.createInvoice');
-
       final doc = await _appwrite.databases.createRow(
         databaseId: _databaseId,
         tableId: _collectionId,
@@ -59,6 +57,22 @@ class BillingRepository {
       return Invoice.fromJson(_appwrite.rowToJson(doc));
     } on AppwriteException catch (e) {
       log(e.toString(), name: 'BillingRepository.createInvoice');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Retrieves an invoice by its ID.
+  Future<Invoice> getInvoiceById(String id) async {
+    try {
+      final doc = await _appwrite.databases.getRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: id,
+      );
+
+      return Invoice.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository.getInvoiceById');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }

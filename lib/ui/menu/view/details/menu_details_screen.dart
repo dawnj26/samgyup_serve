@@ -427,7 +427,7 @@ class _MenuPrice extends StatelessWidget {
     return BlocBuilder<MenuDetailsBloc, MenuDetailsState>(
       builder: (context, state) {
         return Text(
-          CurrencyFormatter.formatToPHP(
+          formatToPHP(
             state.menuItem.price,
           ),
           style: textTheme.titleMedium,

@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.settings),
             onPressed: () {
               context.read<HomeBloc>().add(
-                const HomeEvent.statusChanged(HomeStatus.login),
+                const HomeEvent.statusChanged(SessionStatus.login),
               );
             },
           ),
@@ -75,7 +75,7 @@ class _OrderButton extends StatelessWidget {
           onPressed: isRegistered
               ? () {
                   context.read<HomeBloc>().add(
-                    const HomeEvent.statusChanged(HomeStatus.order),
+                    const HomeEvent.statusChanged(SessionStatus.order),
                   );
                   context.read<ActivityBloc>().add(
                     const ActivityEvent.started(),

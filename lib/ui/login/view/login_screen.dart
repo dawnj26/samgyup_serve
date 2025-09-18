@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               context.read<HomeBloc>().add(
-                const HomeEvent.statusChanged(HomeStatus.initial),
+                const HomeEvent.statusChanged(SessionStatus.initial),
               );
             },
           ),

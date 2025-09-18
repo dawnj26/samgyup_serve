@@ -19,6 +19,7 @@ import 'package:samgyup_serve/ui/login/login.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 import 'package:samgyup_serve/ui/menu/menu.dart';
 import 'package:samgyup_serve/ui/order/order.dart';
+import 'package:samgyup_serve/ui/reservation/reservation.dart';
 import 'package:samgyup_serve/ui/table/table.dart';
 import 'package:table_repository/table_repository.dart';
 
@@ -40,7 +41,9 @@ class AppRouter extends RootStackRouter {
           path: 'home',
           page: HomeShellRoute.page,
           children: [
-            AutoRoute(page: HomeRoute.page, initial: true),
+            AutoRoute(
+              page: HomeRoute.page,
+            ),
             AutoRoute(path: 'login', page: LoginRoute.page),
             AutoRoute(
               path: 'order',
@@ -49,6 +52,17 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(page: OrderRoute.page, initial: true),
                 AutoRoute(page: OrderCartRoute.page),
               ],
+            ),
+            AutoRoute(
+              page: ReservationShellRoute.page,
+              children: [
+                AutoRoute(page: ReservationOrderRoute.page),
+                AutoRoute(page: MenuSelectRoute.page),
+              ],
+            ),
+            CustomRoute<void>(
+              page: LoadingRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideLeft,
             ),
           ],
         ),

@@ -7,10 +7,18 @@ import 'package:samgyup_serve/ui/food_package/view/menu/menu_select_screen.dart'
 
 @RoutePage()
 class MenuSelectPage extends StatelessWidget implements AutoRouteWrapper {
-  const MenuSelectPage({required this.initialItems, super.key, this.onSave});
+  const MenuSelectPage({
+    required this.initialItems,
+    super.key,
+    this.onSave,
+    this.allowedCategories = const [],
+    this.menuIds,
+  });
 
   final void Function(List<MenuItem> items)? onSave;
+  final List<MenuCategory> allowedCategories;
   final List<MenuItem> initialItems;
+  final List<String>? menuIds;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +39,7 @@ class MenuSelectPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider<MenuSelectBloc>(
       create: (context) => MenuSelectBloc(
         initialSelectedItems: initialItems,
+        allowedCategories: allowedCategories,
         menuRepository: context.read(),
       )..add(const MenuSelectEvent.started()),
       child: this,

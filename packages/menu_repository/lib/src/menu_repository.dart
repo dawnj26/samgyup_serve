@@ -64,6 +64,10 @@ class MenuRepository {
     int limit = 20,
     String? cursor,
   }) async {
+    if (menuIds != null && menuIds.isEmpty) {
+      return [];
+    }
+
     try {
       final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,

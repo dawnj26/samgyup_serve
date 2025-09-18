@@ -173,6 +173,10 @@ class _MenuHeader extends StatelessWidget {
                       context.router.push(
                         MenuSelectRoute(
                           initialItems: state.menuItems,
+                          allowedCategories: const [
+                            MenuCategory.grilledMeats,
+                            MenuCategory.sideDishes,
+                          ],
                           onSave: (items) => _handleChange(context, items),
                         ),
                       );
@@ -225,7 +229,7 @@ class _Details extends StatelessWidget {
                 );
 
                 return Text(
-                  CurrencyFormatter.formatToPHP(price),
+                  formatToPHP(price),
                   style: textTheme.titleMedium?.copyWith(
                     color: colorScheme.primary,
                   ),

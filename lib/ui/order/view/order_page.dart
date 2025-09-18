@@ -5,7 +5,6 @@ import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
-import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/order/view/order_screen.dart';
 
 @RoutePage()
@@ -34,7 +33,7 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
             if (state.status == ActivityStatus.inactive) {
               context.read<ActivityBloc>().add(const ActivityEvent.reset());
               context.read<HomeBloc>().add(
-                const HomeEvent.statusChanged(HomeStatus.initial),
+                const HomeEvent.statusChanged(SessionStatus.initial),
               );
             }
           },
@@ -47,7 +46,9 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
                 showLoadingDialog(context: context);
               case OrderStatus.success:
                 context.router.pop();
-                showSnackBar(context, 'Order placed successfully');
+                context.read<HomeBloc>().add(
+                  HomeEvent.reservationCreated(state.reservationId),
+                );
               case OrderStatus.failure:
                 context.router.pop();
                 showErrorDialog(
