@@ -33,25 +33,26 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
 
     try {
       final orders = await _orderRepo.fetchOrdersByIds(event.orderIds);
-      final packageOrderMap = <String, Order>{
-        for (final order in orders)
-          if (order.type == OrderType.package) order.cartId: order,
-      };
-      final menuOrderMap = <String, Order>{
-        for (final order in orders)
-          if (order.type == OrderType.menu) order.cartId: order,
-      };
+
+      final menuOrders = orders
+          .where((order) => order.type == OrderType.menu)
+          .toList();
+      final packageOrders = orders
+          .where((order) => order.type == OrderType.package)
+          .toList();
 
       final packages = await _packageRepo.fetchPackages(
-        ids: packageOrderMap.keys.toList(),
+        ids: packageOrders.map((order) => order.cartId).toSet().toList(),
       );
       final menuItems = await _menuRepo.fetchItems(
-        menuIds: menuOrderMap.keys.toList(),
+        menuIds: menuOrders.map((order) => order.cartId).toSet().toList(),
       );
 
-      final packageCart = packages.map(
-        (package) {
-          final order = packageOrderMap[package.id]!;
+      final packageCart = packageOrders.map(
+        (order) {
+          final package = packages.firstWhere(
+            (pkg) => pkg.id == order.cartId,
+          );
           return CartItem<FoodPackage>(
             id: order.id,
             item: package,
@@ -59,9 +60,11 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
           );
         },
       ).toList();
-      final menuItemCart = menuItems.map(
-        (menuItem) {
-          final order = menuOrderMap[menuItem.id]!;
+      final menuItemCart = menuOrders.map(
+        (order) {
+          final menuItem = menuItems.firstWhere(
+            (item) => item.id == order.cartId,
+          );
           return CartItem<MenuItem>(
             id: order.id,
             item: menuItem,

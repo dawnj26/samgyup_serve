@@ -5,13 +5,14 @@ import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
-import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/order/components/components.dart';
 
 class OrderCartScreen extends StatelessWidget {
-  const OrderCartScreen({super.key});
+  const OrderCartScreen({super.key, this.onOrderStarted});
+
+  final void Function()? onOrderStarted;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class OrderCartScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            const _CheckoutButton(),
+            _CheckoutButton(onOrderStarted),
           ],
         ),
       ),
@@ -111,7 +112,9 @@ class _TotalPrice extends StatelessWidget {
 }
 
 class _CheckoutButton extends StatelessWidget {
-  const _CheckoutButton();
+  const _CheckoutButton(this.onOrderStarted);
+
+  final void Function()? onOrderStarted;
 
   @override
   Widget build(BuildContext context) {
@@ -125,32 +128,8 @@ class _CheckoutButton extends StatelessWidget {
     final canCheckout = menuCart.isNotEmpty || packageCart.isNotEmpty;
 
     return FilledButton(
-      onPressed: canCheckout ? () => _handleCheckout(context) : null,
-      child: const Text('Start Order'),
-    );
-  }
-
-  Future<void> _handleCheckout(BuildContext context) async {
-    final menuCart = context.read<OrderCartBloc>().state.menuItems;
-    final packageCart = context.read<OrderCartBloc>().state.packages;
-    final tableId = context.read<AppBloc>().state.deviceData!.table!.id;
-
-    final confirm = await showConfirmationDialog(
-      context: context,
-      message:
-          'Proceed to start order with ${menuCart.length} menu '
-          'items and ${packageCart.length} packages?',
-      title: 'Confirm Order',
-    );
-
-    if (!context.mounted || !confirm) return;
-
-    context.read<OrderBloc>().add(
-      OrderEvent.started(
-        tableId: tableId,
-        menuItems: menuCart,
-        packages: packageCart,
-      ),
+      onPressed: canCheckout ? onOrderStarted : null,
+      child: const Text('Order'),
     );
   }
 }
