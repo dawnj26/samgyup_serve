@@ -34,7 +34,17 @@ class ReservationOrderScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
             child: _OrdersHeader(
               onTap: () {
-                context.router.push(MenuSelectRoute(initialItems: const []));
+                final invoice = context.read<ReservationBloc>().state.invoice;
+                context.router.push(
+                  ReservationAddOrderRoute(
+                    invoice: invoice,
+                    onSuccess: () {
+                      context.read<ReservationBloc>().add(
+                        const ReservationEvent.refreshed(),
+                      );
+                    },
+                  ),
+                );
               },
             ),
           ),
