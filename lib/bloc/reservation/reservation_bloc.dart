@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:billing_repository/billing_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -25,6 +27,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
          ),
        ) {
     on<_Started>(_onStarted);
+    on<_Refreshed>(_onRefreshed);
   }
 
   final ReservationRepository _reservationRepo;
@@ -50,6 +53,43 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
           status: ReservationStatus.success,
           invoice: invoice,
           table: table,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          status: ReservationStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: ReservationStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onRefreshed(
+    _Refreshed event,
+    Emitter<ReservationState> emit,
+  ) async {
+    try {
+      final invoice = await _billingRepo.getInvoiceById(
+        state.reservation.invoiceId,
+      );
+
+      log(
+        'Refreshed invoice: ${invoice.orderIds}',
+        name: 'ReservationBloc._onRefreshed',
+      );
+
+      emit(
+        state.copyWith(
+          status: ReservationStatus.success,
+          invoice: invoice,
         ),
       );
     } on ResponseException catch (e) {
