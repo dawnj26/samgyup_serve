@@ -35,19 +35,30 @@ class MenuScreen extends StatelessWidget {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: CategoryFilters(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              onSelectionChanged: (selected) {
-                context.read<MenuBloc>().add(
-                  MenuEvent.filterChanged(
-                    selectedCategories: selected,
+          const SliverToBoxAdapter(
+            child: MenuFilter(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+            ),
+          ),
+          MenuItemList(
+            itemBuilder: (context, menu) => MenuListItem(
+              item: menu,
+              onTap: () {
+                context.router.push(
+                  MenuDetailsRoute(
+                    menuItem: menu,
+                    onChange: ({required needsReload}) {
+                      if (needsReload) {
+                        context.read<MenuBloc>().add(
+                          const MenuEvent.refresh(),
+                        );
+                      }
+                    },
                   ),
                 );
               },
             ),
           ),
-          const _ItemList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -83,77 +94,6 @@ class _Status extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _ItemList extends StatelessWidget {
-  const _ItemList();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MenuBloc, MenuState>(
-      builder: (context, state) {
-        switch (state) {
-          case MenuLoaded(
-            items: final items,
-            hasReachedMax: final hasReachedMax,
-          ):
-            if (items.isEmpty) {
-              return const SliverFillRemaining(
-                hasScrollBody: false,
-                child: EmptyFallback(
-                  message: 'No menu items found.',
-                  padding: EdgeInsets.all(16),
-                ),
-              );
-            }
-
-            return SliverPadding(
-              padding: const EdgeInsets.only(bottom: 16),
-              sliver: SliverList.builder(
-                itemBuilder: (ctx, i) {
-                  if (i >= items.length) {
-                    return const BottomLoader();
-                  }
-                  final item = items[i];
-                  return MenuListItem(
-                    item: item,
-                    onTap: () {
-                      context.router.push(
-                        MenuDetailsRoute(
-                          menuItem: item,
-                          onChange: ({required needsReload}) {
-                            if (needsReload) {
-                              context.read<MenuBloc>().add(
-                                const MenuEvent.refresh(),
-                              );
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-                itemCount: hasReachedMax ? items.length : items.length + 1,
-              ),
-            );
-          case MenuError(:final message):
-            return SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Text(message),
-              ),
-            );
-          default:
-            return const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-        }
-      },
     );
   }
 }
