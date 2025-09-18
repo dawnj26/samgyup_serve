@@ -7,6 +7,7 @@ import 'package:order_repository/order_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
+import 'package:table_repository/table_repository.dart';
 
 @RoutePage()
 class OrderShellPage extends AutoRouter implements AutoRouteWrapper {
@@ -25,6 +26,7 @@ class OrderShellPage extends AutoRouter implements AutoRouteWrapper {
             orderRepository: context.read<OrderRepository>(),
             billingRepository: context.read<BillingRepository>(),
             reservationRepository: context.read<ReservationRepository>(),
+            tableRepository: context.read<TableRepository>(),
           ),
         ),
       ],

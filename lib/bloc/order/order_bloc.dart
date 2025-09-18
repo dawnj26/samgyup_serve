@@ -7,6 +7,7 @@ import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
+import 'package:table_repository/table_repository.dart';
 
 part 'order_event.dart';
 part 'order_state.dart';
@@ -18,7 +19,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     required BillingRepository billingRepository,
     required ReservationRepository reservationRepository,
     required MenuRepository menuRepository,
+    required TableRepository tableRepository,
   }) : _orderRepository = orderRepository,
+       _tableRepository = tableRepository,
        _menuRepository = menuRepository,
        _billingRepository = billingRepository,
        _reservationRepository = reservationRepository,
@@ -32,6 +35,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final BillingRepository _billingRepository;
   final ReservationRepository _reservationRepository;
   final MenuRepository _menuRepository;
+  final TableRepository _tableRepository;
 
   Future<void> _onStarted(
     _Started event,
@@ -74,6 +78,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         tableId: event.tableId,
         invoiceId: invoice.id,
         startTime: DateTime.now(),
+      );
+      await _tableRepository.updateTableStatus(
+        tableId: event.tableId,
+        status: TableStatus.occupied,
       );
 
       emit(

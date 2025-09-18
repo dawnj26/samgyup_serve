@@ -95,6 +95,27 @@ class TableRepository {
     }
   }
 
+  /// Updates only the status of a table in the database.
+  Future<Table> updateTableStatus({
+    required String tableId,
+    required TableStatus status,
+  }) async {
+    try {
+      final response = await _appwrite.databases.updateRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        rowId: tableId,
+        data: {
+          'status': status.name,
+        },
+      );
+
+      return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
   /// Fetch a single table by its ID.
   Future<Table> fetchTable(String id) async {
     try {
