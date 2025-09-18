@@ -11,8 +11,12 @@ class ReservationOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bg = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: bg,
+        scrolledUnderElevation: 0,
         leading: const AppLogoIcon(
           padding: EdgeInsetsGeometry.all(8),
         ),
