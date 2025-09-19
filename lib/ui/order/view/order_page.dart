@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
+import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
@@ -40,6 +42,13 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
         ),
         BlocListener<OrderBloc, OrderState>(
           listener: (context, state) {
+            final tableNumber = context
+                .read<AppBloc>()
+                .state
+                .deviceData!
+                .table!
+                .number;
+
             switch (state.status) {
               case OrderStatus.initial:
               case OrderStatus.loading:
@@ -48,6 +57,13 @@ class OrderPage extends StatelessWidget implements AutoRouteWrapper {
                 context.router.pop();
                 context.read<HomeBloc>().add(
                   HomeEvent.reservationCreated(state.reservationId),
+                );
+                context.read<EventBloc>().add(
+                  EventEvent.orderCreated(
+                    reservationId: state.reservationId,
+                    tableNumber: tableNumber,
+                    orders: state.orders,
+                  ),
                 );
               case OrderStatus.failure:
                 context.router.pop();
