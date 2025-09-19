@@ -44,6 +44,14 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
               ];
             }
 
+            if (session == SessionStatus.payment) {
+              return [
+                PaymentOrderRoute(
+                  invoiceId: state.invoiceId,
+                ),
+              ];
+            }
+
             return [
               const HomeRoute(),
               if (session == SessionStatus.login) const LoginRoute(),
