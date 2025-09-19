@@ -5,6 +5,9 @@ import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
+import 'package:samgyup_serve/bloc/reservation/refill/reservation_refill_bloc.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:samgyup_serve/shared/navigation.dart';
 import 'package:samgyup_serve/ui/reservation/view/refill/reservation_refill_screen.dart';
 
 @RoutePage()
@@ -23,9 +26,28 @@ class ReservationRefillPage extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return ReservationRefillScreen(
-      quantity: quantity,
-      onSave: onSave,
+    return BlocListener<ReservationRefillBloc, ReservationRefillState>(
+      listener: (context, state) {
+        if (state.status == ReservationRefillStatus.loading) {
+          showLoadingDialog(context: context);
+        }
+
+        if (state.status == ReservationRefillStatus.success) {
+          context.router.pop();
+          goToPreviousRoute(context);
+          onSave?.call(state.cartItems);
+        }
+
+        if (state.status == ReservationRefillStatus.failure) {
+          showErrorDialog(
+            context: context,
+            message: state.message ?? 'Failed to process refill request.',
+          );
+        }
+      },
+      child: ReservationRefillScreen(
+        quantity: quantity,
+      ),
     );
   }
 
@@ -41,6 +63,11 @@ class ReservationRefillPage extends StatelessWidget
         ),
         BlocProvider(
           create: (context) => OrderCartBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ReservationRefillBloc(
+            menuRepository: context.read(),
+          ),
         ),
       ],
       child: this,

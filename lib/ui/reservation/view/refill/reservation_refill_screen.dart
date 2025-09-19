@@ -4,18 +4,15 @@ import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
+import 'package:samgyup_serve/bloc/reservation/refill/reservation_refill_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
-import 'package:samgyup_serve/shared/navigation.dart';
 import 'package:samgyup_serve/ui/menu/components/menu_list_item.dart';
 
 class ReservationRefillScreen extends StatelessWidget {
   const ReservationRefillScreen({
     required this.quantity,
     super.key,
-    this.onSave,
   });
-
-  final void Function(List<CartItem<MenuItem>> items)? onSave;
   final int quantity;
 
   @override
@@ -61,10 +58,11 @@ class ReservationRefillScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final cartItems = context.read<OrderCartBloc>().state.menuItems;
-          onSave?.call(cartItems);
-
-          goToPreviousRoute(context);
+          context.read<ReservationRefillBloc>().add(
+            ReservationRefillEvent.started(
+              cartItems: context.read<OrderCartBloc>().state.menuItems,
+            ),
+          );
         },
         label: const Text('Request'),
         icon: const Icon(Icons.check),
