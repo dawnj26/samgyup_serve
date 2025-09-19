@@ -133,6 +133,7 @@ class AppwriteRepository {
     return {
       ...row.data,
       'updatedAt': row.$updatedAt,
+      'createdAt': row.$createdAt,
     };
   }
 
