@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:event_repository/src/models/models.dart';
@@ -35,6 +37,7 @@ class EventRepository {
       );
       return Event.fromJson(_appwrite.rowToJson(response));
     } on AppwriteException catch (e) {
+      log('Failed to create event: $e', name: 'EventRepository.createEvent');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
