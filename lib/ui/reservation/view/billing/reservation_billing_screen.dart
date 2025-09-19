@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/home/home_bloc.dart';
-import 'package:samgyup_serve/bloc/order/list/order_list_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
