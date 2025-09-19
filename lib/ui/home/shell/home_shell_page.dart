@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:billing_repository/billing_repository.dart';
-import 'package:event_repository/event_repository.dart';
+import 'package:event_repository/event_repository.dart' hide EventStatus;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -12,6 +12,8 @@ import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:samgyup_serve/shared/snackbar.dart';
 
 @RoutePage()
 class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
@@ -96,12 +98,25 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
 
               return HomeBloc(
                 reservationRepo: context.read<ReservationRepository>(),
-                eventRepo: context.read<EventRepository>(),
               )..add(HomeEvent.started(tableId: tableId));
             },
           ),
         ],
-        child: this,
+        child: BlocListener<EventBloc, EventState>(
+          listener: (context, state) {
+            if (state.status == EventStatus.success) {
+              showSnackBar(context, 'Notified the staff');
+            }
+
+            if (state.status == EventStatus.failure) {
+              showErrorDialog(
+                context: context,
+                message: state.errorMessage ?? 'Failed to notify staff',
+              );
+            }
+          },
+          child: this,
+        ),
       ),
     );
   }
