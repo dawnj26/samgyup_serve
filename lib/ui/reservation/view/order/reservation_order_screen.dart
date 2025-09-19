@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/app_logo_icon.dart';
@@ -101,7 +102,25 @@ class _Orders extends StatelessWidget {
               key: ValueKey('refillButton_${cart.id}'),
               startTime: state.reservation.startTime,
               durationMinutes: cart.item.timeLimit,
-              onPressed: () {},
+              onPressed: () {
+                context.router.push(
+                  ReservationRefillRoute(
+                    menuIds: cart.item.menuIds,
+                    quantity: cart.quantity,
+                    onSave: (items) {
+                      if (items.isEmpty) return;
+
+                      context.read<EventBloc>().add(
+                        EventEvent.refillRequested(
+                          reservationId: state.reservation.id,
+                          tableNumber: state.table.number,
+                          items: items,
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
               child: const Text('Refill'),
             );
           },
