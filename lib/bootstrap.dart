@@ -60,6 +60,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       orderCollectionId: '68c5090f000f2fdf9840',
       reservationCollectionId: '68c7c9f9002641fe6f53',
       invoiceCollectionId: '68c9388e001187b3f52a',
+      eventCollectionId: '68cbde25000e5e90602b',
     ),
   );
 
