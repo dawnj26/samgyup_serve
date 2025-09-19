@@ -53,8 +53,10 @@ class ReservationOrderScreen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: FilledButton(
-          onPressed: () {},
-          child: const Text('Finish Order'),
+          onPressed: () {
+            context.router.push(const ReservationBillingRoute());
+          },
+          child: const Text('Proceed to billing'),
         ),
       ),
     );
@@ -93,10 +95,7 @@ class _Orders extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final orderIds = state.invoice.orderIds;
-
         return ReservationOrderList(
-          orderIds: orderIds,
           packageTrailing: (context, cart) {
             return RefillButton(
               key: ValueKey('refillButton_${cart.id}'),
