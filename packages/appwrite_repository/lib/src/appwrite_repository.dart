@@ -22,6 +22,7 @@ class AppwriteRepository {
     _databases = TablesDB(_client);
     _storage = Storage(_client);
     _functions = Functions(_client);
+    _realtime = Realtime(_client);
   }
 
   /// Whether the repository has been initialized.
@@ -38,6 +39,7 @@ class AppwriteRepository {
   late final TablesDB _databases;
   late final Storage _storage;
   late final Functions _functions;
+  late final Realtime _realtime;
 
   /// Returns the [Client] instance used for making requests to Appwrite.
   Client get client => _client;
@@ -53,6 +55,9 @@ class AppwriteRepository {
 
   /// Returns the [Functions] service for executing server-side functions.
   Functions get functions => _functions;
+
+  /// Returns the [Realtime] service for real-time updates.
+  Realtime get realtime => _realtime;
 
   /// Initialize the singleton. Call once (e.g., in main()).
   static Future<AppwriteRepository> initialize({
