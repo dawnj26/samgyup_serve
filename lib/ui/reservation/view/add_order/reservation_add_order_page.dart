@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:billing_repository/billing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -14,13 +13,11 @@ import 'package:samgyup_serve/ui/reservation/view/add_order/reservation_add_orde
 class ReservationAddOrderPage extends StatelessWidget
     implements AutoRouteWrapper {
   const ReservationAddOrderPage({
-    required this.invoice,
     this.onSuccess,
     super.key,
   });
 
   final void Function()? onSuccess;
-  final Invoice invoice;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +74,6 @@ class ReservationAddOrderPage extends StatelessWidget
         BlocProvider(
           create: (context) => ReservationOrderBloc(
             billingRepository: context.read(),
-            invoice: invoice,
             menuRepository: context.read(),
             orderRepository: context.read(),
           ),
