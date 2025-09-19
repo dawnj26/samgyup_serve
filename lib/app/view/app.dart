@@ -20,6 +20,7 @@ class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
   late final DeviceRepository _deviceRepository;
   late final TableRepository _tableRepository;
+
   late final AppRouter _router;
 
   @override
