@@ -7,6 +7,7 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
+  appwrite: ^19.0.0
   appwrite_repository:
     path: packages/appwrite_repository
   authentication_repository:
@@ -21,6 +22,8 @@ dependencies:
   device_repository:
     path: packages/device_repository
   dotted_border: ^3.1.0
+  event_repository:
+    path: packages/event_repository
   file_picker: ^10.3.2
   flutter:
     sdk: flutter
