@@ -6,6 +6,7 @@ enum ReservationOrderStatus { initial, loading, success, failure, pure }
 abstract class ReservationOrderState with _$ReservationOrderState {
   const factory ReservationOrderState.initial({
     @Default(ReservationOrderStatus.initial) ReservationOrderStatus status,
+    @Default([]) List<Order> orders,
     String? errorMessage,
   }) = _Initial;
 }

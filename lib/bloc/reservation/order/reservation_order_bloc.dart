@@ -58,7 +58,9 @@ class ReservationOrderBloc
         orders: orders,
       );
 
-      emit(state.copyWith(status: ReservationOrderStatus.success));
+      emit(
+        state.copyWith(status: ReservationOrderStatus.success, orders: orders),
+      );
     } on ResponseException catch (e) {
       emit(
         state.copyWith(
