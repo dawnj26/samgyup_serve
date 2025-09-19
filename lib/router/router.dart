@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:billing_repository/billing_repository.dart';
 import 'package:collection/collection.dart';
 import 'package:device_repository/device_repository.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/app/app.dart';
 import 'package:samgyup_serve/router/wrappers/wrappers.dart';
@@ -58,7 +58,6 @@ class AppRouter extends RootStackRouter {
               page: ReservationShellRoute.page,
               children: [
                 AutoRoute(page: ReservationOrderRoute.page),
-                AutoRoute(page: MenuSelectRoute.page),
                 AutoRoute(
                   page: ReservationAddOrderWrapperRoute.page,
                   children: [
@@ -68,6 +67,7 @@ class AppRouter extends RootStackRouter {
                     AutoRoute(page: OrderCartRoute.page),
                   ],
                 ),
+                AutoRoute(page: ReservationRefillRoute.page),
               ],
             ),
             CustomRoute<void>(
