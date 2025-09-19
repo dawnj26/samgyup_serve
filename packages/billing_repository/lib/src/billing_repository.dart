@@ -134,4 +134,11 @@ class BillingRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Subscribes to real-time updates for a specific invoice.
+  RealtimeSubscription invoiceState(String invoiceId) {
+    return _appwrite.realtime.subscribe([
+      'databases.$_databaseId.tables.$_collectionId.rows.$invoiceId',
+    ]);
+  }
 }
