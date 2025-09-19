@@ -13,18 +13,16 @@ class ReservationOrderBloc
     extends Bloc<ReservationOrderEvent, ReservationOrderState> {
   ReservationOrderBloc({
     required BillingRepository billingRepository,
-    required Invoice invoice,
     required MenuRepository menuRepository,
     required OrderRepository orderRepository,
   }) : _billingRepository = billingRepository,
+
        _orderRepository = orderRepository,
        _menuRepository = menuRepository,
-       _invoice = invoice,
        super(const _Initial()) {
     on<_Started>(_onStarted);
   }
 
-  final Invoice _invoice;
   final OrderRepository _orderRepository;
   final BillingRepository _billingRepository;
   final MenuRepository _menuRepository;
@@ -55,9 +53,14 @@ class ReservationOrderBloc
         );
       }
 
-      await _billingRepository.addOrders(invoice: _invoice, orders: orders);
+      await _billingRepository.addOrders(
+        invoice: event.invoice,
+        orders: orders,
+      );
 
-      emit(state.copyWith(status: ReservationOrderStatus.success));
+      emit(
+        state.copyWith(status: ReservationOrderStatus.success, orders: orders),
+      );
     } on ResponseException catch (e) {
       emit(
         state.copyWith(

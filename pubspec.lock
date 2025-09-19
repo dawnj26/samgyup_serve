@@ -26,7 +26,7 @@ packages:
     source: hosted
     version: "2.0.3"
   appwrite:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: appwrite
       sha256: a30f0c571c44d7290eb1e56c5b4f5610cea97201b096407b5b75b4ae224e5a9e
@@ -373,6 +373,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  event_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/event_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   fake_async:
     dependency: transitive
     description:
@@ -857,10 +864,10 @@ packages:
     dependency: transitive
     description:
       name: pool
-      sha256: "20fe868b6314b322ea036ba325e6fc0711a22948856475e2c2b6306e8ab39c2a"
+      sha256: "978783255c543aa3586a1b3c21f6e9d720eb315376a915872c61ef8b5c20177d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.1"
+    version: "1.5.2"
   posix:
     dependency: transitive
     description:

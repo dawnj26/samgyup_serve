@@ -13,10 +13,12 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
     required MenuRepository menuRepository,
     required List<MenuItem> initialSelectedItems,
     required List<MenuCategory> allowedCategories,
+    required bool allowSelectUnavailableItems,
     List<String>? menuIds,
   }) : _menuRepository = menuRepository,
        _allowedCategories = allowedCategories,
        _menuIds = menuIds,
+       _allowSelectUnavailableItems = allowSelectUnavailableItems,
        super(
          MenuSelectInitial(
            selectedItems: initialSelectedItems,
@@ -36,6 +38,7 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
   final int _itemsPerPage = 20;
   final List<MenuCategory> _allowedCategories;
   final List<String>? _menuIds;
+  final bool _allowSelectUnavailableItems;
 
   Future<void> _onStarted(
     _Started event,
@@ -133,6 +136,8 @@ class MenuSelectBloc extends Bloc<MenuSelectEvent, MenuSelectState> {
     _ItemToggled event,
     Emitter<MenuSelectState> emit,
   ) {
+    if (!_allowSelectUnavailableItems && !event.item.isAvailable) return;
+
     final updatedSelectedItems = event.isSelected
         ? state.selectedItems.where((item) => item != event.item).toList()
         : [...state.selectedItems, event.item];

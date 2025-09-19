@@ -13,12 +13,14 @@ class MenuSelectPage extends StatelessWidget implements AutoRouteWrapper {
     this.onSave,
     this.allowedCategories = const [],
     this.menuIds,
+    this.allowSelectUnavailableItems = true,
   });
 
   final void Function(List<MenuItem> items)? onSave;
   final List<MenuCategory> allowedCategories;
   final List<MenuItem> initialItems;
   final List<String>? menuIds;
+  final bool allowSelectUnavailableItems;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,8 @@ class MenuSelectPage extends StatelessWidget implements AutoRouteWrapper {
       create: (context) => MenuSelectBloc(
         initialSelectedItems: initialItems,
         allowedCategories: allowedCategories,
+        menuIds: menuIds,
+        allowSelectUnavailableItems: allowSelectUnavailableItems,
         menuRepository: context.read(),
       )..add(const MenuSelectEvent.started()),
       child: this,

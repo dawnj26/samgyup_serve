@@ -7,9 +7,7 @@ import 'package:samgyup_serve/ui/reservation/view/order/reservation_order_screen
 
 @RoutePage()
 class ReservationOrderPage extends StatelessWidget implements AutoRouteWrapper {
-  const ReservationOrderPage({required this.reservationId, super.key});
-
-  final String reservationId;
+  const ReservationOrderPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +27,6 @@ class ReservationOrderPage extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) =>
-              ReservationBloc(
-                tableRepository: context.read(),
-                reservationRepository: context.read(),
-                billingRepository: context.read(),
-              )..add(
-                ReservationEvent.started(reservationId: reservationId),
-              ),
-        ),
         BlocProvider(
           create: (context) => OrderListBloc(
             orderRepository: context.read(),

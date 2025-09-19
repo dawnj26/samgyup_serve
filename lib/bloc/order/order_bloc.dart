@@ -88,6 +88,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         state.copyWith(
           status: OrderStatus.success,
           reservationId: reservation.id,
+          orders: orders,
         ),
       );
     } on ResponseException catch (e) {

@@ -6,6 +6,7 @@ import 'package:order_repository/order_repository.dart';
 import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/order/reservation_order_bloc.dart';
+import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -114,9 +115,12 @@ class _CartButton extends StatelessWidget {
               context.router.pop();
 
               final cart = context.read<OrderCartBloc>().state.menuItems;
+              final invoice = context.read<ReservationBloc>().state.invoice;
+
               context.read<ReservationOrderBloc>().add(
                 ReservationOrderEvent.started(
                   items: cart,
+                  invoice: invoice,
                 ),
               );
             },
