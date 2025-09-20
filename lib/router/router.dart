@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:device_repository/device_repository.dart';
+import 'package:event_repository/event_repository.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -13,6 +14,7 @@ import 'package:samgyup_serve/ui/components/screens/app_loading_screen.dart';
 import 'package:samgyup_serve/ui/components/screens/loading_screen.dart';
 import 'package:samgyup_serve/ui/dashboard/dashboard.dart';
 import 'package:samgyup_serve/ui/device/device.dart';
+import 'package:samgyup_serve/ui/events/event.dart';
 import 'package:samgyup_serve/ui/food_package/food_package.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
 import 'package:samgyup_serve/ui/inventory/inventory.dart';
@@ -94,9 +96,24 @@ class AppRouter extends RootStackRouter {
               page: AdminRoute.page,
               children: [
                 AutoRoute(page: DashboardRoute.page, initial: true),
+                AutoRoute(
+                  page: EventShellRoute.page,
+                  children: [
+                    AutoRoute(
+                      page: EventRoute.page,
+                    ),
+                  ],
+                ),
                 AutoRoute(page: ManagementRoute.page),
               ],
               initial: true,
+            ),
+            AutoRoute(
+              page: EventDetailsShellRoute.page,
+              children: [
+                AutoRoute(page: EventOrderRoute.page),
+                AutoRoute(page: EventRefillRoute.page),
+              ],
             ),
             AutoRoute(
               page: InventoryShellRoute.page,
