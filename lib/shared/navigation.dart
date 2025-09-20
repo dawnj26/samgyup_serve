@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +11,6 @@ void goToPreviousRoute(BuildContext context) {
   final canPop = scope.controller.canPop();
 
   if (canPop) {
-    scope.controller.maybePopTop();
+    unawaited(scope.controller.maybePopTop());
   }
 }

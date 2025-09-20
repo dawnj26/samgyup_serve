@@ -15,6 +15,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<_StatusChanged>(_onStatusChanged);
     on<_Started>(_onStarted);
     on<_ReservationCreated>(_onReservationCreated);
+    on<_PaymentRequested>((event, emit) {
+      emit(
+        state.copyWith(
+          invoiceId: event.invoiceId,
+          session: SessionStatus.payment,
+        ),
+      );
+    });
   }
 
   final ReservationRepository _reservationRepo;

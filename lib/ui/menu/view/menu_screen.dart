@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -43,35 +46,43 @@ class MenuScreen extends StatelessWidget {
           MenuItemList(
             itemBuilder: (context, menu) => MenuListItem(
               item: menu,
-              onTap: () {
-                context.router.push(
-                  MenuDetailsRoute(
-                    menuItem: menu,
-                    onChange: ({required needsReload}) {
-                      if (needsReload) {
-                        context.read<MenuBloc>().add(
-                          const MenuEvent.refresh(),
-                        );
-                      }
-                    },
-                  ),
-                );
-              },
+              onTap: () => _handleTap(context, menu),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.router.push(
-            MenuCreateRoute(
-              onCreated: () {
-                context.read<MenuBloc>().add(const MenuEvent.refresh());
-              },
-            ),
-          );
-        },
+        onPressed: () => _handlePressed(context),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _handleTap(BuildContext context, MenuItem menu) {
+    unawaited(
+      context.router.push(
+        MenuDetailsRoute(
+          menuItem: menu,
+          onChange: ({required needsReload}) {
+            if (needsReload) {
+              context.read<MenuBloc>().add(
+                const MenuEvent.refresh(),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  void _handlePressed(BuildContext context) {
+    unawaited(
+      context.router.push(
+        MenuCreateRoute(
+          onCreated: () {
+            context.read<MenuBloc>().add(const MenuEvent.refresh());
+          },
+        ),
       ),
     );
   }

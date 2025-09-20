@@ -68,24 +68,29 @@ class _SelectedBar extends StatelessWidget {
 
         return SelectedIngredientsBar(
           count: count,
-          onView: () {
-            showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              builder: (ctx) => SelectedIngredientsBottomSheet(
-                ingredients: state.selectedIngredients,
-                onRemove: (ingredient) {
-                  context.read<IngredientSelectBloc>().add(
-                    IngredientSelectEvent.ingredientRemoved(
-                      ingredient.inventoryItemId,
-                    ),
-                  );
-                },
-              ),
-            );
-          },
+          onView: () => _handleView(context, state.selectedIngredients),
         );
       },
+    );
+  }
+
+  Future<void> _handleView(
+    BuildContext context,
+    List<Ingredient> ingredients,
+  ) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => SelectedIngredientsBottomSheet(
+        ingredients: ingredients,
+        onRemove: (ingredient) {
+          context.read<IngredientSelectBloc>().add(
+            IngredientSelectEvent.ingredientRemoved(
+              ingredient.inventoryItemId,
+            ),
+          );
+        },
+      ),
     );
   }
 }

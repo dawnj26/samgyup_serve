@@ -8,4 +8,7 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.statusChanged(SessionStatus status) = _StatusChanged;
   const factory HomeEvent.reservationCreated(String reservationId) =
       _ReservationCreated;
+  const factory HomeEvent.paymentRequested({
+    required String invoiceId,
+  }) = _PaymentRequested;
 }

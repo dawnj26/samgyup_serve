@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,17 +96,21 @@ class _ViewCartButton extends StatelessWidget {
     final cartCount = menuCart.length + packageCart.length;
 
     return FilledButton(
-      onPressed: () {
-        context.router.push(
-          OrderCartRoute(
-            onOrderStarted: () => _handleCheckout(context),
-            onPointerDown: () => context.read<ActivityBloc>().add(
-              const ActivityEvent.started(),
-            ),
-          ),
-        );
-      },
+      onPressed: () => _handlePressed(context),
       child: Text('View Cart ($cartCount)'),
+    );
+  }
+
+  void _handlePressed(BuildContext context) {
+    unawaited(
+      context.router.push(
+        OrderCartRoute(
+          onOrderStarted: () => _handleCheckout(context),
+          onPointerDown: () => context.read<ActivityBloc>().add(
+            const ActivityEvent.started(),
+          ),
+        ),
+      ),
     );
   }
 

@@ -8,17 +8,16 @@ import 'package:samgyup_serve/ui/order/components/components.dart';
 
 class ReservationOrderList extends StatelessWidget {
   const ReservationOrderList({
-    required this.orderIds,
     super.key,
     this.packageTrailing,
     this.menuTrailing,
   });
 
-  final List<String> orderIds;
   final Widget Function(BuildContext context, CartItem<FoodPackage> cart)?
   packageTrailing;
   final Widget Function(BuildContext context, CartItem<MenuItem> cart)?
   menuTrailing;
+
   @override
   Widget build(BuildContext context) {
     return _List(

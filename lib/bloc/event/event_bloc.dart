@@ -130,7 +130,10 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       final newEvent = Event(
         reservationId: event.reservationId,
         tableNumber: event.tableNumber,
-        payload: jsonEncode(event.payload),
+        payload: jsonEncode({
+          'message': 'Table ${event.tableNumber} has requested to pay.',
+          'invoiceId': event.invoiceId,
+        }),
         type: EventType.paymentRequested,
       );
       await _eventRepository.createEvent(newEvent);

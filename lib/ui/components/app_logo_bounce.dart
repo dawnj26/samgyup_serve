@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
@@ -20,7 +21,8 @@ class _AppLogoBounceState extends State<AppLogoBounce>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
-    )..repeat(); // infinite
+    );
+    unawaited(_controller.repeat()); // infinite
   }
 
   @override

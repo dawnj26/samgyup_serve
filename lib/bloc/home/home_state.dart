@@ -1,6 +1,6 @@
 part of 'home_bloc.dart';
 
-enum SessionStatus { initial, order, reservation, login }
+enum SessionStatus { initial, order, reservation, login, payment }
 
 enum HomeStatus { initial, loading, success, failure }
 
@@ -10,6 +10,7 @@ abstract class HomeState with _$HomeState {
     @Default(SessionStatus.initial) SessionStatus session,
     @Default(HomeStatus.initial) HomeStatus status,
     @Default('') String reservationId,
+    @Default('') String invoiceId,
     String? errorMessage,
   }) = _Initial;
 }

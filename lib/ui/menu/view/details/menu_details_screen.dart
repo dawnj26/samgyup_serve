@@ -329,26 +329,7 @@ class _MenuAppbar extends StatelessWidget {
       actions: [
         MenuOptionsButton(
           style: buttonStyle,
-          onSelected: (option) {
-            switch (option) {
-              case MenuOptions.edit:
-                final item = context.read<MenuDetailsBloc>().state.menuItem;
-                context.router.push(
-                  MenuEditRoute(
-                    menuItem: item,
-                    onChange: ({required needsReload}) {
-                      if (needsReload) {
-                        context.read<MenuDetailsBloc>().add(
-                          const MenuDetailsEvent.menuReloaded(),
-                        );
-                      }
-                    },
-                  ),
-                );
-              case MenuOptions.delete:
-                _handleDelete(context);
-            }
-          },
+          onSelected: (option) => _handleSelected(context, option),
         ),
       ],
       pinned: true,
@@ -414,6 +395,27 @@ class _MenuAppbar extends StatelessWidget {
     context.read<MenuDeleteBloc>().add(
       MenuDeleteEvent.started(menuId: item.id),
     );
+  }
+
+  Future<void> _handleSelected(BuildContext context, MenuOptions option) async {
+    switch (option) {
+      case MenuOptions.edit:
+        final item = context.read<MenuDetailsBloc>().state.menuItem;
+        await context.router.push(
+          MenuEditRoute(
+            menuItem: item,
+            onChange: ({required needsReload}) {
+              if (needsReload) {
+                context.read<MenuDetailsBloc>().add(
+                  const MenuDetailsEvent.menuReloaded(),
+                );
+              }
+            },
+          ),
+        );
+      case MenuOptions.delete:
+        await _handleDelete(context);
+    }
   }
 }
 

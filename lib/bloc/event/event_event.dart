@@ -21,6 +21,6 @@ abstract class EventEvent with _$EventEvent {
   const factory EventEvent.paymentRequested({
     required String reservationId,
     required int tableNumber,
-    required Map<String, dynamic> payload,
+    required String invoiceId,
   }) = _PaymentRequested;
 }
