@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,26 +110,30 @@ class _CartButton extends StatelessWidget {
     );
 
     return FilledButton(
-      onPressed: () {
-        context.router.push(
-          OrderCartRoute(
-            onOrderStarted: () {
-              context.router.pop();
-
-              final cart = context.read<OrderCartBloc>().state.menuItems;
-              final invoice = context.read<ReservationBloc>().state.invoice;
-
-              context.read<ReservationOrderBloc>().add(
-                ReservationOrderEvent.started(
-                  items: cart,
-                  invoice: invoice,
-                ),
-              );
-            },
-          ),
-        );
-      },
+      onPressed: () => _handlePressed(context),
       child: Text('View Cart ($cartCount)'),
+    );
+  }
+
+  void _handlePressed(BuildContext context) {
+    unawaited(
+      context.router.push(
+        OrderCartRoute(
+          onOrderStarted: () => _handleOrderStarted(context),
+        ),
+      ),
+    );
+  }
+
+  void _handleOrderStarted(BuildContext context) {
+    final cart = context.read<OrderCartBloc>().state.menuItems;
+    final invoice = context.read<ReservationBloc>().state.invoice;
+
+    context.read<ReservationOrderBloc>().add(
+      ReservationOrderEvent.started(
+        items: cart,
+        invoice: invoice,
+      ),
     );
   }
 }

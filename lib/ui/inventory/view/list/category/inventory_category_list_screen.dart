@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,15 +101,17 @@ class _InventoryCategoryListScreenState
   void _handleListener(BuildContext context, InventoryDeleteState state) {
     switch (state) {
       case InventoryDeleteLoading():
-        showDialog<void>(
-          context: context,
-          barrierDismissible: false,
-          useRootNavigator: false,
-          builder: (ctx) {
-            return const LoadingDialog(
-              message: 'Deleting...',
-            );
-          },
+        unawaited(
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            useRootNavigator: false,
+            builder: (ctx) {
+              return const LoadingDialog(
+                message: 'Deleting...',
+              );
+            },
+          ),
         );
       case InventoryDeleteSuccess(:final item):
         context.router.pop();

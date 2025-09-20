@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/table/components/components.dart';
 import 'package:samgyup_serve/ui/table/view/form/table_form_screen.dart';
 import 'package:table_repository/table_repository.dart';
+import 'package:table_repository/table_repository.dart' as t;
 
 class TableScreen extends StatelessWidget {
   const TableScreen({super.key});
@@ -40,16 +43,20 @@ class TableScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet<void>(
-            context: context,
-            builder: (ctx) => TableFormScreen(
-              onSaved: () => _handleRefresh(context),
-            ),
-            isScrollControlled: true,
-          );
-        },
+        onPressed: () => _handlePressed(context),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _handlePressed(BuildContext context) {
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        builder: (ctx) => TableFormScreen(
+          onSaved: () => _handleRefresh(context),
+        ),
+        isScrollControlled: true,
       ),
     );
   }
@@ -112,20 +119,24 @@ class _TableList extends StatelessWidget {
                 final table = tables[index];
                 return TableTile(
                   table: table,
-                  onTap: (table) {
-                    context.router.push(
-                      TableDetailsRoute(
-                        id: table.id,
-                        table: table,
-                        onChanged: () => _handleRefresh(context),
-                      ),
-                    );
-                  },
+                  onTap: (table) => _handleTap(context, table),
                 );
               },
             );
         }
       },
+    );
+  }
+
+  void _handleTap(BuildContext context, t.Table table) {
+    unawaited(
+      context.router.push(
+        TableDetailsRoute(
+          id: table.id,
+          table: table,
+          onChanged: () => _handleRefresh(context),
+        ),
+      ),
     );
   }
 

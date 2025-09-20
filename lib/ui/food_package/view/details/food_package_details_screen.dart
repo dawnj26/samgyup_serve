@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -131,9 +133,9 @@ class _MenuItems extends StatelessWidget {
     );
   }
 
-  void _handleTap(BuildContext context, MenuItem item) {
+  Future<void> _handleTap(BuildContext context, MenuItem item) async {
     final router = context.router.parent<StackRouter>();
-    router?.push(
+    await router?.push(
       MenuDetailsRoute(
         menuItem: item,
         onChange: ({required needsReload}) {
@@ -170,14 +172,16 @@ class _MenuHeader extends StatelessWidget {
               onPressed: isLoading
                   ? null
                   : () {
-                      context.router.push(
-                        MenuSelectRoute(
-                          initialItems: state.menuItems,
-                          allowedCategories: const [
-                            MenuCategory.grilledMeats,
-                            MenuCategory.sideDishes,
-                          ],
-                          onSave: (items) => _handleChange(context, items),
+                      unawaited(
+                        context.router.push(
+                          MenuSelectRoute(
+                            initialItems: state.menuItems,
+                            allowedCategories: const [
+                              MenuCategory.grilledMeats,
+                              MenuCategory.sideDishes,
+                            ],
+                            onSave: (items) => _handleChange(context, items),
+                          ),
                         ),
                       );
                     },

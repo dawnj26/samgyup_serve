@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/data/management.dart';
@@ -20,7 +22,7 @@ class ManagementScreen extends StatelessWidget {
             onTap: () {
               if (item.route == null) return;
 
-              context.router.push(item.route!);
+              unawaited(context.router.push(item.route!));
             },
           );
         },

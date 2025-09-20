@@ -5,8 +5,8 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/status/inventory_status_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
-import 'package:samgyup_serve/ui/components/dialogs/loading_dialog.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryStatusListScreen extends StatefulWidget {
@@ -98,16 +98,7 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
   void _handleListener(BuildContext context, InventoryDeleteState state) {
     switch (state) {
       case InventoryDeleteLoading():
-        showDialog<void>(
-          context: context,
-          barrierDismissible: false,
-          useRootNavigator: false,
-          builder: (ctx) {
-            return const LoadingDialog(
-              message: 'Deleting...',
-            );
-          },
-        );
+        showLoadingDialog(context: context);
       case InventoryDeleteSuccess(:final item):
         context.router.pop();
         showSnackBar(context, 'Item deleted successfully.');

@@ -56,8 +56,8 @@ class PaymentOrderBloc extends Bloc<PaymentOrderEvent, PaymentOrderState> {
   }
 
   @override
-  Future<void> close() {
-    _subscription?.close();
+  Future<void> close() async {
+    await _subscription?.close();
     return super.close();
   }
 }
