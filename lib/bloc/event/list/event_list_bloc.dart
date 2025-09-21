@@ -21,6 +21,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
        super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_Refreshed>(_onRefreshed);
+    on<_FilterChanged>(_onFilterChanged);
     on<_Created>((event, emit) async {
       if (event.event.status != EventStatus.pending) return;
 
@@ -54,6 +55,41 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
   final AudioPlayer _audioPlayer;
   RealtimeSubscription? _subscription;
 
+  Future<void> _onFilterChanged(
+    _FilterChanged event,
+    Emitter<EventListState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: EventListStatus.loading,
+        filter: event.filter,
+      ),
+    );
+    try {
+      final events = await _repo.getEvents(statuses: [event.filter]);
+      emit(
+        state.copyWith(
+          status: EventListStatus.success,
+          events: events,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          status: EventListStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: EventListStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> _onStarted(
     _Started event,
     Emitter<EventListState> emit,
@@ -63,7 +99,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
       await _audioPlayer.setVolume(1);
       await _subscribe();
 
-      final events = await _repo.getEvents(statuses: [EventStatus.pending]);
+      final events = await _repo.getEvents(statuses: [state.filter]);
       emit(
         state.copyWith(
           status: EventListStatus.success,
@@ -94,7 +130,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
     try {
       emit(state.copyWith(status: EventListStatus.loading));
 
-      final events = await _repo.getEvents(statuses: [EventStatus.pending]);
+      final events = await _repo.getEvents(statuses: [state.filter]);
       emit(
         state.copyWith(
           status: EventListStatus.success,
