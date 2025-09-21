@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/event/actions/event_actions_bloc.dart';
 import 'package:samgyup_serve/bloc/refill/refill_bloc.dart';
+import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/order/components/components.dart';
 
 class EventRefillScreen extends StatelessWidget {
@@ -23,17 +24,34 @@ class EventRefillScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: Text(
-                'Table #${event.tableNumber}',
-                style: textTheme.headlineLarge,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Table #${event.tableNumber}',
+                        style: textTheme.headlineLarge,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Created at: ${formatTime(event.createdAt!.toLocal())}',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Divider(),
+              ],
             ),
           ),
+
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
               child: Text(
                 'Items',
                 style: textTheme.labelLarge,
