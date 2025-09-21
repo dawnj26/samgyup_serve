@@ -113,6 +113,7 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: EventOrderRoute.page),
                 AutoRoute(page: EventRefillRoute.page),
+                AutoRoute(page: EventPaymentRoute.page),
               ],
             ),
             AutoRoute(
