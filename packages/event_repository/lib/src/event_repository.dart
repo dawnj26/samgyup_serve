@@ -54,7 +54,7 @@ class EventRepository {
         Query.orderAsc(r'$createdAt'),
         if (statuses != null && statuses.isNotEmpty)
           Query.equal('status', statuses.map((e) => e.name).toList()),
-        // Query.greaterThanEqual(r'$createdAt', startOfDay.toIso8601String()),
+        Query.greaterThanEqual(r'$createdAt', startOfDay.toIso8601String()),
       ];
 
       final response = await _appwrite.databases.listRows(
