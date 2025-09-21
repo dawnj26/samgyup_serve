@@ -18,6 +18,7 @@ class BillingRepository {
   final AppwriteRepository _appwrite;
 
   String get _collectionId => _appwrite.environment.invoiceCollectionId;
+  String get _paymentCollectionId => _appwrite.environment.paymentCollectionId;
   String get _databaseId => _appwrite.environment.databaseId;
 
   /// Creates a new invoice in the database.
@@ -140,5 +141,58 @@ class BillingRepository {
     return _appwrite.realtime.subscribe([
       'databases.$_databaseId.tables.$_collectionId.rows.$invoiceId',
     ]);
+  }
+
+  /// Creates a new payment record in the database.
+  Future<Payment> createPayment({
+    required double amount,
+    required PaymentMethod method,
+    String? transactionRef,
+  }) async {
+    try {
+      final payment = Payment(
+        id: ID.unique(),
+        amount: amount,
+        method: method,
+        transactionRef: transactionRef,
+      );
+
+      final doc = await _appwrite.databases.createRow(
+        databaseId: _databaseId,
+        tableId: _paymentCollectionId,
+        rowId: payment.id,
+        data: payment.toJson(),
+      );
+
+      return Payment.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository.createPayment');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Marks an invoice as paid with the given payment.
+  Future<Invoice> markAsPaid({
+    required Invoice invoice,
+    required Payment payment,
+  }) async {
+    try {
+      final updatedInvoice = invoice.copyWith(
+        status: InvoiceStatus.paid,
+        paymentId: payment.id,
+      );
+
+      final doc = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: updatedInvoice.id,
+        data: updatedInvoice.toJson(),
+      );
+
+      return Invoice.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository.markAsPaid');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
   }
 }
