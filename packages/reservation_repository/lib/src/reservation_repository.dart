@@ -86,4 +86,50 @@ class ReservationRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Retrieves a reservation by its associated invoice ID.
+  Future<Reservation> getReservationByInvoiceId(String invoiceId) async {
+    try {
+      final result = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('invoiceId', invoiceId),
+          Query.limit(1),
+        ],
+      );
+
+      if (result.total == 0) {
+        throw const ResponseException('Reservation not found');
+      }
+
+      final doc = result.rows.first;
+      return Reservation.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(
+        e.toString(),
+        name: 'ReservationRepository.getReservationByInvoiceId',
+      );
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Updates an existing reservation in the database.
+  Future<Reservation> updateReservation({
+    required Reservation reservation,
+  }) async {
+    try {
+      final doc = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: reservation.id,
+        data: reservation.toJson(),
+      );
+
+      return Reservation.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'ReservationRepository.updateReservation');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }
