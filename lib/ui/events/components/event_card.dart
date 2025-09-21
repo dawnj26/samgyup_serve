@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:event_repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/events/components/components.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class EventCard extends StatelessWidget {
   const EventCard({
@@ -39,10 +40,12 @@ class EventCard extends StatelessWidget {
           ),
           contentPadding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
           title: Text('Table ${event.tableNumber} - ${event.type.label}'),
-          subtitle: Text(payload['message'] as String? ?? 'No message'),
-          trailing: EventMoreOptionButton(
-            onSelected: onMoreTap,
-          ),
+          subtitle: Text(timeago.format(event.createdAt!.toLocal())),
+          trailing: event.status == EventStatus.pending
+              ? EventMoreOptionButton(
+                  onSelected: onMoreTap,
+                )
+              : null,
         ),
       ),
     );
