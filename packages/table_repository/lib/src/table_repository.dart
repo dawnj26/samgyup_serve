@@ -131,6 +131,28 @@ class TableRepository {
     }
   }
 
+  /// Fetch a single table by its number.
+  Future<Table> fetchTableByNumber(int number) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('number', number),
+          Query.limit(1),
+        ],
+      );
+
+      if (response.total == 0) {
+        throw const ResponseException('Table not found');
+      }
+
+      return Table.fromJson(_appwrite.rowToJson(response.rows.first));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
   /// Deletes a table from the database.
   Future<void> deleteTable(String id) async {
     try {
