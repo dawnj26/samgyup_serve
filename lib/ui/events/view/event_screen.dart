@@ -23,13 +23,25 @@ class EventScreen extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Pending Events',
-                  style: textTheme.headlineSmall,
+                Row(
+                  children: [
+                    EventFilterButton(
+                      onChanged: (status) {
+                        context.read<EventListBloc>().add(
+                          EventListEvent.filterChanged(filter: status),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Events',
+                      style: textTheme.headlineSmall,
+                    ),
+                  ],
                 ),
                 IconButton(
                   onPressed: () {
@@ -108,6 +120,19 @@ class _List extends StatelessWidget {
                       unawaited(
                         router?.push(
                           EventRefillRoute(event: event),
+                        ),
+                      );
+                    }
+
+                    if (event.type == EventType.paymentRequested) {
+                      final invoiceId = data['invoiceId'] as String? ?? '';
+
+                      unawaited(
+                        router?.push(
+                          EventPaymentRoute(
+                            invoiceId: invoiceId,
+                            event: event,
+                          ),
                         ),
                       );
                     }
