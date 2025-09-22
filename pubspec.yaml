@@ -7,11 +7,14 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
+  appwrite: ^19.0.0
   appwrite_repository:
     path: packages/appwrite_repository
   authentication_repository:
     path: packages/authentication_repository
   auto_route: ^10.1.2
+  billing_repository:
+    path: packages/billing_repository
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
   cached_network_image: ^3.4.1
@@ -19,6 +22,8 @@ dependencies:
   device_repository:
     path: packages/device_repository
   dotted_border: ^3.1.0
+  event_repository:
+    path: packages/event_repository
   file_picker: ^10.3.2
   flutter:
     sdk: flutter
@@ -31,17 +36,21 @@ dependencies:
   inventory_repository:
     path: packages/inventory_repository
   json_annotation: ^4.9.0
+  just_audio: ^0.10.5
   menu_repository:
     path: packages/menu_repository
   order_repository:
     path: packages/order_repository
   package_repository:
     path: packages/package_repository
+  reservation_repository:
+    path: packages/reservation_repository
   shared_preferences: ^2.5.3
   stream_transform: ^2.1.1
   string_validator: ^1.2.0
   table_repository:
     path: packages/table_repository
+  timeago: ^3.7.1
 
 dev_dependencies:
   auto_route_generator: ^10.1.0
@@ -53,13 +62,14 @@ dev_dependencies:
   freezed: ^3.1.0
   json_serializable: ^6.9.5
   mocktail: ^1.0.4
-  very_good_analysis: ^9.0.0
+  very_good_analysis: ^10.0.0
 
 flutter:
   generate: true
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/sounds/
 
 flutter_launcher_icons:
   android: true

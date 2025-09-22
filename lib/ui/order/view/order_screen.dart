@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
+import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/app_logo_icon.dart';
 import 'package:samgyup_serve/ui/order/view/tabs/menu_tab.dart';
 import 'package:samgyup_serve/ui/order/view/tabs/package_tab.dart';
@@ -24,13 +30,19 @@ class _OrderScreenState extends State<OrderScreen>
   @override
   void initState() {
     super.initState();
+
+    // Exclude menu categories that are included in unli packages
+    final categories = MenuCategory.values.where(
+      (c) => c != MenuCategory.grilledMeats && c != MenuCategory.sideDishes,
+    );
+
     _tabs = [
       const Tab(text: 'Unli Packages'),
-      ...MenuCategory.values.map((c) => Tab(text: c.label)),
+      ...categories.map((c) => Tab(text: c.label)),
     ];
     _tabViews = [
       const PackageTab(),
-      ...MenuCategory.values.map((c) => MenuTab(category: c)),
+      ...categories.map((c) => MenuTab(category: c)),
     ];
 
     _tabController = TabController(length: _tabs.length, vsync: this);
@@ -84,10 +96,45 @@ class _ViewCartButton extends StatelessWidget {
     final cartCount = menuCart.length + packageCart.length;
 
     return FilledButton(
-      onPressed: () {
-        context.router.push(const OrderCartRoute());
-      },
+      onPressed: () => _handlePressed(context),
       child: Text('View Cart ($cartCount)'),
+    );
+  }
+
+  void _handlePressed(BuildContext context) {
+    unawaited(
+      context.router.push(
+        OrderCartRoute(
+          onOrderStarted: () => _handleCheckout(context),
+          onPointerDown: () => context.read<ActivityBloc>().add(
+            const ActivityEvent.started(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleCheckout(BuildContext context) async {
+    final menuCart = context.read<OrderCartBloc>().state.menuItems;
+    final packageCart = context.read<OrderCartBloc>().state.packages;
+    final tableId = context.read<AppBloc>().state.deviceData!.table!.id;
+
+    final confirm = await showConfirmationDialog(
+      context: context,
+      message:
+          'Proceed to start order with ${menuCart.length} menu '
+          'items and ${packageCart.length} packages?',
+      title: 'Confirm Order',
+    );
+
+    if (!context.mounted || !confirm) return;
+
+    context.read<OrderBloc>().add(
+      OrderEvent.started(
+        tableId: tableId,
+        menuItems: menuCart,
+        packages: packageCart,
+      ),
     );
   }
 }

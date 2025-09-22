@@ -7,16 +7,18 @@ class PriceInput extends StatelessWidget {
     this.onChanged,
     this.initialValue,
     this.errorText,
+    this.labelText,
   });
 
   final void Function(String price)? onChanged;
   final String? initialValue;
   final String? errorText;
+  final String? labelText;
 
   @override
   Widget build(BuildContext context) {
     return OutlinedTextField(
-      labelText: 'Price',
+      labelText: labelText ?? 'Price',
       onChanged: onChanged,
       initialValue: initialValue,
       errorText: errorText,

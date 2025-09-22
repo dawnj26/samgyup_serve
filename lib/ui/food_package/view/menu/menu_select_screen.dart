@@ -65,9 +65,9 @@ class _SelectedBar extends StatelessWidget {
     );
   }
 
-  void _handleView(BuildContext context) {
+  Future<void> _handleView(BuildContext context) async {
     final items = context.read<MenuSelectBloc>().state.selectedItems;
-    showModalBottomSheet<void>(
+    await showModalBottomSheet<void>(
       context: context,
       builder: (ctx) {
         return MenuSelectBottomSheet(

@@ -20,6 +20,7 @@ class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
   late final DeviceRepository _deviceRepository;
   late final TableRepository _tableRepository;
+
   late final AppRouter _router;
 
   @override
@@ -103,7 +104,7 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
 
               final home = deviceStatus == DeviceStatus.unknown
                   ? const LoginRoute()
-                  : const HomeRoute();
+                  : const HomeShellRoute();
 
               return [
                 if (authStatus == AuthStatus.guest)

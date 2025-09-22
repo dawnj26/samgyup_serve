@@ -18,7 +18,7 @@ abstract class Table with _$Table {
   /// [reservationId] links to a reservation if the table is reserved.
   /// [createdAt] timestamp when the table record was created.
   /// [updatedAt] timestamp when the table record was last modified.
-  factory Table({
+  const factory Table({
     /// The table number displayed to staff and customers
     required int number,
 
@@ -40,6 +40,13 @@ abstract class Table with _$Table {
     /// Timestamp when this table record was last updated
     DateTime? updatedAt,
   }) = _Table;
+
+  /// Creates an empty [Table] instance with default values.
+  factory Table.empty() => const _Table(
+    number: 0,
+    capacity: 0,
+    status: TableStatus.available,
+  );
 
   /// Creates a [Table] instance from a JSON map.
   factory Table.fromJson(Map<String, dynamic> json) => _$TableFromJson(json);

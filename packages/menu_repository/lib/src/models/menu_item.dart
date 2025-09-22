@@ -16,8 +16,7 @@ abstract class MenuItem with _$MenuItem {
     required double price,
     required MenuCategory category,
     required DateTime createdAt,
-    @Default(1) int stock,
-    @Default(true) bool isAvailable,
+    @Default(0) int stock,
     @Default('') String id,
     DateTime? updatedAt,
     String? imageFileName,
@@ -35,4 +34,9 @@ abstract class MenuItem with _$MenuItem {
   /// Creates a [MenuItem] from a JSON map.
   factory MenuItem.fromJson(Map<String, dynamic> json) =>
       _$MenuItemFromJson(json);
+
+  const MenuItem._();
+
+  /// Returns true if the menu item is available (stock > 0).
+  bool get isAvailable => stock > 0;
 }

@@ -95,6 +95,27 @@ class TableRepository {
     }
   }
 
+  /// Updates only the status of a table in the database.
+  Future<Table> updateTableStatus({
+    required String tableId,
+    required TableStatus status,
+  }) async {
+    try {
+      final response = await _appwrite.databases.updateRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        rowId: tableId,
+        data: {
+          'status': status.name,
+        },
+      );
+
+      return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
   /// Fetch a single table by its ID.
   Future<Table> fetchTable(String id) async {
     try {
@@ -105,6 +126,28 @@ class TableRepository {
       );
 
       return Table.fromJson(_appwrite.rowToJson(response));
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Fetch a single table by its number.
+  Future<Table> fetchTableByNumber(int number) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('number', number),
+          Query.limit(1),
+        ],
+      );
+
+      if (response.total == 0) {
+        throw const ResponseException('Table not found');
+      }
+
+      return Table.fromJson(_appwrite.rowToJson(response.rows.first));
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }

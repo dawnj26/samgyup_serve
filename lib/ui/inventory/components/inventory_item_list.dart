@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
@@ -35,17 +37,19 @@ class InventoryItemList extends StatelessWidget {
                       case InventoryItemOption.edit:
                         onEdit?.call(items[index]);
                       case InventoryItemOption.delete:
-                        showDialog<void>(
-                          context: context,
-                          builder: (ctx) => InventoryDeleteDialog(
-                            item: items[index],
-                            onDelete: () {
-                              context.read<InventoryDeleteBloc>().add(
-                                InventoryDeleteEvent.started(
-                                  item: items[index],
-                                ),
-                              );
-                            },
+                        unawaited(
+                          showDialog<void>(
+                            context: context,
+                            builder: (ctx) => InventoryDeleteDialog(
+                              item: items[index],
+                              onDelete: () {
+                                context.read<InventoryDeleteBloc>().add(
+                                  InventoryDeleteEvent.started(
+                                    item: items[index],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         );
                     }

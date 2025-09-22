@@ -35,8 +35,8 @@ class FoodPackageScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.router.push(
+        onPressed: () async {
+          await context.router.push(
             FoodPackageCreateRoute(
               onCreated: (package) => _handleCreate(context, package),
             ),
@@ -137,8 +137,8 @@ class _PackageList extends StatelessWidget {
     );
   }
 
-  void _handleTap(BuildContext context, FoodPackage package) {
-    context.router.push(
+  Future<void> _handleTap(BuildContext context, FoodPackage package) async {
+    await context.router.push(
       FoodPackageDetailsRoute(
         package: package,
         onChange: () {

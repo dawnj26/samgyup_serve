@@ -10,7 +10,9 @@ import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/order/components/components.dart';
 
 class OrderCartScreen extends StatelessWidget {
-  const OrderCartScreen({super.key});
+  const OrderCartScreen({super.key, this.onOrderStarted});
+
+  final void Function()? onOrderStarted;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class OrderCartScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            const _CheckoutButton(),
+            _CheckoutButton(onOrderStarted),
           ],
         ),
       ),
@@ -100,7 +102,7 @@ class _TotalPrice extends StatelessWidget {
     );
 
     return Text(
-      CurrencyFormatter.formatToPHP(total),
+      formatToPHP(total),
       style: textTheme.titleMedium?.copyWith(
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,
@@ -110,7 +112,9 @@ class _TotalPrice extends StatelessWidget {
 }
 
 class _CheckoutButton extends StatelessWidget {
-  const _CheckoutButton();
+  const _CheckoutButton(this.onOrderStarted);
+
+  final void Function()? onOrderStarted;
 
   @override
   Widget build(BuildContext context) {
@@ -124,8 +128,8 @@ class _CheckoutButton extends StatelessWidget {
     final canCheckout = menuCart.isNotEmpty || packageCart.isNotEmpty;
 
     return FilledButton(
-      onPressed: canCheckout ? () {} : null,
-      child: const Text('Start Order'),
+      onPressed: canCheckout ? onOrderStarted : null,
+      child: const Text('Order'),
     );
   }
 }

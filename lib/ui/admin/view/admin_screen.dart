@@ -30,6 +30,7 @@ class AdminScreen extends StatelessWidget {
       },
       routes: const [
         DashboardRoute(),
+        EventRoute(),
         ManagementRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
@@ -41,6 +42,11 @@ class AdminScreen extends StatelessWidget {
               label: 'Home',
               icon: Icon(Icons.space_dashboard_outlined),
               selectedIcon: Icon(Icons.space_dashboard),
+            ),
+            NavigationDestination(
+              label: 'Events',
+              icon: Icon(Icons.event_outlined),
+              selectedIcon: Icon(Icons.event),
             ),
             NavigationDestination(
               label: 'Management',

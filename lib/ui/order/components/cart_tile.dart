@@ -55,7 +55,7 @@ class CartTile extends StatelessWidget {
                       style: textTheme.titleSmall,
                     ),
                     Text(
-                      CurrencyFormatter.formatToPHP(price),
+                      formatToPHP(price),
                       style: textTheme.titleSmall?.copyWith(
                         color: colorScheme.primary,
                       ),

@@ -52,7 +52,7 @@ class PackageTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    CurrencyFormatter.formatToPHP(package.price),
+                    formatToPHP(package.price),
                     style: textTheme.titleMedium?.copyWith(
                       color: colorScheme.primary,
                     ),
