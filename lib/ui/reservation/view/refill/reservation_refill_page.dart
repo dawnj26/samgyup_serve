@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
+import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/refill/reservation_refill_bloc.dart';
@@ -14,13 +15,15 @@ import 'package:samgyup_serve/ui/reservation/view/refill/reservation_refill_scre
 class ReservationRefillPage extends StatelessWidget
     implements AutoRouteWrapper {
   const ReservationRefillPage({
-    required this.menuIds,
+    required this.package,
     required this.quantity,
+    required this.startTime,
     super.key,
     this.onSave,
   });
 
-  final List<String> menuIds;
+  final FoodPackage package;
+  final DateTime startTime;
   final int quantity;
   final void Function(List<CartItem<MenuItem>> items)? onSave;
 
@@ -61,7 +64,7 @@ class ReservationRefillPage extends StatelessWidget
       providers: [
         BlocProvider(
           create: (context) => MenuListBloc(
-            menuIds: menuIds,
+            menuIds: package.menuIds,
             menuRepository: context.read(),
           )..add(const MenuListEvent.started()),
         ),
@@ -70,6 +73,8 @@ class ReservationRefillPage extends StatelessWidget
         ),
         BlocProvider(
           create: (context) => ReservationRefillBloc(
+            startTime: startTime,
+            package: package,
             menuRepository: context.read(),
           ),
         ),

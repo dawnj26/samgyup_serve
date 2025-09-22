@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
+import 'package:reservation_repository/reservation_repository.dart'
+    show Reservation;
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
@@ -124,7 +126,7 @@ class _Orders extends StatelessWidget {
                 _handlePressed(
                   context,
                   cart,
-                  state.reservation.id,
+                  state.reservation,
                   state.table.number,
                 );
               },
@@ -139,20 +141,21 @@ class _Orders extends StatelessWidget {
   void _handlePressed(
     BuildContext context,
     CartItem<FoodPackage> cart,
-    String reservationId,
+    Reservation reservation,
     int tableNumber,
   ) {
     unawaited(
       context.router.push(
         ReservationRefillRoute(
-          menuIds: cart.item.menuIds,
+          package: cart.item,
+          startTime: reservation.startTime,
           quantity: cart.quantity,
           onSave: (items) {
             if (items.isEmpty) return;
 
             context.read<EventBloc>().add(
               EventEvent.refillRequested(
-                reservationId: reservationId,
+                reservationId: reservation.id,
                 tableNumber: tableNumber,
                 items: items,
               ),
