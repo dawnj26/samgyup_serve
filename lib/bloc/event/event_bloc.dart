@@ -42,6 +42,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         tableNumber: event.tableNumber,
         payload: jsonEncode(payload),
         type: EventType.orderCreated,
+        createdAt: DateTime.now().toUtc(),
       );
       await _eventRepository.createEvent(newEvent);
       emit(state.copyWith(status: EventStatus.success));
@@ -74,6 +75,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         tableNumber: event.tableNumber,
         payload: jsonEncode(payload),
         type: EventType.itemsAdded,
+        createdAt: DateTime.now().toUtc(),
       );
       await _eventRepository.createEvent(newEvent);
       emit(state.copyWith(status: EventStatus.success));
@@ -113,6 +115,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         tableNumber: event.tableNumber,
         payload: jsonEncode(payload),
         type: EventType.refillRequested,
+        createdAt: DateTime.now().toUtc(),
       );
       await _eventRepository.createEvent(newEvent);
       emit(state.copyWith(status: EventStatus.success));
@@ -143,6 +146,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           },
         }),
         type: EventType.paymentRequested,
+        createdAt: DateTime.now().toUtc(),
       );
       await _eventRepository.createEvent(newEvent);
       emit(state.copyWith(status: EventStatus.success));
