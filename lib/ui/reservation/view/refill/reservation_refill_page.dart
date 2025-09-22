@@ -28,6 +28,10 @@ class ReservationRefillPage extends StatelessWidget
   Widget build(BuildContext context) {
     return BlocListener<ReservationRefillBloc, ReservationRefillState>(
       listener: (context, state) {
+        if (state.status == ReservationRefillStatus.timeLimitExceeded) {
+          goToPreviousRoute(context);
+        }
+
         if (state.status == ReservationRefillStatus.loading) {
           showLoadingDialog(context: context);
         }
