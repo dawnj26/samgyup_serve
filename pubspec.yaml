@@ -36,6 +36,7 @@ dependencies:
   inventory_repository:
     path: packages/inventory_repository
   json_annotation: ^4.9.0
+  just_audio: ^0.10.5
   menu_repository:
     path: packages/menu_repository
   order_repository:
@@ -49,6 +50,7 @@ dependencies:
   string_validator: ^1.2.0
   table_repository:
     path: packages/table_repository
+  timeago: ^3.7.1
 
 dev_dependencies:
   auto_route_generator: ^10.1.0
@@ -67,6 +69,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/sounds/
 
 flutter_launcher_icons:
   android: true

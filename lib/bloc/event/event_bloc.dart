@@ -32,7 +32,9 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     try {
       final payload = {
         'message': 'Table ${event.tableNumber} has placed a new order.',
-        'orders': event.orders.map((e) => e.toJson()).toList(),
+        'data': {
+          'orders': event.orders.map((e) => e.toJson()).toList(),
+        },
       };
 
       final newEvent = Event(
@@ -62,7 +64,9 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     try {
       final payload = {
         'message': 'Table ${event.tableNumber} has added items to their order.',
-        'orders': event.orders.map((e) => e.toJson()).toList(),
+        'data': {
+          'orders': event.orders.map((e) => e.toJson()).toList(),
+        },
       };
 
       final newEvent = Event(
@@ -92,14 +96,16 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     try {
       final payload = {
         'message': 'Table ${event.tableNumber} has requested a refill.',
-        'items': event.items
-            .map(
-              (e) => {
-                'menuId': e.item.id,
-                'quantity': e.quantity,
-              },
-            )
-            .toList(),
+        'data': {
+          'items': event.items
+              .map(
+                (e) => {
+                  'menuId': e.item.id,
+                  'quantity': e.quantity,
+                },
+              )
+              .toList(),
+        },
       };
 
       final newEvent = Event(
@@ -132,7 +138,9 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         tableNumber: event.tableNumber,
         payload: jsonEncode({
           'message': 'Table ${event.tableNumber} has requested to pay.',
-          'invoiceId': event.invoiceId,
+          'data': {
+            'invoiceId': event.invoiceId,
+          },
         }),
         type: EventType.paymentRequested,
       );
