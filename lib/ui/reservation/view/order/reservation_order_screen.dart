@@ -111,13 +111,24 @@ class _Orders extends StatelessWidget {
               key: ValueKey('refillButton_${cart.id}'),
               startTime: state.reservation.startTime,
               durationMinutes: cart.item.timeLimit,
-              onPressed: () => _handlePressed(
-                context,
-                cart,
-                state.reservation.id,
-                state.table.number,
-              ),
-              child: const Text('Refill'),
+              onPressed: () {
+                final endTime = state.reservation.startTime.add(
+                  Duration(
+                    minutes: cart.item.timeLimit,
+                  ),
+                );
+                final diff = endTime.difference(DateTime.now());
+
+                if (diff.isNegative) return;
+
+                _handlePressed(
+                  context,
+                  cart,
+                  state.reservation.id,
+                  state.table.number,
+                );
+              },
+              child: const Text('Request'),
             );
           },
         );
