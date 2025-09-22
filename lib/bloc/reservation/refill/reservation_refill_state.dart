@@ -5,6 +5,7 @@ enum ReservationRefillStatus {
   loading,
   success,
   failure,
+  timeLimitExceeded,
 }
 
 @freezed
