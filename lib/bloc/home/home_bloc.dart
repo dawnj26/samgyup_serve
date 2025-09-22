@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -50,9 +52,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _Started event,
     Emitter<HomeState> emit,
   ) async {
-    if (event.tableId == null) return;
-
     emit(state.copyWith(status: HomeStatus.loading));
+
+    if (event.tableId == null) {
+      emit(
+        state.copyWith(
+          status: HomeStatus.success,
+          session: SessionStatus.initial,
+        ),
+      );
+      return;
+    }
 
     try {
       final reservation = await _reservationRepo.getCurrentReservation(
@@ -75,6 +85,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         );
       }
     } on ResponseException catch (e) {
+      log('HomeBloc _onStarted', error: e);
       emit(
         state.copyWith(
           status: HomeStatus.failure,
@@ -83,6 +94,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
     } on Exception catch (e) {
+      log('HomeBloc _onStarted', error: e);
       emit(
         state.copyWith(
           status: HomeStatus.failure,
