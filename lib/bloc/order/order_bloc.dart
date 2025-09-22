@@ -56,18 +56,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           quantity: menu.quantity,
         );
       }
-      for (final cart in event.packages) {
-        for (final menu in cart.item.menuIds) {
-          try {
-            await _menuRepository.decrementStock(
-              menuId: menu,
-              quantity: 1,
-            );
-          } on ResponseException {
-            continue;
-          }
-        }
-      }
 
       final invoice = await _billingRepository.createInvoice(
         orders: orders,
