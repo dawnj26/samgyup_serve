@@ -104,7 +104,7 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
 
               final home = deviceStatus == DeviceStatus.unknown
                   ? const LoginRoute()
-                  : const HomeRoute();
+                  : const HomeShellRoute();
 
               return [
                 if (authStatus == AuthStatus.guest)

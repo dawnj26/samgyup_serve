@@ -19,7 +19,7 @@ class ReservationRefillScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Refill'),
+        title: const Text('Request package menus'),
       ),
       body: BlocBuilder<MenuListBloc, MenuListState>(
         builder: (context, state) {

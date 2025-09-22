@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:billing_repository/billing_repository.dart';
 import 'package:event_repository/event_repository.dart' hide EventStatus;
@@ -103,6 +105,10 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
                   .deviceData
                   ?.table
                   ?.id;
+              log(
+                'Creating HomeBloc for tableId: $tableId',
+                name: 'HomeShellPage',
+              );
 
               return HomeBloc(
                 reservationRepo: context.read<ReservationRepository>(),
