@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:samgyup_serve/data/models/revenue_data_point.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
