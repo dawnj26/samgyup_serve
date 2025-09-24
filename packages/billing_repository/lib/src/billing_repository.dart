@@ -195,4 +195,111 @@ class BillingRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Gets revenue data based on the specified period.
+  ///
+  /// Returns a list of maps containing 'date' and 'revenue' keys.
+  /// - For [Period.week]: Returns 7 days of revenue data starting from Sunday
+  /// - For [Period.month]: Returns 4 weeks of revenue data
+  /// - For [Period.year]: Returns 12 months of revenue
+  ///  data starting from January
+  Future<List<Map<String, dynamic>>> getRevenueData(Period period) async {
+    try {
+      final now = DateTime.now().toUtc();
+      final revenueData = <Map<String, dynamic>>[];
+
+      switch (period) {
+        case Period.week:
+          // Find the most recent Sunday
+          final daysFromSunday = now.weekday % 7;
+          final lastSunday = now.subtract(Duration(days: daysFromSunday));
+
+          for (var i = 0; i < 7; i++) {
+            final date = lastSunday.add(Duration(days: i));
+            final startOfDay = DateTime.utc(date.year, date.month, date.day);
+            final endOfDay = startOfDay.add(const Duration(days: 1));
+
+            final revenue = await _getRevenueForDateRange(startOfDay, endOfDay);
+            revenueData.add({
+              'date': startOfDay.toIso8601String(),
+              'revenue': revenue,
+            });
+          }
+
+        case Period.month:
+          final lastDayOfMonth = DateTime.utc(now.year, now.month + 1, 0);
+          final totalDays = lastDayOfMonth.day;
+          final daysPerPart = (totalDays / 4).ceil();
+
+          for (var i = 0; i < 4; i++) {
+            final startDay = (i * daysPerPart) + 1;
+            final endDay = ((i + 1) * daysPerPart).clamp(1, totalDays);
+
+            final startOfPeriod = DateTime.utc(now.year, now.month, startDay);
+            final endOfPeriod = DateTime.utc(now.year, now.month, endDay + 1);
+
+            final revenue = await _getRevenueForDateRange(
+              startOfPeriod,
+              endOfPeriod,
+            );
+            revenueData.add({
+              'date': startOfPeriod.toIso8601String(),
+              'revenue': revenue,
+            });
+          }
+
+        case Period.year:
+          // Start from January of current year
+          for (var i = 0; i < 12; i++) {
+            final startOfMonth = DateTime.utc(now.year, i + 1);
+            final endOfMonth = DateTime.utc(now.year, i + 2);
+
+            final revenue = await _getRevenueForDateRange(
+              startOfMonth,
+              endOfMonth,
+            );
+            revenueData.add({
+              'date': startOfMonth.toIso8601String(),
+              'revenue': revenue,
+            });
+          }
+      }
+
+      return revenueData;
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository.getRevenueData');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Helper method to get total revenue for a specific date range.
+  Future<double> _getRevenueForDateRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    try {
+      final documents = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('status', InvoiceStatus.paid.name),
+          Query.greaterThanEqual(r'$createdAt', startDate.toIso8601String()),
+          Query.lessThan(r'$createdAt', endDate.toIso8601String()),
+          Query.select(['totalAmount']),
+          Query.limit(1000),
+        ],
+      );
+
+      double totalRevenue = 0;
+      for (final doc in documents.rows) {
+        final amount = doc.data['totalAmount'] as num? ?? 0;
+        totalRevenue += amount;
+      }
+
+      return totalRevenue;
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'BillingRepository._getRevenueForDateRange');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }

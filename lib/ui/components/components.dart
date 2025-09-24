@@ -7,6 +7,7 @@ export 'bottom_loader.dart';
 export 'bottom_sheet_layout.dart';
 export 'bucket_image.dart';
 export 'buttons/buttons.dart';
+export 'charts/charts.dart';
 export 'datetime_picker.dart';
 export 'description_input.dart';
 export 'dialogs/dialogs.dart';

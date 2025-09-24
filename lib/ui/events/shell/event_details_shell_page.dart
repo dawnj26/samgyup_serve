@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:billing_repository/billing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -20,9 +19,6 @@ class EventDetailsShellPage extends AutoRouter implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
-          create: (context) => BillingRepository(),
-        ),
         RepositoryProvider(
           create: (context) => MenuRepository(),
         ),
