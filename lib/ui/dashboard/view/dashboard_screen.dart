@@ -20,6 +20,20 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const RevenueSummary(),
+            const Row(
+              children: [
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: TableAvailability(),
+                  ),
+                ),
+
+                Expanded(
+                  child: AspectRatio(aspectRatio: 1, child: ReservationToday()),
+                ),
+              ],
+            ),
           ],
         ),
       ),
