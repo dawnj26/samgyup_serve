@@ -132,4 +132,30 @@ class ReservationRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Gets the total number of reservations made today.
+  Future<int> getTodayTotalReservations() async {
+    try {
+      final now = DateTime.now().toUtc();
+      final startOfDay = DateTime.utc(now.year, now.month, now.day);
+      final endOfDay = DateTime.utc(now.year, now.month, now.day, 23, 59, 59);
+
+      final result = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.greaterThanEqual('startTime', startOfDay.toIso8601String()),
+          Query.lessThanEqual('startTime', endOfDay.toIso8601String()),
+        ],
+      );
+
+      return result.total;
+    } on AppwriteException catch (e) {
+      log(
+        e.toString(),
+        name: 'ReservationRepository.getTodayTotalReservations',
+      );
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }

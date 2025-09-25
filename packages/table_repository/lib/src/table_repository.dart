@@ -165,4 +165,21 @@ class TableRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Gets the number of available tables in the database.
+  Future<int> getAvailableTable() async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.equal('status', TableStatus.available.name),
+          Query.limit(500),
+        ],
+      );
+      return response.total;
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }

@@ -2,11 +2,11 @@ import 'package:intl/intl.dart';
 
 /// Formats a double value as Philippine peso currency with 2 decimal places
 /// Example: 1234.5 -> "₱ 1,234.50"
-String formatToPHP(double amount) {
+String formatToPHP(double amount, [int decimalDigits = 2]) {
   final phpFormatter = NumberFormat.currency(
     locale: 'en_PH',
     symbol: '₱ ',
-    decimalDigits: 2,
+    decimalDigits: decimalDigits,
   );
 
   return phpFormatter.format(amount);

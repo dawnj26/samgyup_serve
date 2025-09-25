@@ -25,6 +25,7 @@ dependencies:
   event_repository:
     path: packages/event_repository
   file_picker: ^10.3.2
+  fl_chart: ^1.1.1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
@@ -43,6 +44,7 @@ dependencies:
     path: packages/order_repository
   package_repository:
     path: packages/package_repository
+  percent_indicator: ^4.2.5
   reservation_repository:
     path: packages/reservation_repository
   shared_preferences: ^2.5.3

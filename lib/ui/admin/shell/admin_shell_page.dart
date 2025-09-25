@@ -1,7 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:billing_repository/billing_repository.dart';
 import 'package:event_repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reservation_repository/reservation_repository.dart';
+import 'package:table_repository/table_repository.dart';
 
 @RoutePage()
 class AdminShellPage extends AutoRouter implements AutoRouteWrapper {
@@ -9,8 +12,21 @@ class AdminShellPage extends AutoRouter implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => EventRepository(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => EventRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => BillingRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => TableRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => ReservationRepository(),
+        ),
+      ],
       child: this,
     );
   }
