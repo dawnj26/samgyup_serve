@@ -7,7 +7,7 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  appwrite: ^19.0.0
+  appwrite: ^19.1.0
   appwrite_repository:
     path: packages/appwrite_repository
   authentication_repository:
