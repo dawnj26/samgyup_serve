@@ -92,18 +92,20 @@ jobs:
 
       - name: 📦 Install Dependencies
         run: |
-          flutter pub global activate very_good_cli
-          very_good packages get --recursive --ignore=${{inputs.package_get_excludes}}
+          dart pub global activate melos
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          echo "$HOME/AppData/Local/Pub/Cache/bin" >> $GITHUB_PATH
+          melos bootstrap
 
       - name: ⚙️ Run Setup
         if: "${{inputs.setup != ''}}"
         run: ${{inputs.setup}}
 
       - name: ✨ Check Formatting
-        run: dart format ${{inputs.format_line_length && format('--line-length {0}', inputs.format_line_length) || ''}} --set-exit-if-changed ${{inputs.format_directories}}
+        run: melos format --set-exit-if-changed
 
       - name: 🕵️ Analyze
-        run: flutter analyze ${{inputs.analyze_directories}}
+        run: melos run analyze
 
       - name: 🧪 Run Tests
         run: very_good test -j ${{inputs.concurrency}} ${{(inputs.test_recursion && '--recursive') || ''}} ${{(inputs.test_optimization && '--optimization') || '--no-optimization'}} --coverage --test-randomize-ordering-seed random
