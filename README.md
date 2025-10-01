@@ -9,41 +9,22 @@ An ordering app for a Korean BBQ restaurant.
 ### Prerequisites
 
 - Flutter SDK (>=3.35.0)
-- Make (for Bash/Linux/macOS users)
-- PowerShell (for Windows users)
+- Melos, See [Melos Documentation](https://melos.invertase.dev/getting-started#installation) for installation instructions.
 
 ### Installation
 
-#### For Bash/Linux/macOS
-
 1. Clone the repository:
    ```bash
    git clone https://github.com/dawnj26/samgyup_serve.git
    cd samgyup_serve
    ```
-2. Install dependencies and generate necessary files:
+2. Bootstrap Melos:
    ```bash
-   make generate
+   melos bootstrap
    ```
-
-#### For Windows
-
-1. Clone the repository:
-   ```powershell
-   git clone https://github.com/dawnj26/samgyup_serve.git
-   cd samgyup_serve
-   ```
-2. Install dependencies:
-   ```powershell
-   flutter pub get
-   ```
-   For packages, recursively get dependencies:
-   ```powershell
-   ./build.ps1 deps
-   ```
-3. Generate necessary files:
-   ```powershell
-   ./build.ps1 generate-only
+3. Install dependencies and generate necessary files:
+   ```bash
+   melos run generate
    ```
 
 ### Running the App
@@ -73,30 +54,8 @@ An ordering app for a Korean BBQ restaurant.
 
 To build the app for a specific flavor, use the following commands:
 
-#### For Bash/Linux/macOS
-
-**Staging:**
-
-```bash
-make release-stg
-```
-
 **Production:**
 
 ```bash
-make release-prod
-```
-
-#### Windows
-
-**Staging:**
-
-```powershell
-./build.ps1 release-stg
-```
-
-**Production:**
-
-```powershell
-./build.ps1 release-prod
+melos run release-prod
 ```
