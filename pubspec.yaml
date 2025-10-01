@@ -104,3 +104,7 @@ melos:
       name: Analyze all packages
       run: |
         melos exec -- dart analyze .
+    
+    release-prod:
+      name: Build production APK
+      run: flutter build apk --flavor production -t lib/main_production.dart --split-per-abi
