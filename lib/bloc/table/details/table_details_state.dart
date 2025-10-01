@@ -23,6 +23,7 @@ abstract class TableDetailsState with _$TableDetailsState {
     @Default(TableAssignmentStatus.initial)
     TableAssignmentStatus assignmentStatus,
     @Default(TableDetailsStatus.initial) TableDetailsStatus status,
+    String? reservationId,
     Device? device,
     String? errorMessage,
   }) = _Initial;

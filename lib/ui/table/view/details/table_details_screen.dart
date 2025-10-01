@@ -15,8 +15,6 @@ class TableDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -25,35 +23,19 @@ class TableDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-              child: _Header(),
-            ),
+      body: const Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: _Header(),
           ),
-          const SliverToBoxAdapter(
-            child: Divider(),
+          Divider(),
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: _CurrentReservationHeader(),
           ),
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: _CurrentReservationHeader(),
-            ),
-          ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Center(
-                child: Text(
-                  'Reservations will be shown here when there are any.',
-                  style: textTheme.bodyMedium,
-                ),
-              ),
-            ),
-          ),
+          Expanded(child: _Reservation()),
         ],
       ),
     );
@@ -136,6 +118,32 @@ class TableDetailsScreen extends StatelessWidget {
   }
 }
 
+class _Reservation extends StatelessWidget {
+  const _Reservation();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final reservationId = context.select(
+      (TableDetailsBloc bloc) => bloc.state.reservationId,
+    );
+
+    if (reservationId != null) {
+      return ReservationSection(reservationId: reservationId);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Center(
+        child: Text(
+          'No current reservation',
+          style: textTheme.bodyMedium,
+        ),
+      ),
+    );
+  }
+}
+
 class _CurrentReservationHeader extends StatelessWidget {
   const _CurrentReservationHeader();
 
@@ -150,10 +158,10 @@ class _CurrentReservationHeader extends StatelessWidget {
           'Current reservation',
           style: textTheme.titleMedium,
         ),
-        TextButton(
-          onPressed: () {},
-          child: const Text('View all'),
-        ),
+        // TextButton(
+        //   onPressed: () {},
+        //   child: const Text('View all'),
+        // ),
       ],
     );
   }
