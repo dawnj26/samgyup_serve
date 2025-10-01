@@ -19,8 +19,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       flutter_channel: stable
-      setup: make generate-only
-      analyze_directories: lib test packages
+      setup: melos run generate
 
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1

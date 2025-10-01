@@ -2,6 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:device_repository/device_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:reservation_repository/reservation_repository.dart';
 import 'package:table_repository/table_repository.dart';
 
 part 'table_details_event.dart';
@@ -12,9 +13,11 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
   TableDetailsBloc({
     required TableRepository tableRepository,
     required DeviceRepository deviceRepository,
+    required ReservationRepository reservationRepository,
     required Table table,
   }) : _tableRepo = tableRepository,
        _deviceRepo = deviceRepository,
+       _reservationRepo = reservationRepository,
        super(
          _Initial(
            table: table,
@@ -28,6 +31,7 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
 
   final TableRepository _tableRepo;
   final DeviceRepository _deviceRepo;
+  final ReservationRepository _reservationRepo;
 
   Future<void> _onStarted(
     _Started event,
@@ -37,11 +41,15 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
 
     try {
       final device = await _deviceRepo.getDeviceByTable(state.table.id);
+      final reservation = await _reservationRepo.getCurrentReservation(
+        state.table.id,
+      );
 
       emit(
         state.copyWith(
           status: TableDetailsStatus.success,
           device: device,
+          reservationId: reservation?.id,
         ),
       );
     } on ResponseException catch (e) {
@@ -117,14 +125,14 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
       final device = event.device;
 
       await Future<void>.delayed(const Duration(seconds: 1));
-      final updatedDevice = await _deviceRepo.updateDevice(
+      await _deviceRepo.updateDevice(
         device.copyWith(tableId: null),
       );
 
       emit(
         state.copyWith(
           assignmentStatus: TableAssignmentStatus.success,
-          device: updatedDevice,
+          device: null,
         ),
       );
     } on ResponseException catch (e) {
