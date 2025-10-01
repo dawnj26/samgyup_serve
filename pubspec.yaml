@@ -1,6 +1,6 @@
 name: samgyup_serve
 description: An ordering app for a Korean BBQ restaurant.
-version: 2.0.0+10
+version: 2.1.0+11
 publish_to: none
 
 environment:
@@ -8,22 +8,17 @@ environment:
 
 dependencies:
   appwrite: ^19.0.0
-  appwrite_repository:
-    path: packages/appwrite_repository
-  authentication_repository:
-    path: packages/authentication_repository
+  appwrite_repository: any
+  authentication_repository: any
   auto_route: ^10.1.2
-  billing_repository:
-    path: packages/billing_repository
+  billing_repository: any
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
   cached_network_image: ^3.4.1
   collection: ^1.19.1
-  device_repository:
-    path: packages/device_repository
+  device_repository: any
   dotted_border: ^3.1.0
-  event_repository:
-    path: packages/event_repository
+  event_repository: any
   file_picker: ^10.3.2
   fl_chart: ^1.1.1
   flutter:
@@ -34,24 +29,18 @@ dependencies:
   formz: ^0.8.0
   freezed_annotation: ^3.1.0
   intl: ^0.20.2
-  inventory_repository:
-    path: packages/inventory_repository
+  inventory_repository: any
   json_annotation: ^4.9.0
   just_audio: ^0.10.5
-  menu_repository:
-    path: packages/menu_repository
-  order_repository:
-    path: packages/order_repository
-  package_repository:
-    path: packages/package_repository
+  menu_repository: any
+  order_repository: any
+  package_repository: any
   percent_indicator: ^4.2.5
-  reservation_repository:
-    path: packages/reservation_repository
+  reservation_repository: any
   shared_preferences: ^2.5.3
   stream_transform: ^2.1.1
   string_validator: ^1.2.0
-  table_repository:
-    path: packages/table_repository
+  table_repository: any
   timeago: ^3.7.1
 
 dev_dependencies:
@@ -63,6 +52,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.1.0
   json_serializable: ^6.9.5
+  melos: ^7.1.1
   mocktail: ^1.0.4
   very_good_analysis: ^10.0.0
 
@@ -78,3 +68,43 @@ flutter_launcher_icons:
   web:
     generate: true
   image_path: "assets/images/logo_icon_white_bg.png"
+
+workspace:
+  - packages/appwrite_repository
+  - packages/authentication_repository
+  - packages/billing_repository
+  - packages/device_repository
+  - packages/event_repository
+  - packages/inventory_repository
+  - packages/menu_repository
+  - packages/order_repository
+  - packages/package_repository
+  - packages/reservation_repository
+  - packages/table_repository
+
+melos:
+  useRootAsPackage: true
+  scripts:
+
+    generate:packages:
+      name: Generate code for all packages
+      run: melos exec --order-dependents --depends-on="build_runner" --ignore="samgyup_serve" -- dart run build_runner build --delete-conflicting-outputs
+
+    generate:app:
+      name: Generate code for main app
+      run: melos exec --order-dependents --depends-on="build_runner" --scope="samgyup_serve" -- dart run build_runner build --delete-conflicting-outputs
+
+    generate:
+      name: Generate code for all packages and main app
+      steps:
+        - melos run generate:packages
+        - melos run generate:app
+
+    analyze:
+      name: Analyze all packages
+      run: |
+        melos exec -- dart analyze .
+    
+    release-prod:
+      name: Build production APK
+      run: flutter build apk --flavor production -t lib/main_production.dart --split-per-abi
