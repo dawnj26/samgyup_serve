@@ -54,11 +54,11 @@ jobs:
           echo "$HOME/AppData/Local/Pub/Cache/bin" >> $GITHUB_PATH
           melos bootstrap
 
-      - name: 🏗️ Build production APK
-        run: melos run release-prod
-
       - name: ✨ Generate code
         run: melos run generate
+
+      - name: 🏗️ Build production APK
+        run: melos run release-prod
 
       - name: 📱 Upload APK Artifacts
         uses: actions/upload-artifact@v4
