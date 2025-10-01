@@ -110,4 +110,38 @@ class EventRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Retrieves the current payment event for a given table number.
+  Future<Event?> getCurrentPaymentEvent(int tableNumber) async {
+    try {
+      final now = DateTime.now().toUtc();
+      final startOfDay = DateTime.utc(now.year, now.month, now.day);
+
+      final queries = <String>[
+        Query.equal('tableNumber', tableNumber),
+        Query.equal('status', EventStatus.pending.name),
+        Query.equal('type', EventType.paymentRequested.name),
+        Query.greaterThanEqual(r'$createdAt', startOfDay.toIso8601String()),
+        Query.limit(1),
+      ];
+
+      final response = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: queries,
+      );
+
+      if (response.total == 0) {
+        return null;
+      }
+
+      return Event.fromJson(_appwrite.rowToJson(response.rows.first));
+    } on AppwriteException catch (e) {
+      log(
+        'Failed to get current payment event: $e',
+        name: 'EventRepository.getCurrentPaymentEvent',
+      );
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 }
