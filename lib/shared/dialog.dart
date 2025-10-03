@@ -129,3 +129,18 @@ Future<int?> showQuantityDialog({
 
   return result;
 }
+
+void showImageDialog({
+  required BuildContext context,
+  required String fileId,
+}) {
+  unawaited(
+    showDialog<void>(
+      context: context,
+      useRootNavigator: false,
+      builder: (ctx) {
+        return ImageDialog(fileId: fileId);
+      },
+    ),
+  );
+}
