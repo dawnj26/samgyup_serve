@@ -81,6 +81,7 @@ workspace:
   - packages/package_repository
   - packages/reservation_repository
   - packages/table_repository
+  - packages/settings_repository
 
 melos:
   useRootAsPackage: true
