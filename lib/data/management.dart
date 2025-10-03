@@ -23,4 +23,9 @@ final List<ManagementItem> managementItems = [
     icon: Icons.table_bar_rounded,
     route: TableRoute(),
   ),
+  const ManagementItem(
+    title: 'Settings',
+    icon: Icons.settings,
+    route: SettingsRoute(),
+  ),
 ];
