@@ -7,7 +7,7 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  appwrite: ^19.0.0
+  appwrite: ^20.0.0
   appwrite_repository: any
   authentication_repository: any
   auto_route: ^10.1.2
