@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:samgyup_serve/bloc/payment/form/payment_form_bloc.dart';
+import 'package:samgyup_serve/bloc/settings/qr/bloc/qr_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -21,11 +22,20 @@ class PaymentBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PaymentFormBloc(
-        totalAmount: totalAmount,
-        billingRepository: context.read(),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PaymentFormBloc(
+            totalAmount: totalAmount,
+            billingRepository: context.read(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => QrBloc(
+            settingsRepository: context.read(),
+          )..add(const QrEvent.started()),
+        ),
+      ],
       child: BlocListener<PaymentFormBloc, PaymentFormState>(
         listener: (context, state) {
           if (state.status == FormzSubmissionStatus.success) {
@@ -62,9 +72,15 @@ class _Sheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Payment',
-              style: textTheme.titleLarge,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Payment',
+                  style: textTheme.titleLarge,
+                ),
+                const _Qr(),
+              ],
             ),
             const SizedBox(height: 16),
             const _Price(),
@@ -77,6 +93,52 @@ class _Sheet extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _Qr extends StatelessWidget {
+  const _Qr();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<QrBloc, QrState>(
+      builder: (context, state) {
+        final isLoading =
+            state.status == QrStatus.loading ||
+            state.status == QrStatus.initial;
+
+        return TextButton(
+          onPressed: isLoading
+              ? null
+              : () {
+                  if (state.fileId == null) {
+                    return showErrorDialog(
+                      context: context,
+                      message: 'No QR code available',
+                    );
+                  }
+
+                  showImageDialog(context: context, fileId: state.fileId!);
+                },
+          child: Row(
+            children: [
+              const Text('Show QR Code'),
+              if (isLoading) ...[
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

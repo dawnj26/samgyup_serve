@@ -21,6 +21,7 @@ class Environment {
     required this.reservationCollectionId,
     required this.eventCollectionId,
     required this.paymentCollectionId,
+    required this.settingsCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -70,4 +71,7 @@ class Environment {
 
   /// The ID of payment collection.
   final String paymentCollectionId;
+
+  /// The ID of settings collection.
+  final String settingsCollectionId;
 }

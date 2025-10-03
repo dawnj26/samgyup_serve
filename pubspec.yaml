@@ -7,7 +7,7 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  appwrite: ^19.0.0
+  appwrite: ^20.0.0
   appwrite_repository: any
   authentication_repository: any
   auto_route: ^10.1.2
@@ -37,6 +37,7 @@ dependencies:
   package_repository: any
   percent_indicator: ^4.2.5
   reservation_repository: any
+  settings_repository: any
   shared_preferences: ^2.5.3
   stream_transform: ^2.1.1
   string_validator: ^1.2.0
@@ -81,6 +82,7 @@ workspace:
   - packages/package_repository
   - packages/reservation_repository
   - packages/table_repository
+  - packages/settings_repository
 
 melos:
   useRootAsPackage: true
