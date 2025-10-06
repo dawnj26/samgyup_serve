@@ -9,33 +9,42 @@ class DashboardScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dashboard',
-              style: textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 16),
-            const RevenueSummary(),
-            const Row(
-              children: [
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: TableAvailability(),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Dashboard',
+                    style: textTheme.headlineMedium,
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  const RevenueSummary(),
+                  const Row(
+                    children: [
+                      Expanded(
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: TableAvailability(),
+                        ),
+                      ),
 
-                Expanded(
-                  child: AspectRatio(aspectRatio: 1, child: ReservationToday()),
-                ),
-              ],
+                      Expanded(
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: ReservationToday(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

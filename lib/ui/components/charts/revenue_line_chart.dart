@@ -91,7 +91,7 @@ class RevenueLineChart extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 30,
+                        reservedSize: 20,
                         interval: 1,
                         getTitlesWidget: (value, meta) =>
                             _buildBottomTitle(value, theme, meta),
@@ -101,7 +101,7 @@ class RevenueLineChart extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         interval: _getHorizontalInterval(),
-                        reservedSize: 60,
+                        reservedSize: 50,
                         getTitlesWidget: (value, meta) =>
                             _buildLeftTitle(value, theme),
                       ),

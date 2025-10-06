@@ -22,12 +22,37 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<_Started>(_onStarted);
     on<_Logout>(_onLogout);
     on<_Login>(_onLogin);
+    on<_CheckDevice>(_onCheckDevice);
     on<_GuestSessionStarted>(_onGuestSessionStarted);
   }
 
   final DeviceRepository _deviceRepository;
   final AuthenticationRepository _authenticationRepository;
   final TableRepository _tableRepository;
+
+  Future<void> _onCheckDevice(
+    _CheckDevice event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(state.copyWith(status: AppStatus.loading));
+
+    var deviceStatus = DeviceStatus.unregistered;
+    final deviceData = await _getDeviceData();
+
+    if (deviceData == null) {
+      deviceStatus = DeviceStatus.unknown;
+    } else if (deviceData.table != null) {
+      deviceStatus = DeviceStatus.registered;
+    }
+
+    emit(
+      state.copyWith(
+        status: AppStatus.success,
+        deviceStatus: deviceStatus,
+        deviceData: deviceData,
+      ),
+    );
+  }
 
   Future<void> _onStarted(_Started event, Emitter<AppState> emit) async {
     emit(state.copyWith(status: AppStatus.loading));
@@ -130,11 +155,25 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       return;
     }
 
+    emit(state.copyWith(status: AppStatus.loading));
+
     await _authenticationRepository.createGuestSession();
     final user = await _authenticationRepository.currentUser;
 
+    var deviceStatus = DeviceStatus.unregistered;
+    final deviceData = await _getDeviceData();
+
+    if (deviceData == null) {
+      deviceStatus = DeviceStatus.unknown;
+    } else if (deviceData.table != null) {
+      deviceStatus = DeviceStatus.registered;
+    }
+
     emit(
       state.copyWith(
+        status: AppStatus.success,
+        deviceStatus: deviceStatus,
+        deviceData: deviceData,
         authStatus: AuthStatus.guest,
         user: user,
       ),

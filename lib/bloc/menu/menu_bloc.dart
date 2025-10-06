@@ -118,7 +118,9 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
 
   Future<void> _onRefresh(_Refresh event, Emitter<MenuState> emit) async {
     try {
-      final items = await _menuRepository.fetchItems();
+      final items = await _menuRepository.fetchItems(
+        category: state.selectedCategories,
+      );
       final menuInfo = await _menuRepository.fetchMenuInfo();
 
       emit(

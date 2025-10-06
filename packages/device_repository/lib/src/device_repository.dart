@@ -5,6 +5,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_repository/src/exceptions/exceptions.dart';
 import 'package:device_repository/src/models/models.dart';
+import 'package:flutter/foundation.dart';
 
 /// {@template device_repository}
 /// A Repository which manages device information.
@@ -64,6 +65,8 @@ class DeviceRepository {
   }
 
   Future<String?> _getDeviceId() async {
+    if (kIsWeb) return null;
+
     if (Platform.isAndroid) {
       final androidInfo = await _devicePlugin.androidInfo;
       return androidInfo.id;

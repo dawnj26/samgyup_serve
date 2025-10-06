@@ -22,8 +22,8 @@ class IngredientTile extends StatelessWidget {
     var name = ingredient.name;
 
     final isSufficient =
-        inventoryItem != null && inventoryItem!.stock < ingredient.quantity;
-    if (isSufficient) {
+        inventoryItem != null && inventoryItem!.stock > ingredient.quantity;
+    if (!isSufficient) {
       name = '${ingredient.name} (Insufficient stock)';
     }
 
