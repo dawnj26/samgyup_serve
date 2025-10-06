@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
@@ -12,6 +13,17 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appbar = kIsWeb
+        ? null
+        : IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              context.read<HomeBloc>().add(
+                const HomeEvent.statusChanged(SessionStatus.initial),
+              );
+            },
+          );
+
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         switch (state) {
@@ -23,14 +35,7 @@ class LoginScreen extends StatelessWidget {
       },
       child: FormScaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              context.read<HomeBloc>().add(
-                const HomeEvent.statusChanged(SessionStatus.initial),
-              );
-            },
-          ),
+          leading: appbar,
         ),
         body: const Padding(
           padding: EdgeInsets.all(16),
