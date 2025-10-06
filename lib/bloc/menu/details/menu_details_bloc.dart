@@ -202,16 +202,27 @@ class MenuDetailsBloc extends Bloc<MenuDetailsEvent, MenuDetailsState> {
           stock: event.newStock,
         ),
       );
-      // Decrement stock of associated inventory items if stock is reduced
+
+      final diff = event.newStock - state.menuItem.stock;
+
       for (final ingredient in state.ingredients) {
         final inventoryItem = state.inventoryItems[ingredient.inventoryItemId];
         if (inventoryItem == null) continue;
 
-        final decrementValue = ingredient.quantity * event.newStock;
-        if (decrementValue > 0) {
+        final incrementValue = (ingredient.quantity * diff.abs()).toInt();
+        if (incrementValue == 0) continue;
+
+        if (diff < 0) {
+          // Increase stock
+          await _inventoryRepository.incrementStock(
+            itemId: inventoryItem.id,
+            quantity: incrementValue,
+          );
+        } else {
+          // Decrease stock
           await _inventoryRepository.decrementStock(
             itemId: inventoryItem.id,
-            quantity: decrementValue.toInt(),
+            quantity: incrementValue,
           );
         }
       }
