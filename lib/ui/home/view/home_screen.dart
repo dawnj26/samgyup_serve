@@ -12,8 +12,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -27,17 +25,14 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: const Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AppLogo(
-              size: screenWidth * 0.5,
-            ),
-            const SizedBox(height: 16),
-            const _OrderButton(),
+            AppLogo(),
+            SizedBox(height: 16),
+            _OrderButton(),
           ],
         ),
       ),
@@ -90,6 +85,14 @@ class _OrderButton extends StatelessWidget {
             warningLabel,
             style: textTheme.bodySmall?.copyWith(color: Colors.red),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: () {
+              context.read<AppBloc>().add(const AppEvent.checkDevice());
+            },
+            label: const Text('Recheck device'),
+            icon: const Icon(Icons.refresh),
           ),
         ],
       ],
