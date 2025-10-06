@@ -60,17 +60,48 @@ Future<bool> showDeleteDialog({
   return result ?? false;
 }
 
+void showInfoDialog({
+  required BuildContext context,
+  required String title,
+  required String message,
+  void Function()? onOk,
+}) {
+  unawaited(
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: false,
+      builder: (ctx) {
+        return PopScope(
+          canPop: false,
+          child: InfoDialog(
+            title: title,
+            message: message,
+            onOk: onOk,
+          ),
+        );
+      },
+    ),
+  );
+}
+
 Future<bool> showConfirmationDialog({
   required BuildContext context,
   String? title,
   String? message,
+  void Function()? onConfirmed,
+  void Function()? onCancelled,
+  bool barrierDismissible = true,
 }) async {
   final result = await showDialog<bool>(
     context: context,
+    barrierDismissible: barrierDismissible,
     builder: (ctx) {
       return ConfirmationDialog(
         title: title,
         message: message,
+        onConfirmed: onConfirmed,
+        onCancelled: onCancelled,
       );
     },
   );
