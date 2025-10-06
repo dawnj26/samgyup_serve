@@ -155,7 +155,7 @@ class _Stock extends StatelessWidget {
     final newStock = await showQuantityDialog(
       context: context,
       initialValue: currentStock,
-      maxValue: minServings,
+      maxValue: minServings + currentStock,
       title: 'Set Stock',
     );
 
