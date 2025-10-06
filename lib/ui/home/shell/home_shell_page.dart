@@ -21,6 +21,10 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final deviceStatus = context.select(
+      (AppBloc bloc) => bloc.state.deviceStatus,
+    );
+
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final session = state.session;
@@ -49,6 +53,12 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
                 PaymentOrderRoute(
                   invoiceId: state.invoiceId,
                 ),
+              ];
+            }
+
+            if (deviceStatus == DeviceStatus.unknown) {
+              return [
+                const LoginRoute(),
               ];
             }
 
