@@ -10,8 +10,6 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBloc = context.read<AppBloc>();
-
     return AutoTabsScaffold(
       appBarBuilder: (context, tabsRouter) {
         return AppBar(
@@ -22,7 +20,7 @@ class AdminScreen extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () {
-                appBloc.add(const AppEvent.logout());
+                context.read<AppBloc>().add(const AppEvent.logout());
               },
             ),
           ],
