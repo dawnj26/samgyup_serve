@@ -7,6 +7,7 @@ import 'package:samgyup_serve/bloc/payment/form/payment_form_bloc.dart';
 import 'package:samgyup_serve/bloc/settings/qr/bloc/qr_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
+import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/events/components/components.dart';
 
@@ -39,8 +40,18 @@ class PaymentBottomSheet extends StatelessWidget {
       child: BlocListener<PaymentFormBloc, PaymentFormState>(
         listener: (context, state) {
           if (state.status == FormzSubmissionStatus.success) {
-            context.router.pop();
-            onSuccess?.call(state.payment!);
+            final change = state.payment!.amount - totalAmount;
+            final message = 'Change: ${formatToPHP(change)}';
+
+            showInfoDialog(
+              context: context,
+              title: 'Payment Successful',
+              message: message,
+              onOk: () {
+                context.router.pop();
+                onSuccess?.call(state.payment!);
+              },
+            );
           }
 
           if (state.status == FormzSubmissionStatus.failure) {
@@ -50,19 +61,26 @@ class PaymentBottomSheet extends StatelessWidget {
             );
           }
         },
-        child: const _Sheet(),
+        child: _Sheet(
+          amount: totalAmount,
+        ),
       ),
     );
   }
 }
 
 class _Sheet extends StatelessWidget {
-  const _Sheet();
+  const _Sheet({
+    required this.amount,
+  });
+
+  final double amount;
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final textTheme = Theme.of(context).textTheme;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => FocusScope.of(context).unfocus(),
@@ -76,7 +94,7 @@ class _Sheet extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Payment',
+                  'Payment (${formatToPHP(amount)})',
                   style: textTheme.titleLarge,
                 ),
                 const _Qr(),
