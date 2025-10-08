@@ -10,7 +10,7 @@ environment:
   flutter: ^3.35.0
 
 dependencies:
-  appwrite: ^20.0.0
+  appwrite: ^20.1.0
   flutter:
     sdk: flutter
   http: ^1.5.0
