@@ -14,31 +14,35 @@ class DashboardScreen extends StatelessWidget {
           SliverPadding(
             padding: const EdgeInsets.all(16),
             sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Text(
+                'Dashboard',
+                style: textTheme.headlineMedium,
+              ),
+            ),
+          ),
+          const SliverPadding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            sliver: SliverToBoxAdapter(
+              child: RevenueSummary(),
+            ),
+          ),
+          const SliverPadding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            sliver: SliverToBoxAdapter(
+              child: Row(
                 children: [
-                  Text(
-                    'Dashboard',
-                    style: textTheme.headlineMedium,
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: TableAvailability(),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  const RevenueSummary(),
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: TableAvailability(),
-                        ),
-                      ),
-
-                      Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: ReservationToday(),
-                        ),
-                      ),
-                    ],
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ReservationToday(),
+                    ),
                   ),
                 ],
               ),
