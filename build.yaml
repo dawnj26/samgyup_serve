@@ -14,6 +14,8 @@ targets:
         options:
           ignore_for_file:
             - inference_failure_on_instance_creation
+        generate_for:
+          - lib/router/router.dart
       auto_route_generator:auto_route_generator:
         generate_for:
           - lib/ui/**/view/*.dart
