@@ -23,6 +23,7 @@ class _Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     return BlocBuilder<TableAvailabilityBloc, TableAvailabilityState>(
       builder: (context, state) {
@@ -43,7 +44,7 @@ class _Main extends StatelessWidget {
                   const SizedBox(height: 8),
                   CircularPercentIndicator(
                     animation: true,
-                    radius: 60,
+                    radius: screenWidth * 0.13,
                     percent: state.totalTables == 0
                         ? 0
                         : state.availableTables / state.totalTables,
