@@ -231,6 +231,8 @@ class RevenueLineChart extends StatelessWidget {
 
   double _getHorizontalInterval() {
     final range = _getMaxY() - _getMinY();
+    if (range <= 0) return 1;
+
     return range / 5;
   }
 
