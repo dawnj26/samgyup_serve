@@ -4,36 +4,7 @@ import 'dart:developer';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-
-class AppBlocObserver extends BlocObserver {
-  const AppBlocObserver();
-
-  @override
-  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
-    super.onChange(bloc, change);
-    log(
-      '\n🔄 STATE CHANGE\n'
-      '   Bloc: ${bloc.runtimeType}\n'
-      '   From: ${change.currentState}\n'
-      '   To:   ${change.nextState}',
-      name: 'BlocObserver',
-    );
-  }
-
-  @override
-  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    log(
-      '\n❌ BLOC ERROR\n'
-      '   Bloc: ${bloc.runtimeType}\n'
-      '   Error: $error\n'
-      '   Stack: ${stackTrace.toString().split('\n').take(3).join('\n')}',
-      name: 'BlocObserver',
-      error: error,
-      stackTrace: stackTrace,
-    );
-    super.onError(bloc, error, stackTrace);
-  }
-}
+import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +13,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  Bloc.observer = const AppBlocObserver();
+  Bloc.observer = TalkerBlocObserver();
 
   await AppwriteRepository.initialize(
     environment: const Environment(
