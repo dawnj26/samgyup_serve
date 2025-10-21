@@ -1,6 +1,6 @@
 part of 'menu_tab_bloc.dart';
 
-enum MenuTabStatus { initial, loading, success, failure }
+enum MenuTabStatus { initial, loading, success, failure, refreshing }
 
 @freezed
 abstract class MenuTabState with _$MenuTabState {

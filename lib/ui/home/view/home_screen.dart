@@ -29,6 +29,7 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             AppLogo(),
             SizedBox(height: 16),
