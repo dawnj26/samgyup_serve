@@ -1,6 +1,6 @@
 part of 'food_package_tab_bloc.dart';
 
-enum FoodPackageTabStatus { initial, loading, success, failure }
+enum FoodPackageTabStatus { initial, loading, success, failure, refreshing }
 
 @freezed
 abstract class FoodPackageTabState with _$FoodPackageTabState {

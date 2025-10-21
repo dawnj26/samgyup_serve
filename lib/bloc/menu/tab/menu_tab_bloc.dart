@@ -16,11 +16,46 @@ class MenuTabBloc extends Bloc<MenuTabEvent, MenuTabState> {
        super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_FetchMore>(_onFetchMore);
+    on<_Refresh>(_onRefreshed);
   }
 
   final MenuCategory _category;
   final MenuRepository _menuRepo;
   final int _pageSize = 20;
+
+  Future<void> _onRefreshed(
+    _Refresh event,
+    Emitter<MenuTabState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: MenuTabStatus.refreshing));
+      final items = await _menuRepo.fetchItems(
+        category: [_category],
+        limit: _pageSize,
+      );
+      emit(
+        state.copyWith(
+          status: MenuTabStatus.success,
+          items: items,
+          hasReachedMax: items.length < _pageSize,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          status: MenuTabStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: MenuTabStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
 
   Future<void> _onStarted(
     _Started event,

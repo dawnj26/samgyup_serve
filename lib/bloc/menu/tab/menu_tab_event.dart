@@ -4,4 +4,5 @@ part of 'menu_tab_bloc.dart';
 class MenuTabEvent with _$MenuTabEvent {
   const factory MenuTabEvent.started() = _Started;
   const factory MenuTabEvent.fetchMore() = _FetchMore;
+  const factory MenuTabEvent.refresh() = _Refresh;
 }
