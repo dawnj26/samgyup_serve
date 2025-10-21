@@ -37,13 +37,25 @@ class _TabState extends State<_Tab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return InfiniteScrollLayout(
-      onLoadMore: () {
-        context.read<MenuTabBloc>().add(const MenuTabEvent.fetchMore());
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        final bloc = context.read<MenuTabBloc>()
+          ..add(const MenuTabEvent.refresh());
+
+        await bloc.stream.firstWhere(
+          (state) => state.status != MenuTabStatus.refreshing,
+        );
       },
-      slivers: const [
-        _MenuList(),
-      ],
+      child: InfiniteScrollLayout(
+        onLoadMore: () {
+          context.read<MenuTabBloc>().add(const MenuTabEvent.fetchMore());
+        },
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: const [
+          _MenuList(),
+        ],
+      ),
     );
   }
 
@@ -64,7 +76,7 @@ class _MenuList extends StatelessWidget {
               hasScrollBody: false,
               child: Center(child: CircularProgressIndicator()),
             );
-          case MenuTabStatus.success:
+          case MenuTabStatus.success || MenuTabStatus.refreshing:
             final items = state.items;
             final hasReachedMax = state.hasReachedMax;
 
