@@ -41,6 +41,8 @@ class ReservationRefillBloc
     emit(state.copyWith(status: ReservationRefillStatus.loading));
     try {
       for (final cartItem in event.cartItems) {
+        if (!cartItem.item.isAvailable) continue;
+
         await _menuRepository.decrementStock(
           menuId: cartItem.item.id,
           quantity: cartItem.quantity,
