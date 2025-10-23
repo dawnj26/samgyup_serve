@@ -158,4 +158,11 @@ class ReservationRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
+
+  /// Subscribes to real-time updates for a specific reservation.
+  RealtimeSubscription reservationState(String reservationId) {
+    return _appwrite.realtime.subscribe([
+      'databases.$_databaseId.tables.$_collectionId.rows.$reservationId',
+    ]);
+  }
 }
