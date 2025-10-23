@@ -20,9 +20,42 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     on<_ItemsAdded>(_onItemsAdded);
     on<_RefillRequested>(_onRefillRequested);
     on<_PaymentRequested>(_onPaymentRequested);
+    on<_OrderCancelled>(_onOrderCancelled);
   }
 
   final EventRepository _eventRepository;
+
+  Future<void> _onOrderCancelled(
+    _OrderCancelled event,
+    Emitter<EventState> emit,
+  ) async {
+    emit(state.copyWith(status: EventStatus.loading));
+    try {
+      final payload = {
+        'message':
+            'Table ${event.tableNumber} has requested to cancel their order.',
+      };
+
+      final newEvent = Event(
+        reservationId: event.reservationId,
+        tableNumber: event.tableNumber,
+        payload: jsonEncode(payload),
+        type: EventType.orderCancelled,
+        createdAt: DateTime.now().toUtc(),
+      );
+
+      await _eventRepository.createEvent(newEvent);
+      emit(state.copyWith(status: EventStatus.success));
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(status: EventStatus.failure, errorMessage: e.message),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(status: EventStatus.failure, errorMessage: e.toString()),
+      );
+    }
+  }
 
   Future<void> _onOrderCreated(
     _OrderCreated event,
