@@ -55,7 +55,13 @@ class ReservationRepository {
         tableId: _collectionId,
         queries: [
           Query.equal('tableId', tableId),
-          Query.equal('status', ReservationStatus.active.name),
+          Query.or(
+            [
+              Query.equal('status', ReservationStatus.active.name),
+              Query.equal('status', ReservationStatus.cancelling.name),
+            ],
+          ),
+          Query.limit(1),
         ],
       );
 
