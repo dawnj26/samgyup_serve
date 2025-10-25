@@ -6,6 +6,9 @@ enum ReservationStatus {
   /// Reservation has been completed and the table is available
   completed,
 
+  /// Reservation is in the process of being cancelled
+  cancelling,
+
   /// Reservation has been cancelled
   cancelled;
 
@@ -18,6 +21,8 @@ enum ReservationStatus {
         return 'Completed';
       case ReservationStatus.cancelled:
         return 'Cancelled';
+      case ReservationStatus.cancelling:
+        return 'Cancelling';
     }
   }
 }

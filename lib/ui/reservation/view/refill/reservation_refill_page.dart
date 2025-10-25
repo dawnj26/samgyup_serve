@@ -42,6 +42,7 @@ class ReservationRefillPage extends StatelessWidget
         if (state.status == ReservationRefillStatus.success) {
           context.router.pop();
           goToPreviousRoute(context);
+          goToPreviousRoute(context);
           onSave?.call(state.cartItems);
         }
 

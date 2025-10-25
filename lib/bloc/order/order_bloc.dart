@@ -49,7 +49,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       );
 
       for (final menu in event.menuItems) {
-        if (menu.item.stock == 0) continue;
+        if (!menu.item.isAvailable) continue;
 
         await _menuRepository.decrementStock(
           menuId: menu.item.id,

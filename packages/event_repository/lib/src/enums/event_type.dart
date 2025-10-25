@@ -10,6 +10,9 @@ enum EventType {
   /// Triggered when a customer requests a refill for drinks or side dishes.
   refillRequested,
 
+  /// Triggered when a customer cancels their order.
+  orderCancelled,
+
   /// Triggered when a customer requests to pay for their order.
   paymentRequested;
 
@@ -24,6 +27,8 @@ enum EventType {
         return 'Refill Requested';
       case EventType.paymentRequested:
         return 'Payment Requested';
+      case EventType.orderCancelled:
+        return 'Order Cancelled';
     }
   }
 }

@@ -55,7 +55,13 @@ class ReservationRepository {
         tableId: _collectionId,
         queries: [
           Query.equal('tableId', tableId),
-          Query.equal('status', ReservationStatus.active.name),
+          Query.or(
+            [
+              Query.equal('status', ReservationStatus.active.name),
+              Query.equal('status', ReservationStatus.cancelling.name),
+            ],
+          ),
+          Query.limit(1),
         ],
       );
 
@@ -157,5 +163,37 @@ class ReservationRepository {
       );
       throw ResponseException.fromCode(e.code ?? 500);
     }
+  }
+
+  /// Cancels a reservation by updating its status and end time.
+  Future<Reservation> cancelReservation(
+    String reservationId, {
+    bool accepted = true,
+  }) async {
+    try {
+      final doc = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: reservationId,
+        data: {
+          'status': accepted
+              ? ReservationStatus.cancelled.name
+              : ReservationStatus.active.name,
+          'endTime': DateTime.now().toUtc().toIso8601String(),
+        },
+      );
+
+      return Reservation.fromJson(_appwrite.rowToJson(doc));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'ReservationRepository.cancelReservation');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Subscribes to real-time updates for a specific reservation.
+  RealtimeSubscription reservationState(String reservationId) {
+    return _appwrite.realtime.subscribe([
+      'databases.$_databaseId.tables.$_collectionId.rows.$reservationId',
+    ]);
   }
 }

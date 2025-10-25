@@ -8,6 +8,10 @@ abstract class EventEvent with _$EventEvent {
     required int tableNumber,
     required List<Order> orders,
   }) = _OrderCreated;
+  const factory EventEvent.orderCancelled({
+    required String reservationId,
+    required int tableNumber,
+  }) = _OrderCancelled;
   const factory EventEvent.itemsAdded({
     required String reservationId,
     required int tableNumber,

@@ -57,11 +57,21 @@ class ReservationRefillScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
+        onPressed: () async {
+          final cartItems = context.read<OrderCartBloc>().state.menuItems;
+
+          if (cartItems.isNotEmpty) {
+            final confirm = await showConfirmationDialog(
+              context: context,
+              title: 'Confirm',
+              message: 'Request refill for selected items?',
+            );
+
+            if (!context.mounted || !confirm) return;
+          }
+
           context.read<ReservationRefillBloc>().add(
-            ReservationRefillEvent.started(
-              cartItems: context.read<OrderCartBloc>().state.menuItems,
-            ),
+            ReservationRefillEvent.started(cartItems: cartItems),
           );
         },
         label: const Text('Request'),
