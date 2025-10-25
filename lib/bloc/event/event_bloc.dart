@@ -31,6 +31,15 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   ) async {
     emit(state.copyWith(status: EventStatus.loading));
     try {
+      final cEvent = await _eventRepository.getCurrentCancelEvent(
+        event.tableNumber,
+      );
+
+      if (cEvent != null) {
+        emit(state.copyWith(status: EventStatus.success));
+        return;
+      }
+
       final payload = {
         'message':
             'Table ${event.tableNumber} has requested to cancel their order.',
