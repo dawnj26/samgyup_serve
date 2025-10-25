@@ -38,5 +38,5 @@ abstract class MenuItem with _$MenuItem {
   const MenuItem._();
 
   /// Returns true if the menu item is available (stock > 0).
-  bool get isAvailable => stock >= 0;
+  bool get isAvailable => stock > 0;
 }
