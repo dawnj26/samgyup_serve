@@ -33,11 +33,13 @@ class ReservationCancelBloc
       final r = await _reservationRepository.getReservationById(
         event.reservationId,
       );
-      await _reservationRepository.updateReservation(
-        reservation: r.copyWith(
-          status: ReservationStatus.cancelling,
-        ),
-      );
+      if (r.status != ReservationStatus.cancelling) {
+        await _reservationRepository.updateReservation(
+          reservation: r.copyWith(
+            status: ReservationStatus.cancelling,
+          ),
+        );
+      }
 
       await _subscription?.close();
       _subscription = _reservationRepository.reservationState(
