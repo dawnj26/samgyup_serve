@@ -136,6 +136,14 @@ class _List extends StatelessWidget {
                         ),
                       );
                     }
+
+                    if (event.type == EventType.orderCancelled) {
+                      unawaited(
+                        router?.push(
+                          EventCancelRoute(event: event),
+                        ),
+                      );
+                    }
                   },
                   onMoreTap: (option) => _handleMoreOption(
                     context,

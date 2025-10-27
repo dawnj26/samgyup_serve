@@ -10,6 +10,7 @@ import 'package:reservation_repository/reservation_repository.dart'
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/app_logo_icon.dart';
 import 'package:samgyup_serve/ui/reservation/components/components.dart';
 
@@ -28,6 +29,11 @@ class ReservationOrderScreen extends StatelessWidget {
           padding: EdgeInsetsGeometry.all(8),
         ),
         title: const Text('Reservation Order'),
+        actions: [
+          ReservationMoreOptionsButton(
+            onSelected: (value) => _handleMoreOptions(context, value),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,6 +74,31 @@ class ReservationOrderScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleMoreOptions(
+    BuildContext context,
+    ReservationMoreOptionsButtonType option,
+  ) async {
+    switch (option) {
+      case ReservationMoreOptionsButtonType.cancel:
+        final confirm = await showConfirmationDialog(
+          context: context,
+          title: 'Cancel Order',
+          message: 'Your order will be reviewed by the staff. Are you sure?',
+        );
+
+        if (!context.mounted || !confirm) return;
+
+        final rState = context.read<ReservationBloc>().state;
+
+        await context.router.push(
+          ReservationCancelRoute(
+            reservationId: rState.reservation.id,
+            tableNumber: rState.table.number,
+          ),
+        );
+    }
   }
 
   void _handlePressed(BuildContext context) {

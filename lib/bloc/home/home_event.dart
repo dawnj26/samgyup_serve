@@ -9,4 +9,7 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.paymentRequested({
     required String invoiceId,
   }) = _PaymentRequested;
+  const factory HomeEvent.reservationCancelled({
+    required String reservationId,
+  }) = _ReservationCancelled;
 }

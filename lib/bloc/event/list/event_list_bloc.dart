@@ -16,8 +16,10 @@ part 'event_list_bloc.freezed.dart';
 class EventListBloc extends Bloc<EventListEvent, EventListState> {
   EventListBloc({
     required EventRepository eventRepository,
+    bool listen = true,
   }) : _repo = eventRepository,
        _audioPlayer = AudioPlayer(),
+       _listen = listen,
        super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_Refreshed>(_onRefreshed);
@@ -54,6 +56,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
   final EventRepository _repo;
   final AudioPlayer _audioPlayer;
   RealtimeSubscription? _subscription;
+  final bool _listen;
 
   Future<void> _onFilterChanged(
     _FilterChanged event,
@@ -156,6 +159,8 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
 
   Future<void> _subscribe() async {
     await _subscription?.close();
+
+    if (!_listen) return;
 
     _subscription = _repo.eventState;
     _subscription?.stream.listen((response) {

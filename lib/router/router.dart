@@ -73,6 +73,7 @@ class AppRouter extends RootStackRouter {
                 ),
                 AutoRoute(page: ReservationRefillRoute.page),
                 AutoRoute(page: ReservationBillingRoute.page),
+                AutoRoute(page: ReservationCancelRoute.page),
               ],
             ),
             AutoRoute(
@@ -115,6 +116,7 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(page: EventOrderRoute.page),
                 AutoRoute(page: EventRefillRoute.page),
                 AutoRoute(page: EventPaymentRoute.page),
+                AutoRoute(page: EventCancelRoute.page),
               ],
             ),
             AutoRoute(

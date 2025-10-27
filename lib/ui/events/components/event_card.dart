@@ -41,11 +41,7 @@ class EventCard extends StatelessWidget {
           contentPadding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
           title: Text('Table ${event.tableNumber} - ${event.type.label}'),
           subtitle: Text(timeago.format(event.createdAt!.toLocal())),
-          trailing: event.status == EventStatus.pending
-              ? EventMoreOptionButton(
-                  onSelected: onMoreTap,
-                )
-              : null,
+          trailing: const Icon(Icons.arrow_right),
         ),
       ),
     );

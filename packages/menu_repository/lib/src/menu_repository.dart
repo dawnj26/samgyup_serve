@@ -230,7 +230,7 @@ class MenuRepository {
     try {
       final menu = await fetchItem(menuId);
 
-      if (menu.stock == 0) return;
+      if (!menu.isAvailable) return;
 
       await _appwrite.databases.decrementRowColumn(
         databaseId: _appwrite.environment.databaseId,
@@ -238,6 +238,7 @@ class MenuRepository {
         rowId: menuId,
         column: 'stock',
         value: quantity.toDouble(),
+        min: 0,
       );
     } on AppwriteException catch (e) {
       log(e.toString(), name: 'MenuRepository.decrementStock');
