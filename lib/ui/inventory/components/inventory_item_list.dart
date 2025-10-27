@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/data/enums/inventory_item_option.dart';
+import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
@@ -24,6 +26,15 @@ class InventoryItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Text('No items found.'),
+        ),
+      );
+    }
+
     return SliverList.builder(
       itemBuilder: (ctx, index) {
         return index >= items.length
@@ -31,33 +42,58 @@ class InventoryItemList extends StatelessWidget {
             : ItemTile(
                 item: items[index],
                 onTap: () => onTap?.call(items[index]),
-                trailing: ItemMoreOptionButton(
-                  onSelected: (option) {
-                    switch (option) {
-                      case InventoryItemOption.edit:
-                        onEdit?.call(items[index]);
-                      case InventoryItemOption.delete:
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton.outlined(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
                         unawaited(
-                          showDialog<void>(
-                            context: context,
-                            builder: (ctx) => InventoryDeleteDialog(
-                              item: items[index],
-                              onDelete: () {
-                                context.read<InventoryDeleteBloc>().add(
-                                  InventoryDeleteEvent.started(
-                                    item: items[index],
-                                  ),
-                                );
-                              },
-                            ),
+                          context.router.push(
+                            AddStockRoute(item: items[index]),
                           ),
                         );
-                    }
-                  },
+                      },
+                    ),
+                    ItemMoreOptionButton(
+                      onSelected: (option) => _handleSelected(
+                        context,
+                        items[index],
+                        option,
+                      ),
+                    ),
+                  ],
                 ),
               );
       },
       itemCount: hasReachedMax ? items.length : items.length + 1,
     );
+  }
+
+  void _handleSelected(
+    BuildContext context,
+    InventoryItem item,
+    InventoryItemOption option,
+  ) {
+    switch (option) {
+      case InventoryItemOption.edit:
+        onEdit?.call(item);
+      case InventoryItemOption.delete:
+        unawaited(
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => InventoryDeleteDialog(
+              item: item,
+              onDelete: () {
+                context.read<InventoryDeleteBloc>().add(
+                  InventoryDeleteEvent.started(
+                    item: item,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+    }
   }
 }
