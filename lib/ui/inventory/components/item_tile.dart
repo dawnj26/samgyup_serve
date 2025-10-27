@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/data/enums/status_color.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ItemTile extends StatelessWidget {
   const ItemTile({
@@ -9,10 +10,12 @@ class ItemTile extends StatelessWidget {
     super.key,
     this.onTap,
     this.trailing,
+    this.onAdd,
   });
 
   final InventoryItem item;
   final void Function()? onTap;
+  final void Function(InventoryItem item)? onAdd;
   final Widget? trailing;
 
   @override
@@ -40,7 +43,7 @@ class ItemTile extends StatelessWidget {
       subtitle: Text(
         // Description of the item, including stock and category.
         // ignore: lines_longer_than_80_chars
-        '${item.stock.toStringAsFixed(0)} ${item.unit.value} · ${item.category.label}',
+        '${timeago.format(item.createdAt)} · ${item.stock.toStringAsFixed(0)} ${item.unit.value}',
       ),
       trailing: trailing,
       onTap: onTap,
