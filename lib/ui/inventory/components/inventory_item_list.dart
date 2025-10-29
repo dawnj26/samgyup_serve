@@ -1,12 +1,10 @@
 import 'dart:async';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/data/enums/inventory_item_option.dart';
-import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
@@ -42,27 +40,12 @@ class InventoryItemList extends StatelessWidget {
             : ItemTile(
                 item: items[index],
                 onTap: () => onTap?.call(items[index]),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton.outlined(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        unawaited(
-                          context.router.push(
-                            AddStockRoute(item: items[index]),
-                          ),
-                        );
-                      },
-                    ),
-                    ItemMoreOptionButton(
-                      onSelected: (option) => _handleSelected(
-                        context,
-                        items[index],
-                        option,
-                      ),
-                    ),
-                  ],
+                trailing: ItemMoreOptionButton(
+                  onSelected: (option) => _handleSelected(
+                    context,
+                    items[index],
+                    option,
+                  ),
                 ),
               );
       },
