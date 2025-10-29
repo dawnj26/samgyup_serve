@@ -35,3 +35,30 @@ String formatDateTime(DateTime dateTime) {
   final formatter = DateFormat('yyyy-MM-dd hh:mm a');
   return formatter.format(dateTime);
 }
+
+/// Formats the time remaining until an expected date
+/// Returns a human-readable string like "2 days left", "5 hours left", etc.
+String formatTimeRemaining(
+  DateTime expectedDate, {
+  String dueText = 'Overdue',
+}) {
+  final now = DateTime.now();
+  final difference = expectedDate.difference(now);
+
+  if (difference.isNegative) {
+    return dueText;
+  }
+
+  if (difference.inDays > 0) {
+    final days = difference.inDays;
+    return '$days ${days == 1 ? 'day' : 'days'} left';
+  } else if (difference.inHours > 0) {
+    final hours = difference.inHours;
+    return '$hours ${hours == 1 ? 'hour' : 'hours'} left';
+  } else if (difference.inMinutes > 0) {
+    final minutes = difference.inMinutes;
+    return '$minutes ${minutes == 1 ? 'minute' : 'minutes'} left';
+  } else {
+    return 'Just now';
+  }
+}
