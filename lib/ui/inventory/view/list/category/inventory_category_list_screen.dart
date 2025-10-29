@@ -22,8 +22,6 @@ class InventoryCategoryListScreen extends StatefulWidget {
 class _InventoryCategoryListScreenState
     extends State<InventoryCategoryListScreen> {
   final _scrollController = ScrollController();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  InventoryItem _selectedItem = InventoryItem.empty();
 
   @override
   void initState() {
@@ -42,7 +40,6 @@ class _InventoryCategoryListScreenState
     return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
       listener: _handleListener,
       child: Scaffold(
-        key: scaffoldKey,
         body: CustomScrollView(
           controller: _scrollController,
           slivers: [
@@ -75,10 +72,6 @@ class _InventoryCategoryListScreenState
             ),
           ],
         ),
-        endDrawer: DetailDrawer(
-          item: _selectedItem,
-        ),
-        endDrawerEnableOpenDragGesture: false,
       ),
     );
   }
@@ -139,10 +132,17 @@ class _InventoryCategoryListScreenState
   }
 
   void _handleTap(InventoryItem item) {
-    setState(() {
-      _selectedItem = item;
-    });
-
-    scaffoldKey.currentState!.openEndDrawer();
+    unawaited(
+      context.router.push(
+        InventoryDetailsRoute(
+          item: item,
+          onChanged: () {
+            context.read<InventoryCategoryBloc>().add(
+              const InventoryCategoryEvent.reload(),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
