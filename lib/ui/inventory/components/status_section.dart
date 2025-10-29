@@ -87,22 +87,6 @@ class StatusSection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: StatusCard(
-                    title: 'Expired',
-                    color: InventoryItemStatus.expired.color.shade200,
-                    count: isLoading ? null : inventoryInfo.expiredItems,
-                    onTap: () => _handleNavigation(
-                      context,
-                      InventoryItemStatus.expired,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         );
       },
