@@ -43,7 +43,7 @@ class ItemTile extends StatelessWidget {
       subtitle: Text(
         // Description of the item, including stock and category.
         // ignore: lines_longer_than_80_chars
-        '${timeago.format(item.createdAt)} · ${item.stock.toStringAsFixed(0)} ${item.unit.value}',
+        '${timeago.format(item.createdAt)} · ${item.totalStock.toStringAsFixed(0)} ${item.unit.value}',
       ),
       trailing: trailing,
       onTap: onTap,
