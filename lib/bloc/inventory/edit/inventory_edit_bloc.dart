@@ -21,11 +21,9 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
        _item = item,
        super(
          InventoryEditInitial(
-           expiration: item.expirationDate,
            measurementUnit: m.MeasurementUnit.pure(item.unit),
            category: Category.pure(item.category),
            name: Name.pure(item.name),
-           stock: Stock.pure(item.stock.toString()),
            lowStockThreshold: LowStockThreshold.pure(
              item.lowStockThreshold.toString(),
            ),
@@ -52,7 +50,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final name = Name.dirty(state.name.value);
     final description = Description.dirty(state.description.value);
     final category = Category.dirty(state.category.value);
-    final stock = Stock.dirty(state.stock.value);
     final lowStockThreshold = LowStockThreshold.dirty(
       state.lowStockThreshold.value,
     );
@@ -64,7 +61,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       name,
       description,
       category,
-      stock,
       lowStockThreshold,
       measurementUnit,
     ]);
@@ -76,7 +72,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           measurementUnit: measurementUnit,
           category: category,
           name: name,
-          stock: stock,
           lowStockThreshold: lowStockThreshold,
           description: description,
         ),
@@ -90,23 +85,20 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: measurementUnit,
         category: category,
         name: name,
-        stock: stock,
+
         lowStockThreshold: lowStockThreshold,
         description: description,
       ),
     );
 
     try {
-      final parsedStock = double.tryParse(stock.value);
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
       final updatedItem = _item.copyWith(
         name: name.value,
         description: description.value,
         category: category.value!,
-        stock: parsedStock ?? 0,
         lowStockThreshold: parsedLowStockThreshold ?? 0,
         unit: measurementUnit.value!,
-        expirationDate: state.expiration,
       );
 
       if (updatedItem == _item) {
@@ -124,7 +116,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           measurementUnit: measurementUnit,
           category: category,
           name: name,
-          stock: stock,
+
           lowStockThreshold: lowStockThreshold,
           description: description,
           message: e.toString(),
@@ -141,7 +133,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
       ),
@@ -159,7 +150,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
+
         lowStockThreshold: state.lowStockThreshold,
         description: description,
       ),
@@ -177,7 +168,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: state.measurementUnit,
         category: category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
       ),
@@ -188,14 +178,12 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     _StockChanged event,
     Emitter<InventoryEditState> emit,
   ) {
-    final stock = Stock.dirty(event.stock);
     emit(
       InventoryEditDirty(
         expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-        stock: stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
       ),
@@ -215,7 +203,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: lowStockThreshold,
         description: state.description,
       ),
@@ -233,7 +220,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
+
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
       ),
@@ -251,7 +238,6 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
       ),
