@@ -1,8 +1,9 @@
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
-import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 
 part 'inventory_stock_event.dart';
@@ -21,8 +22,8 @@ class InventoryStockBloc
          ),
        ) {
     on<_StockChanged>(_onStockChanged);
-    on<_LowStockThresholdChanged>(_onLowStockThresholdChanged);
     on<_ExpirationChanged>(_onExpirationChanged);
+    on<_Submitted>(_onSubmitted);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -40,19 +41,6 @@ class InventoryStockBloc
     );
   }
 
-  Future<void> _onLowStockThresholdChanged(
-    _LowStockThresholdChanged event,
-    Emitter<InventoryStockState> emit,
-  ) async {
-    final lowStockThreshold = LowStockThreshold.dirty(event.lowStockThreshold);
-
-    emit(
-      state.copyWith(
-        lowStockThreshold: lowStockThreshold,
-      ),
-    );
-  }
-
   Future<void> _onExpirationChanged(
     _ExpirationChanged event,
     Emitter<InventoryStockState> emit,
@@ -62,5 +50,62 @@ class InventoryStockBloc
         expiration: event.expiration,
       ),
     );
+  }
+
+  Future<void> _onSubmitted(
+    _Submitted event,
+    Emitter<InventoryStockState> emit,
+  ) async {
+    final stock = Stock.dirty(state.stock.value);
+
+    final isValid = Formz.validate([
+      stock,
+    ]);
+
+    if (!isValid) {
+      emit(
+        state.copyWith(
+          stock: stock,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        status: LoadingStatus.loading,
+      ),
+    );
+
+    try {
+      final batch = StockBatch(
+        id: '',
+        itemId: state.item.id,
+        quantity: double.parse(stock.value),
+        expirationDate: state.expiration,
+      );
+
+      await _inventoryRepository.addBatch(batch);
+
+      emit(
+        state.copyWith(
+          status: LoadingStatus.success,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          status: LoadingStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: LoadingStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
   }
 }

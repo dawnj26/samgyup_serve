@@ -7,6 +7,6 @@ abstract class InventoryStockState with _$InventoryStockState {
     @Default(LoadingStatus.initial) LoadingStatus status,
     DateTime? expiration,
     @Default(Stock.pure()) Stock stock,
-    @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
+    String? errorMessage,
   }) = _Initial;
 }

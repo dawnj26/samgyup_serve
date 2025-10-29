@@ -6,9 +6,6 @@ class InventoryStockEvent with _$InventoryStockEvent {
   const factory InventoryStockEvent.stockChanged({
     required String stock,
   }) = _StockChanged;
-  const factory InventoryStockEvent.lowStockThresholdChanged({
-    required String lowStockThreshold,
-  }) = _LowStockThresholdChanged;
   const factory InventoryStockEvent.expirationChanged({
     required DateTime? expiration,
   }) = _ExpirationChanged;
