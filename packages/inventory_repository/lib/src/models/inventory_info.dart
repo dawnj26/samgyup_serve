@@ -16,7 +16,6 @@ abstract class InventoryInfo with _$InventoryInfo {
     required int inStockItems,
     required int lowStockItems,
     required int outOfStockItems,
-    required int expiredItems,
   }) = _InventoryInfo;
 
   /// Creates an empty [InventoryInfo] instance with default values.
@@ -25,7 +24,6 @@ abstract class InventoryInfo with _$InventoryInfo {
     inStockItems: -1,
     lowStockItems: -1,
     outOfStockItems: -1,
-    expiredItems: -1,
   );
 
   /// Creates an instance of [InventoryInfo] from a JSON map.
