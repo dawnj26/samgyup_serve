@@ -24,12 +24,7 @@ class AddStockScreen extends StatelessWidget {
               child: _Stock(),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: _Threshold(),
-            ),
-          ),
+
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -40,7 +35,11 @@ class AddStockScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               child: FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<InventoryStockBloc>().add(
+                    const InventoryStockEvent.submitted(),
+                  );
+                },
                 child: const Text('Add'),
               ),
             ),
@@ -52,9 +51,7 @@ class AddStockScreen extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  const _Title({
-    super.key,
-  });
+  const _Title();
 
   @override
   Widget build(BuildContext context) {
@@ -75,30 +72,6 @@ class _Expire extends StatelessWidget {
       onChanged: (date) {
         context.read<InventoryStockBloc>().add(
           InventoryStockEvent.expirationChanged(expiration: date),
-        );
-      },
-    );
-  }
-}
-
-class _Threshold extends StatelessWidget {
-  const _Threshold();
-
-  @override
-  Widget build(BuildContext context) {
-    final lowStockThreshold = context.select(
-      (InventoryStockBloc bloc) => bloc.state.lowStockThreshold,
-    );
-
-    final errMessage = lowStockThreshold.displayError?.message;
-
-    return LowStockThresholdInput(
-      errorText: errMessage,
-      onChanged: (value) {
-        context.read<InventoryStockBloc>().add(
-          InventoryStockEvent.lowStockThresholdChanged(
-            lowStockThreshold: value,
-          ),
         );
       },
     );
