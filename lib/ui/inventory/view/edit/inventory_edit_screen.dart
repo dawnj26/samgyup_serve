@@ -5,10 +5,8 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/inventory/edit/inventory_edit_bloc.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
-import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart'
     hide MeasurementUnit;
-import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/form_scaffold.dart';
@@ -61,20 +59,8 @@ class InventoryEditScreen extends StatelessWidget {
                         item.category,
                       ),
                       const SizedBox(height: 16),
-                      _StockInputField(
-                        item.stock.toString(),
-                      ),
-                      const SizedBox(height: 16),
-                      _LowStockThresholdInputField(
-                        item.lowStockThreshold.toString(),
-                      ),
-                      const SizedBox(height: 16),
                       _MeasurementUnitInputField(
                         item.unit,
-                      ),
-                      const SizedBox(height: 16),
-                      _ExpirationInputField(
-                        item.expirationDate,
                       ),
                       const SizedBox(height: 16),
                       const SaveButton(),
@@ -194,87 +180,6 @@ class _CategoryInputField extends StatelessWidget {
   }
 }
 
-class _StockInputField extends StatelessWidget {
-  const _StockInputField(this.initialValue);
-
-  final String? initialValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
-      buildWhen: (p, c) =>
-          p.stock.value != c.stock.value || p.stock.isPure != c.stock.isPure,
-      builder: (context, state) {
-        final stock = state.stock;
-        String? errorText;
-        if (stock.displayError == StockValidationError.empty) {
-          errorText = 'Stock is required';
-        } else if (stock.displayError == StockValidationError.negative) {
-          errorText = 'Stock cannot be negative';
-        } else if (stock.displayError == StockValidationError.invalid) {
-          errorText = 'Stock must be a valid number';
-        }
-        return StockInput(
-          initialValue: initialValue,
-          key: const Key('InventoryEdit_stockInput_textField'),
-          errorText: errorText,
-          onChanged: (value) {
-            context.read<InventoryEditBloc>().add(
-              InventoryEditEvent.stockChanged(stock: value),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _LowStockThresholdInputField extends StatelessWidget {
-  const _LowStockThresholdInputField(this.initialValue);
-
-  final String? initialValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
-      buildWhen: (p, c) =>
-          p.lowStockThreshold.value != c.lowStockThreshold.value ||
-          p.lowStockThreshold.isPure != c.lowStockThreshold.isPure ||
-          p.stock.value != c.stock.value ||
-          p.stock.isPure != c.stock.isPure,
-      builder: (context, state) {
-        final lowStockThreshold = state.lowStockThreshold;
-        final enabled = state.stock.isValid;
-        String? errorText;
-        if (lowStockThreshold.displayError ==
-            LowStockThresholdValidationError.empty) {
-          errorText = 'Low stock threshold is required';
-        } else if (lowStockThreshold.displayError ==
-            LowStockThresholdValidationError.negative) {
-          errorText = 'Low stock threshold cannot be negative';
-        } else if (lowStockThreshold.displayError ==
-            LowStockThresholdValidationError.invalid) {
-          errorText = 'Low stock threshold must be a valid number';
-        }
-
-        return LowStockThresholdInput(
-          key: const Key('InventoryEdit_lowStockThresholdInput_textField'),
-          initialValue: initialValue,
-          enabled: enabled,
-          errorText: errorText,
-          onChanged: (value) {
-            context.read<InventoryEditBloc>().add(
-              InventoryEditEvent.lowStockThresholdChanged(
-                lowStockThreshold: value,
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
 class _MeasurementUnitInputField extends StatelessWidget {
   const _MeasurementUnitInputField(this.value);
 
@@ -300,30 +205,6 @@ class _MeasurementUnitInputField extends StatelessWidget {
             if (value == null) return;
             context.read<InventoryEditBloc>().add(
               InventoryEditEvent.unitChanged(measurementUnit: value),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _ExpirationInputField extends StatelessWidget {
-  const _ExpirationInputField(this.initialValue);
-
-  final DateTime? initialValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<InventoryEditBloc, InventoryEditState>(
-      buildWhen: (p, c) => p.expiration != c.expiration,
-      builder: (context, state) {
-        return ExpirationInput(
-          key: const Key('InventoryEdit_expirationInput_datePicker'),
-          initialValue: initialValue,
-          onChanged: (date) {
-            context.read<InventoryEditBloc>().add(
-              InventoryEditEvent.expirationChanged(expiration: date),
             );
           },
         );
