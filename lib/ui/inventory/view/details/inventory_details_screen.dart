@@ -17,9 +17,6 @@ class InventoryDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final item = context.select(
-      (InventoryDetailsBloc bloc) => bloc.state.item,
-    );
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -29,9 +26,7 @@ class InventoryDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Header(
-              item: item,
-            ),
+            const _Header(),
             const SizedBox(height: 16),
             Text(
               'Batches',
@@ -69,15 +64,14 @@ class InventoryDetailsScreen extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({
-    required this.item,
-  });
-
-  final InventoryItem item;
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final item = context.select(
+      (InventoryDetailsBloc bloc) => bloc.state.item,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
