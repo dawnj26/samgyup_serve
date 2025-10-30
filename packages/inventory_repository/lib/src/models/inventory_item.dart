@@ -1,3 +1,6 @@
+//
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/src/enums/enums.dart';
 import 'package:inventory_repository/src/models/stock_batch.dart';
@@ -21,7 +24,7 @@ abstract class InventoryItem with _$InventoryItem {
     required double lowStockThreshold,
     required DateTime createdAt,
     @Default(InventoryItemStatus.inStock) InventoryItemStatus status,
-    @Default([]) List<StockBatch> stockBatches,
+    @JsonKey(includeToJson: false) @Default([]) List<StockBatch> stockBatches,
     DateTime? updatedAt,
     String? description,
   }) = _InventoryItem;
