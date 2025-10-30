@@ -24,6 +24,15 @@ class InventoryItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Text('No items found.'),
+        ),
+      );
+    }
+
     return SliverList.builder(
       itemBuilder: (ctx, index) {
         return index >= items.length
@@ -32,32 +41,42 @@ class InventoryItemList extends StatelessWidget {
                 item: items[index],
                 onTap: () => onTap?.call(items[index]),
                 trailing: ItemMoreOptionButton(
-                  onSelected: (option) {
-                    switch (option) {
-                      case InventoryItemOption.edit:
-                        onEdit?.call(items[index]);
-                      case InventoryItemOption.delete:
-                        unawaited(
-                          showDialog<void>(
-                            context: context,
-                            builder: (ctx) => InventoryDeleteDialog(
-                              item: items[index],
-                              onDelete: () {
-                                context.read<InventoryDeleteBloc>().add(
-                                  InventoryDeleteEvent.started(
-                                    item: items[index],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                    }
-                  },
+                  onSelected: (option) => _handleSelected(
+                    context,
+                    items[index],
+                    option,
+                  ),
                 ),
               );
       },
       itemCount: hasReachedMax ? items.length : items.length + 1,
     );
+  }
+
+  void _handleSelected(
+    BuildContext context,
+    InventoryItem item,
+    InventoryItemOption option,
+  ) {
+    switch (option) {
+      case InventoryItemOption.edit:
+        onEdit?.call(item);
+      case InventoryItemOption.delete:
+        unawaited(
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => InventoryDeleteDialog(
+              item: item,
+              onDelete: () {
+                context.read<InventoryDeleteBloc>().add(
+                  InventoryDeleteEvent.started(
+                    item: item,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+    }
   }
 }

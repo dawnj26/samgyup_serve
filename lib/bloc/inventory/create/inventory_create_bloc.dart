@@ -81,7 +81,6 @@ class InventoryCreateBloc
     );
 
     try {
-      final parsedStock = double.tryParse(stock.value);
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
 
       await _inventoryRepository.addItem(
@@ -90,10 +89,8 @@ class InventoryCreateBloc
           name: name.value,
           description: description.value,
           category: category.value!,
-          stock: parsedStock ?? 0,
           lowStockThreshold: parsedLowStockThreshold ?? 0,
           unit: measurementUnit.value!,
-          expirationDate: state.expiration,
           createdAt: DateTime.now(),
         ),
       );

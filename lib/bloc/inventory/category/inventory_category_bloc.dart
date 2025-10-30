@@ -49,6 +49,7 @@ class InventoryCategoryBloc
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
         category: state.category,
+        includeBatches: true,
       );
 
       emit(
@@ -82,6 +83,7 @@ class InventoryCategoryBloc
         lastDocumentId: lastItem?.id,
         category: state.category,
         limit: _pageSize,
+        includeBatches: true,
       );
 
       emit(
@@ -107,7 +109,7 @@ class InventoryCategoryBloc
     _Reload event,
     Emitter<InventoryCategoryState> emit,
   ) async {
-    // TODO(reload): Implement reload logic if needed.
+    add(const InventoryCategoryEvent.started());
   }
 
   Future<void> _onItemRemoved(

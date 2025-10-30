@@ -1,5 +1,9 @@
+//
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/src/enums/enums.dart';
+import 'package:inventory_repository/src/models/stock_batch.dart';
 
 part 'inventory_item.freezed.dart';
 part 'inventory_item.g.dart';
@@ -17,13 +21,11 @@ abstract class InventoryItem with _$InventoryItem {
     required String name,
     required MeasurementUnit unit,
     required InventoryCategory category,
-    required double stock,
     required double lowStockThreshold,
     required DateTime createdAt,
     @Default(InventoryItemStatus.inStock) InventoryItemStatus status,
+    @JsonKey(includeToJson: false) @Default([]) List<StockBatch> stockBatches,
     DateTime? updatedAt,
-    DateTime? expirationDate,
-    double? price,
     String? description,
   }) = _InventoryItem;
 
@@ -37,20 +39,27 @@ abstract class InventoryItem with _$InventoryItem {
     name: '',
     unit: MeasurementUnit.unknown,
     category: InventoryCategory.unknown,
-    stock: 0,
     lowStockThreshold: 0,
     createdAt: DateTime.now(),
   );
 
   const InventoryItem._();
 
-  /// Checks if the item is in stock
-  bool get isLowStock => stock <= lowStockThreshold;
+  /// Calculates the total stock quantity across all batches.
+  double get totalStock => stockBatches.fold(
+    0,
+    (sum, batch) => sum + batch.quantity,
+  );
 
-  /// Checks if the item is out of stock
-  bool get isOutOfStock => stock <= 0;
-
-  /// Checks if the item is expired
-  bool get isExpired =>
-      expirationDate != null && expirationDate!.isBefore(DateTime.now());
+  /// Returns the available stock quantity, excluding expired batches.
+  double getAvailableStock() {
+    final now = DateTime.now();
+    return stockBatches
+        .where(
+          (batch) =>
+              batch.expirationDate == null ||
+              batch.expirationDate!.isAfter(now),
+        )
+        .fold(0, (sum, batch) => sum + batch.quantity);
+  }
 }

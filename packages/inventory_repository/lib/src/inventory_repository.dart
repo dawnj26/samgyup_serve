@@ -19,6 +19,8 @@ class InventoryRepository {
   final AppwriteRepository _appwrite;
   late final ProjectInfo _projectInfo;
 
+  String get _batchCollectionId => _appwrite.environment.batchCollectionId;
+
   /// Fetches a list of inventory items.
   ///
   /// This method retrieves all inventory items from the database.
@@ -33,18 +35,12 @@ class InventoryRepository {
     InventoryItemStatus? status,
     InventoryCategory? category,
     List<String>? itemIds,
+    bool includeBatches = false,
   }) async {
     try {
       String? statusQuery;
       if (status != null) {
-        if (status == InventoryItemStatus.expired) {
-          statusQuery = Query.lessThanEqual(
-            'expirationDate',
-            DateTime.now().toIso8601String(),
-          );
-        } else {
-          statusQuery = Query.equal('status', status.name);
-        }
+        statusQuery = Query.equal('status', status.name);
       }
 
       final queries = [
@@ -60,14 +56,97 @@ class InventoryRepository {
         queries: queries.isEmpty ? null : queries,
       );
 
-      return response.rows.map((row) {
+      final items = <InventoryItem>[];
+      for (final row in response.rows) {
         final json = _appwrite.rowToJson(row);
-        return InventoryItem.fromJson(json);
-      }).toList();
+        var item = InventoryItem.fromJson(json);
+
+        if (includeBatches) {
+          final batches = await fetchBatches(itemId: item.id);
+
+          item = item.copyWith(
+            stockBatches: batches,
+          );
+        }
+
+        items.add(item);
+      }
+
+      return items;
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
       throw Exception('Failed to fetch inventory items: $e');
+    }
+  }
+
+  /// Fetches a list of stock batches.
+  Future<List<StockBatch>> fetchBatches({
+    String? lastDocumentId,
+    int? limit,
+    String? itemId,
+  }) async {
+    try {
+      final queries = [
+        if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
+        if (itemId != null) Query.equal('itemId', itemId),
+        Query.limit(limit ?? 500),
+      ];
+      final response = await _appwrite.databases.listRows(
+        databaseId: _projectInfo.databaseId,
+        tableId: _batchCollectionId,
+        queries: queries.isEmpty ? null : queries,
+      );
+
+      return response.rows.map((row) {
+        final json = _appwrite.rowToJson(row);
+        return StockBatch.fromJson(json);
+      }).toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch stock batches: $e');
+    }
+  }
+
+  /// Adds a new stock batch.
+  Future<StockBatch> addBatch(StockBatch batch) async {
+    try {
+      final rowId = ID.unique();
+
+      final row = await _appwrite.databases.createRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _batchCollectionId,
+        rowId: rowId,
+        data: batch
+            .copyWith(
+              id: rowId,
+            )
+            .toJson(),
+      );
+
+      final json = _appwrite.rowToJson(row);
+
+      return StockBatch.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to add stock batch: $e');
+    }
+  }
+
+  /// Deletes a stock batch by its ID.
+  Future<void> deleteBatch(String batchId) async {
+    try {
+      await _appwrite.databases.deleteRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _batchCollectionId,
+        rowId: batchId,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to delete stock batch: $e');
     }
   }
 
@@ -99,6 +178,90 @@ class InventoryRepository {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
       throw Exception('Failed to fetch expired items: $e');
+    }
+  }
+
+  /// Syncs a single inventory item by updating its status based on its stock.
+  Future<InventoryItem> syncItem(InventoryItem item) async {
+    try {
+      final status = _getInventoryStatus(item);
+
+      if (item.status == status) {
+        return item;
+      }
+
+      final document = await _appwrite.databases.updateRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: item.id,
+        data: item.copyWith(status: status).toJson(),
+      );
+
+      final json = _appwrite.rowToJson(document);
+
+      return InventoryItem.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to sync inventory item: $e');
+    }
+  }
+
+  /// Syncs the inventory by updating the status
+  /// of each item based on its stock.
+  Future<void> syncInventory() async {
+    try {
+      final inventory = await fetchItems(
+        includeBatches: true,
+      );
+
+      for (final item in inventory) {
+        final status = _getInventoryStatus(item);
+
+        if (item.status != status) {
+          await updateItem(
+            item.copyWith(
+              status: status,
+            ),
+          );
+        }
+      }
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to sync inventory: $e');
+    }
+  }
+
+  /// Fetches a single inventory item by its ID.
+  Future<InventoryItem> fetchItemById(
+    String itemId, {
+    bool includeBatch = false,
+  }) async {
+    try {
+      final document = await _appwrite.databases.getRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: itemId,
+      );
+
+      final json = _appwrite.rowToJson(document);
+
+      final item = InventoryItem.fromJson(json);
+
+      if (includeBatch) {
+        final batches = await fetchBatches(itemId: item.id);
+
+        return item.copyWith(
+          stockBatches: batches,
+        );
+      }
+
+      return item;
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch inventory item: $e');
     }
   }
 
@@ -194,6 +357,8 @@ class InventoryRepository {
     required String itemId,
     required int quantity,
   }) async {
+    // TODO(stock): implement decrement stock using FEFO
+
     try {
       await _appwrite.databases.decrementRowColumn(
         databaseId: _appwrite.environment.databaseId,
@@ -214,6 +379,8 @@ class InventoryRepository {
     required String itemId,
     required int quantity,
   }) async {
+    // TODO(stock): implement increment stock using FEFO
+
     try {
       await _appwrite.databases.incrementRowColumn(
         databaseId: _appwrite.environment.databaseId,
@@ -242,21 +409,20 @@ class InventoryRepository {
     final outOfStockItems = items
         .where((item) => item.status == InventoryItemStatus.outOfStock)
         .length;
-    final expiredItems = items.where((item) => item.isExpired).length;
-
     return InventoryInfo(
       totalItems: totalItems,
       inStockItems: inStockItems,
       lowStockItems: lowStockItems,
       outOfStockItems: outOfStockItems,
-      expiredItems: expiredItems,
     );
   }
 
   InventoryItemStatus _getInventoryStatus(InventoryItem item) {
-    if (item.isOutOfStock) {
+    final totalStock = item.getAvailableStock();
+
+    if (totalStock <= 0) {
       return InventoryItemStatus.outOfStock;
-    } else if (item.isLowStock) {
+    } else if (totalStock <= item.lowStockThreshold) {
       return InventoryItemStatus.lowStock;
     } else {
       return InventoryItemStatus.inStock;

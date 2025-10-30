@@ -11,9 +11,6 @@ enum InventoryItemStatus {
 
   /// Items that have quantity below the minimum threshold
   lowStock,
-
-  /// Items that are expired and should not be used
-  expired,
 }
 
 /// Extension that provides human-readable
@@ -37,8 +34,6 @@ extension InventoryStatusX on InventoryItemStatus {
         return 'Out of Stock';
       case InventoryItemStatus.lowStock:
         return 'Low Stock';
-      case InventoryItemStatus.expired:
-        return 'Expired';
     }
   }
 }

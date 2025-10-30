@@ -22,6 +22,7 @@ class Environment {
     required this.eventCollectionId,
     required this.paymentCollectionId,
     required this.settingsCollectionId,
+    required this.batchCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -74,4 +75,7 @@ class Environment {
 
   /// The ID of settings collection.
   final String settingsCollectionId;
+
+  /// The ID of stock batch collection.
+  final String batchCollectionId;
 }

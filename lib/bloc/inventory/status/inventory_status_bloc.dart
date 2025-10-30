@@ -107,7 +107,37 @@ class InventoryStatusBloc
     _Reload event,
     Emitter<InventoryStatusState> emit,
   ) async {
-    // TODO(reload): Implement reload logic if needed.
+    emit(
+      InventoryStatusLoading(
+        items: state.items,
+        hasReachedMax: state.hasReachedMax,
+        status: state.status,
+      ),
+    );
+
+    try {
+      final items = await _inventoryRepository.fetchItems(
+        limit: _pageSize,
+        status: state.status,
+      );
+
+      emit(
+        InventoryStatusLoaded(
+          items: items,
+          hasReachedMax: items.length < _pageSize,
+          status: state.status,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        InventoryStatusError(
+          message: e.toString(),
+          items: state.items,
+          hasReachedMax: state.hasReachedMax,
+          status: state.status,
+        ),
+      );
+    }
   }
 
   Future<void> _onItemRemoved(

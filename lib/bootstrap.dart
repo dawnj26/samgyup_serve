@@ -34,6 +34,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       eventCollectionId: '68cbde25000e5e90602b',
       paymentCollectionId: '68cfaa7d001bee8f0771',
       settingsCollectionId: '68df7c51000abfa3ec62',
+      batchCollectionId: '690078f2000499afefa5',
     ),
   );
 

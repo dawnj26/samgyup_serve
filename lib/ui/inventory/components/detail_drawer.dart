@@ -27,19 +27,9 @@ class DetailDrawer extends StatelessWidget {
         value: item.status.label,
       ),
       DrawerTileProps(
-        title: 'Quantity',
-        value: '${item.stock.toStringAsFixed(0)} ${item.unit.value}',
-      ),
-      DrawerTileProps(
         title: 'Low Stock Threshold',
         value:
             '${item.lowStockThreshold.toStringAsFixed(0)} ${item.unit.value}',
-      ),
-      DrawerTileProps(
-        title: 'Expiration Date',
-        value: item.expirationDate == null
-            ? 'No expiration'
-            : locale.formatFullDate(item.expirationDate!),
       ),
       DrawerTileProps(
         title: 'Created At',
