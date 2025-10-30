@@ -61,7 +61,7 @@ class StockBatchCard extends StatelessWidget {
                     onConfirmed: () {
                       context.read<BatchDeleteBloc>().add(
                         BatchDeleteEvent.started(
-                          batchId: batch.id,
+                          batch: batch,
                         ),
                       );
                     },
