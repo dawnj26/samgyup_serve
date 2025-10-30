@@ -85,7 +85,12 @@ class InventoryStockBloc
         expirationDate: state.expiration,
       );
 
-      await _inventoryRepository.addBatch(batch);
+      final newBatch = await _inventoryRepository.addBatch(batch);
+      final updatedItem = state.item.copyWith(
+        stockBatches: [...state.item.stockBatches, newBatch],
+      );
+
+      await _inventoryRepository.syncItem(updatedItem);
 
       emit(
         state.copyWith(
