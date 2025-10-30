@@ -39,16 +39,17 @@ class InventoryDetailsBloc
         itemId: state.item.id,
       );
 
-      final updatedItem = state.item.copyWith(
-        stockBatches: batches,
-      );
+      final updatedItem =
+          (await _inventoryRepository.fetchItemById(
+            state.item.id,
+          )).copyWith(
+            stockBatches: batches,
+          );
 
       emit(
         state.copyWith(
           status: LoadingStatus.success,
-          item: state.item.copyWith(
-            stockBatches: batches,
-          ),
+          item: updatedItem,
           isDirty: updatedItem != state.item,
         ),
       );
