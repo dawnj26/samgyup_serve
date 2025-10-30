@@ -181,6 +181,90 @@ class InventoryRepository {
     }
   }
 
+  /// Syncs a single inventory item by updating its status based on its stock.
+  Future<InventoryItem> syncItem(InventoryItem item) async {
+    try {
+      final status = _getInventoryStatus(item);
+
+      if (item.status == status) {
+        return item;
+      }
+
+      final document = await _appwrite.databases.updateRow(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: item.id,
+        data: item.copyWith(status: status).toJson(),
+      );
+
+      final json = _appwrite.rowToJson(document);
+
+      return InventoryItem.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to sync inventory item: $e');
+    }
+  }
+
+  /// Syncs the inventory by updating the status
+  /// of each item based on its stock.
+  Future<void> syncInventory() async {
+    try {
+      final inventory = await fetchItems(
+        includeBatches: true,
+      );
+
+      for (final item in inventory) {
+        final status = _getInventoryStatus(item);
+
+        if (item.status != status) {
+          await updateItem(
+            item.copyWith(
+              status: status,
+            ),
+          );
+        }
+      }
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to sync inventory: $e');
+    }
+  }
+
+  /// Fetches a single inventory item by its ID.
+  Future<InventoryItem> fetchItemById(
+    String itemId, {
+    bool includeBatch = false,
+  }) async {
+    try {
+      final document = await _appwrite.databases.getRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _projectInfo.inventoryCollectionId,
+        rowId: itemId,
+      );
+
+      final json = _appwrite.rowToJson(document);
+
+      final item = InventoryItem.fromJson(json);
+
+      if (includeBatch) {
+        final batches = await fetchBatches(itemId: item.id);
+
+        return item.copyWith(
+          stockBatches: batches,
+        );
+      }
+
+      return item;
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch inventory item: $e');
+    }
+  }
+
   /// Adds a new inventory item.
   Future<InventoryItem> addItem(InventoryItem item) async {
     try {
