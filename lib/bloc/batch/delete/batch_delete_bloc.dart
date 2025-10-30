@@ -25,7 +25,14 @@ class BatchDeleteBloc extends Bloc<BatchDeleteEvent, BatchDeleteState> {
     emit(state.copyWith(status: LoadingStatus.loading));
 
     try {
-      await _inventoryRepository.deleteBatch(event.batchId);
+      await _inventoryRepository.deleteBatch(event.batch.id);
+      final item = await _inventoryRepository.fetchItemById(
+        event.batch.itemId,
+        includeBatch: true,
+      );
+
+      await _inventoryRepository.syncItem(item);
+
       emit(state.copyWith(status: LoadingStatus.success));
     } on ResponseException catch (e) {
       emit(
