@@ -4,4 +4,5 @@ part of 'inventory_bloc.dart';
 class InventoryEvent with _$InventoryEvent {
   const factory InventoryEvent.started() = _Started;
   const factory InventoryEvent.reload() = _Reload;
+  const factory InventoryEvent.sync() = _Sync;
 }
