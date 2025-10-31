@@ -78,10 +78,13 @@ class InventoryStockBloc
     );
 
     try {
+      final parsedQuantity = double.parse(stock.value);
+
       final batch = StockBatch(
         id: '',
         itemId: state.item.id,
-        quantity: double.parse(stock.value),
+        quantity: parsedQuantity,
+        baseQuantity: parsedQuantity,
         expirationDate: state.expiration,
       );
 

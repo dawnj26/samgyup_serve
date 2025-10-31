@@ -13,6 +13,7 @@ abstract class StockBatch with _$StockBatch {
     required String id,
     required String itemId,
     required double quantity,
+    required double baseQuantity,
     DateTime? expirationDate,
     DateTime? createdAt,
     DateTime? updatedAt,
