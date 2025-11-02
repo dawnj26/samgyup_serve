@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'dart:math' as math;
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
@@ -355,23 +356,78 @@ class InventoryRepository {
   /// Decrements the stock of an inventory item by a specified quantity.
   Future<void> decrementStock({
     required String itemId,
-    required int quantity,
+    required double quantity,
   }) async {
-    // TODO(stock): implement decrement stock using FEFO
-
     try {
-      await _appwrite.databases.decrementRowColumn(
-        databaseId: _appwrite.environment.databaseId,
-        tableId: _projectInfo.inventoryCollectionId,
-        rowId: itemId,
-        column: 'stock',
-        value: quantity.toDouble(),
+      final batches = await fetchBatches(itemId: itemId);
+      final totalStock = batches.fold<double>(
+        0,
+        (previousValue, element) {
+          if (element.expirationDate == null ||
+              element.expirationDate!.isAfter(DateTime.now())) {
+            return previousValue + element.quantity;
+          }
+
+          return previousValue;
+        },
       );
+
+      if (totalStock < quantity) {
+        return;
+      }
+
+      final sortedBatches = _sortBatchesByExpiry(batches);
+      var remainingQuantity = quantity;
+
+      for (final batch in sortedBatches) {
+        if (remainingQuantity <= 0) {
+          break;
+        }
+
+        final deductQuantity = math.min(batch.quantity, remainingQuantity);
+        final newQuantity = math
+            .min(batch.quantity - deductQuantity, 0)
+            .toDouble();
+
+        await _appwrite.databases.updateRow(
+          databaseId: _projectInfo.databaseId,
+          tableId: _batchCollectionId,
+          rowId: batch.id,
+          data: batch.copyWith(quantity: newQuantity).toJson(),
+        );
+        remainingQuantity -= deductQuantity;
+      }
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
       throw Exception('Failed to decrement stock: $e');
     }
+  }
+
+  List<StockBatch> _sortBatchesByExpiry(
+    List<StockBatch> batches, {
+    bool includeExpired = false,
+  }) {
+    final now = DateTime.now();
+    final availableBatches =
+        batches
+            .where(
+              (b) =>
+                  b.quantity > 0 &&
+                  (includeExpired ||
+                      b.expirationDate == null ||
+                      b.expirationDate!.isAfter(now)),
+            )
+            .toList()
+          ..sort((a, b) {
+            // Items without expiry go last
+            if (a.expirationDate == null) return 1;
+            if (b.expirationDate == null) return -1;
+            // Sort by expiration date (earliest first)
+            return a.expirationDate!.compareTo(b.expirationDate!);
+          });
+
+    return availableBatches;
   }
 
   /// Increments the stock of an inventory item by a specified quantity.
