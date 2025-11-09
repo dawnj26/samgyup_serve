@@ -139,6 +139,17 @@ class _Header extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: AspectRatio(
+            aspectRatio: 1.2,
+            child: BucketImage(fileId: item.imageId),
+          ),
+        ),
+        const SizedBox(height: 16),
         Row(
           children: [
             Text(item.name, style: textTheme.titleLarge),
