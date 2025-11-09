@@ -134,6 +134,8 @@ class _Header extends StatelessWidget {
       (InventoryDetailsBloc bloc) => bloc.state.item,
     );
 
+    final description = item.description ?? 'No description available.';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -172,6 +174,13 @@ class _Header extends StatelessWidget {
               ],
             ),
           ],
+        ),
+        const SizedBox(height: 16),
+        Text('Description', style: textTheme.labelLarge),
+        const SizedBox(height: 4),
+        Text(
+          description,
+          style: textTheme.bodyMedium,
         ),
       ],
     );
