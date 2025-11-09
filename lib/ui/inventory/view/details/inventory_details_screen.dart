@@ -93,6 +93,21 @@ class InventoryDetailsScreen extends StatelessWidget {
         );
     }
   }
+
+  Future<void> _handleEdit(InventoryItem item, BuildContext context) async {
+    final updatedItem = await context.router.push<InventoryItem>(
+      InventoryEditRoute(
+        item: item,
+      ),
+    );
+
+    if (!context.mounted || updatedItem == null) return;
+
+    context.read<InventoryDetailsBloc>().add(
+      const InventoryDetailsEvent.batchRefreshed(),
+    );
+  }
+
   void _handlePressed(BuildContext context) {
     unawaited(
       context.router.push(
