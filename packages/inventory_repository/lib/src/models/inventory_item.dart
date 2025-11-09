@@ -23,8 +23,10 @@ abstract class InventoryItem with _$InventoryItem {
     required InventoryCategory category,
     required double lowStockThreshold,
     required DateTime createdAt,
+    required double price,
     @Default(InventoryItemStatus.inStock) InventoryItemStatus status,
     @JsonKey(includeToJson: false) @Default([]) List<StockBatch> stockBatches,
+    String? imageId,
     DateTime? updatedAt,
     String? description,
   }) = _InventoryItem;
@@ -38,6 +40,7 @@ abstract class InventoryItem with _$InventoryItem {
     id: '',
     name: '',
     unit: MeasurementUnit.unknown,
+    price: 0,
     category: InventoryCategory.unknown,
     lowStockThreshold: 0,
     createdAt: DateTime.now(),
