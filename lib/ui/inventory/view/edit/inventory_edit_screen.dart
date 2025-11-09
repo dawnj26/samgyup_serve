@@ -8,8 +8,11 @@ import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart'
     hide MeasurementUnit;
 import 'package:samgyup_serve/shared/form/name.dart';
+import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/form_scaffold.dart';
+import 'package:samgyup_serve/ui/components/image_picker.dart';
+import 'package:samgyup_serve/ui/components/price_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryEditScreen extends StatelessWidget {
@@ -59,9 +62,19 @@ class InventoryEditScreen extends StatelessWidget {
                         item.category,
                       ),
                       const SizedBox(height: 16),
+                      _LowStock(
+                        lowStockThreshold: item.lowStockThreshold,
+                      ),
+                      const SizedBox(height: 16),
                       _MeasurementUnitInputField(
                         item.unit,
                       ),
+                      const SizedBox(height: 16),
+                      _Price(
+                        initialValue: item.price,
+                      ),
+                      const SizedBox(height: 16),
+                      const _Picker(),
                       const SizedBox(height: 16),
                       const SaveButton(),
                     ],
@@ -72,6 +85,77 @@ class InventoryEditScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Picker extends StatelessWidget {
+  const _Picker();
+
+  @override
+  Widget build(BuildContext context) {
+    return ImagePicker(
+      onChange: (image) {
+        context.read<InventoryEditBloc>().add(
+          InventoryEditEvent.imageChanged(imageFile: image),
+        );
+      },
+    );
+  }
+}
+
+class _Price extends StatelessWidget {
+  const _Price({
+    required this.initialValue,
+  });
+
+  final double initialValue;
+
+  @override
+  Widget build(BuildContext context) {
+    final price = context.select(
+      (InventoryEditBloc bloc) => bloc.state.price,
+    );
+
+    final errorText = price.displayError?.message;
+
+    return PriceInput(
+      errorText: errorText,
+      initialValue: initialValue.toString(),
+      onChanged: (value) {
+        context.read<InventoryEditBloc>().add(
+          InventoryEditEvent.priceChanged(price: value),
+        );
+      },
+    );
+  }
+}
+
+class _LowStock extends StatelessWidget {
+  const _LowStock({
+    required this.lowStockThreshold,
+  });
+
+  final double lowStockThreshold;
+
+  @override
+  Widget build(BuildContext context) {
+    final lowStock = context.select(
+      (InventoryEditBloc bloc) => bloc.state.lowStockThreshold,
+    );
+
+    final errorText = lowStock.displayError?.message;
+
+    return LowStockThresholdInput(
+      errorText: errorText,
+      initialValue: lowStockThreshold.toString(),
+      onChanged: (value) {
+        context.read<InventoryEditBloc>().add(
+          InventoryEditEvent.lowStockThresholdChanged(
+            lowStockThreshold: value,
+          ),
+        );
+      },
     );
   }
 }
