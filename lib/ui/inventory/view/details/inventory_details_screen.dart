@@ -4,12 +4,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/details/inventory_details_bloc.dart';
+import 'package:samgyup_serve/data/enums/inventory_item_option.dart';
 import 'package:samgyup_serve/data/enums/status_color.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
-import 'package:samgyup_serve/ui/components/badge_indicator.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class InventoryDetailsScreen extends StatelessWidget {
