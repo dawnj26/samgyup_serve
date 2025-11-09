@@ -6,9 +6,11 @@ class ManagementItem {
     required this.title,
     required this.icon,
     this.route,
+    this.enabled = true,
   });
 
   final String title;
   final IconData icon;
   final PageRouteInfo? route;
+  final bool enabled;
 }
