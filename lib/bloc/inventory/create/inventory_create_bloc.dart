@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -6,8 +9,8 @@ import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
-import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
+import 'package:samgyup_serve/shared/form/price.dart';
 
 part 'inventory_create_bloc.freezed.dart';
 part 'inventory_create_event.dart';
@@ -22,14 +25,49 @@ class InventoryCreateBloc
     on<_NameChanged>(_onNameChanged);
     on<_DescriptionChanged>(_onDescriptionChanged);
     on<_CategoryChanged>(_onCategoryChanged);
-    on<_StockChanged>(_onStockChanged);
     on<_LowStockThresholdChanged>(_onLowStockThresholdChanged);
     on<_MeasurementUnitChanged>(_onMeasurementUnitChanged);
-    on<_ExpirationChanged>(_onExpirationChanged);
     on<_Saved>(_onSaved);
+    on<_PriceChanged>(_onPriceChanged);
+    on<_ImageChanged>(_onImageChanged);
   }
 
   final i.InventoryRepository _inventoryRepository;
+
+  void _onImageChanged(
+    _ImageChanged event,
+    Emitter<InventoryCreateState> emit,
+  ) {
+    emit(
+      InventoryCreateDirty(
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: state.price,
+        imageFile: event.imageFile,
+      ),
+    );
+  }
+
+  void _onPriceChanged(
+    _PriceChanged event,
+    Emitter<InventoryCreateState> emit,
+  ) {
+    final price = Price.dirty(event.price);
+    emit(
+      InventoryCreateDirty(
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: price,
+        imageFile: state.imageFile,
+      ),
+    );
+  }
 
   Future<void> _onSaved(
     _Saved event,
@@ -38,31 +76,31 @@ class InventoryCreateBloc
     final name = Name.dirty(state.name.value);
     final description = Description.dirty(state.description.value);
     final category = Category.dirty(state.category.value);
-    final stock = Stock.dirty(state.stock.value);
     final lowStockThreshold = LowStockThreshold.dirty(
       state.lowStockThreshold.value,
     );
     final measurementUnit = MeasurementUnit.dirty(state.measurementUnit.value);
+    final price = Price.dirty(state.price.value);
 
     final isValid = Formz.validate([
       name,
       description,
       category,
-      stock,
       lowStockThreshold,
       measurementUnit,
+      price,
     ]);
 
     if (!isValid) {
       emit(
         InventoryCreateDirty(
-          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
-          stock: stock,
           lowStockThreshold: lowStockThreshold,
           description: description,
+          price: price,
+          imageFile: state.imageFile,
         ),
       );
       return;
@@ -70,18 +108,21 @@ class InventoryCreateBloc
 
     emit(
       InventoryCreateLoading(
-        expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: category,
         name: name,
-        stock: stock,
         lowStockThreshold: lowStockThreshold,
         description: description,
+        price: price,
+        imageFile: state.imageFile,
       ),
     );
 
     try {
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
+      final imageId = state.imageFile != null
+          ? await AppwriteRepository.instance.uploadFile(state.imageFile!)
+          : null;
 
       await _inventoryRepository.addItem(
         i.InventoryItem(
@@ -92,6 +133,8 @@ class InventoryCreateBloc
           lowStockThreshold: parsedLowStockThreshold ?? 0,
           unit: measurementUnit.value!,
           createdAt: DateTime.now(),
+          price: double.parse(price.value),
+          imageId: imageId,
         ),
       );
       emit(
@@ -100,14 +143,14 @@ class InventoryCreateBloc
     } on Exception catch (e) {
       emit(
         InventoryCreateFailure(
-          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
-          stock: stock,
           lowStockThreshold: lowStockThreshold,
           description: description,
+          price: price,
           message: e.toString(),
+          imageFile: state.imageFile,
         ),
       );
     }
@@ -117,13 +160,13 @@ class InventoryCreateBloc
     final name = Name.dirty(event.name);
     emit(
       InventoryCreateDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -135,13 +178,13 @@ class InventoryCreateBloc
     final description = Description.dirty(event.description);
     emit(
       InventoryCreateDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -153,31 +196,13 @@ class InventoryCreateBloc
     final category = Category.dirty(event.category);
     emit(
       InventoryCreateDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
-      ),
-    );
-  }
-
-  void _onStockChanged(
-    _StockChanged event,
-    Emitter<InventoryCreateState> emit,
-  ) {
-    final stock = Stock.dirty(event.stock);
-    emit(
-      InventoryCreateDirty(
-        expiration: state.expiration,
-        measurementUnit: state.measurementUnit,
-        category: state.category,
-        name: state.name,
-        stock: stock,
-        lowStockThreshold: state.lowStockThreshold,
-        description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -191,13 +216,13 @@ class InventoryCreateBloc
     );
     emit(
       InventoryCreateDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: lowStockThreshold,
         description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -209,31 +234,13 @@ class InventoryCreateBloc
     final measurementUnit = MeasurementUnit.dirty(event.measurementUnit);
     emit(
       InventoryCreateDirty(
-        expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: state.category,
         name: state.name,
-        stock: state.stock,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
-      ),
-    );
-  }
-
-  void _onExpirationChanged(
-    _ExpirationChanged event,
-    Emitter<InventoryCreateState> emit,
-  ) {
-    final expiration = event.expiration;
-    emit(
-      InventoryCreateDirty(
-        expiration: expiration,
-        measurementUnit: state.measurementUnit,
-        category: state.category,
-        name: state.name,
-        stock: state.stock,
-        lowStockThreshold: state.lowStockThreshold,
-        description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }

@@ -8,7 +8,8 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
-    DateTime? expiration,
+    required Price price,
+    File? imageFile,
   }) = InventoryEditInitial;
 
   const factory InventoryEditState.dirty({
@@ -17,7 +18,8 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
-    DateTime? expiration,
+    required Price price,
+    File? imageFile,
   }) = InventoryEditDirty;
 
   const factory InventoryEditState.loading({
@@ -26,7 +28,8 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
-    DateTime? expiration,
+    required Price price,
+    File? imageFile,
   }) = InventoryEditLoading;
 
   const factory InventoryEditState.success({
@@ -34,19 +37,20 @@ abstract class InventoryEditState with _$InventoryEditState {
     @Default(m.MeasurementUnit.pure()) m.MeasurementUnit measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
-    @Default(Stock.pure()) Stock stock,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
-    DateTime? expiration,
+    @Default(Price.pure()) Price price,
+    File? imageFile,
   }) = InventoryEditSuccess;
 
   const factory InventoryEditState.noChanges({
-    DateTime? expiration,
     @Default(m.MeasurementUnit.pure()) m.MeasurementUnit measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
+    @Default(Price.pure()) Price price,
+    File? imageFile,
   }) = InventoryEditNoChanges;
 
   const factory InventoryEditState.failure({
@@ -55,7 +59,8 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
+    required Price price,
     required String message,
-    DateTime? expiration,
+    File? imageFile,
   }) = InventoryEditFailure;
 }
