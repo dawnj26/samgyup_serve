@@ -49,6 +49,7 @@ class InventoryStatusBloc
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
         status: state.status,
+        includeBatches: true,
       );
 
       emit(
@@ -82,6 +83,7 @@ class InventoryStatusBloc
         lastDocumentId: lastItem?.id,
         status: state.status,
         limit: _pageSize,
+        includeBatches: true,
       );
 
       emit(
@@ -119,6 +121,7 @@ class InventoryStatusBloc
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
         status: state.status,
+        includeBatches: true,
       );
 
       emit(

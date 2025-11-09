@@ -222,7 +222,7 @@ class MenuDetailsBloc extends Bloc<MenuDetailsEvent, MenuDetailsState> {
           // Decrease stock
           await _inventoryRepository.decrementStock(
             itemId: inventoryItem.id,
-            quantity: incrementValue,
+            quantity: incrementValue.toDouble(),
           );
         }
       }

@@ -117,3 +117,6 @@ lib/l10n/gen/
 *.freezed.dart
 *.g.dart
 *.gr.dart
+
+# Melos generated files
+.idea/runConfigurations/melos_*.xml

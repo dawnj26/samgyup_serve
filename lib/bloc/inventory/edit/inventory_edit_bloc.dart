@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -6,8 +9,8 @@ import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as m;
-import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
+import 'package:samgyup_serve/shared/form/price.dart';
 
 part 'inventory_edit_bloc.freezed.dart';
 part 'inventory_edit_event.dart';
@@ -28,20 +31,56 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
              item.lowStockThreshold.toString(),
            ),
            description: Description.pure(item.description ?? ''),
+           price: Price.pure(item.price.toString()),
          ),
        ) {
     on<_NameChanged>(_onNameChanged);
     on<_DescriptionChanged>(_onDescriptionChanged);
     on<_CategoryChanged>(_onCategoryChanged);
-    on<_StockChanged>(_onStockChanged);
     on<_LowStockThresholdChanged>(_onLowStockThresholdChanged);
     on<_MeasurementUnitChanged>(_onMeasurementUnitChanged);
-    on<_ExpirationChanged>(_onExpirationChanged);
     on<_Saved>(_onSaved);
+    on<_PriceChanged>(_onPriceChanged);
+    on<_ImageChanged>(_onImageChanged);
   }
 
   final InventoryRepository _inventoryRepository;
   final InventoryItem _item;
+
+  void _onImageChanged(
+    _ImageChanged event,
+    Emitter<InventoryEditState> emit,
+  ) {
+    emit(
+      InventoryEditDirty(
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: state.price,
+        imageFile: event.imageFile,
+      ),
+    );
+  }
+
+  void _onPriceChanged(
+    _PriceChanged event,
+    Emitter<InventoryEditState> emit,
+  ) {
+    final price = Price.dirty(event.price);
+    emit(
+      InventoryEditDirty(
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: price,
+        imageFile: state.imageFile,
+      ),
+    );
+  }
 
   Future<void> _onSaved(
     _Saved event,
@@ -56,6 +95,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final measurementUnit = m.MeasurementUnit.dirty(
       state.measurementUnit.value,
     );
+    final price = Price.dirty(state.price.value);
 
     final isValid = Formz.validate([
       name,
@@ -63,17 +103,19 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       category,
       lowStockThreshold,
       measurementUnit,
+      price,
     ]);
 
     if (!isValid) {
       emit(
         InventoryEditDirty(
-          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
           lowStockThreshold: lowStockThreshold,
           description: description,
+          price: price,
+          imageFile: state.imageFile,
         ),
       );
       return;
@@ -81,27 +123,33 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
 
     emit(
       InventoryEditLoading(
-        expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: category,
         name: name,
-
         lowStockThreshold: lowStockThreshold,
         description: description,
+        price: price,
+        imageFile: state.imageFile,
       ),
     );
 
     try {
       final parsedLowStockThreshold = double.tryParse(lowStockThreshold.value);
+      final imageId = state.imageFile != null
+          ? await AppwriteRepository.instance.uploadFile(state.imageFile!)
+          : _item.imageId;
+
       final updatedItem = _item.copyWith(
         name: name.value,
         description: description.value,
         category: category.value!,
         lowStockThreshold: parsedLowStockThreshold ?? 0,
         unit: measurementUnit.value!,
+        price: double.parse(price.value),
+        imageId: imageId,
       );
 
-      if (updatedItem == _item) {
+      if (updatedItem == _item && state.imageFile == null) {
         return emit(const InventoryEditNoChanges());
       }
 
@@ -112,14 +160,14 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     } on Exception catch (e) {
       emit(
         InventoryEditFailure(
-          expiration: state.expiration,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
-
           lowStockThreshold: lowStockThreshold,
           description: description,
+          price: price,
           message: e.toString(),
+          imageFile: state.imageFile,
         ),
       );
     }
@@ -129,12 +177,13 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final name = Name.dirty(event.name);
     emit(
       InventoryEditDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: name,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -146,13 +195,13 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final description = Description.dirty(event.description);
     emit(
       InventoryEditDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
-
         lowStockThreshold: state.lowStockThreshold,
         description: description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -164,28 +213,13 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final category = Category.dirty(event.category);
     emit(
       InventoryEditDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: category,
         name: state.name,
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
-      ),
-    );
-  }
-
-  void _onStockChanged(
-    _StockChanged event,
-    Emitter<InventoryEditState> emit,
-  ) {
-    emit(
-      InventoryEditDirty(
-        expiration: state.expiration,
-        measurementUnit: state.measurementUnit,
-        category: state.category,
-        name: state.name,
-        lowStockThreshold: state.lowStockThreshold,
-        description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -199,12 +233,13 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     );
     emit(
       InventoryEditDirty(
-        expiration: state.expiration,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
         lowStockThreshold: lowStockThreshold,
         description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }
@@ -216,30 +251,13 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final measurementUnit = m.MeasurementUnit.dirty(event.measurementUnit);
     emit(
       InventoryEditDirty(
-        expiration: state.expiration,
         measurementUnit: measurementUnit,
         category: state.category,
         name: state.name,
-
         lowStockThreshold: state.lowStockThreshold,
         description: state.description,
-      ),
-    );
-  }
-
-  void _onExpirationChanged(
-    _ExpirationChanged event,
-    Emitter<InventoryEditState> emit,
-  ) {
-    final expiration = event.expiration;
-    emit(
-      InventoryEditDirty(
-        expiration: expiration,
-        measurementUnit: state.measurementUnit,
-        category: state.category,
-        name: state.name,
-        lowStockThreshold: state.lowStockThreshold,
-        description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
       ),
     );
   }

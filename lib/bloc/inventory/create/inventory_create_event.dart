@@ -13,16 +13,16 @@ class InventoryCreateEvent with _$InventoryCreateEvent {
   const factory InventoryCreateEvent.categoryChanged({
     required i.InventoryCategory category,
   }) = _CategoryChanged;
-  const factory InventoryCreateEvent.stockChanged({
-    required String stock,
-  }) = _StockChanged;
   const factory InventoryCreateEvent.lowStockThresholdChanged({
     required String lowStockThreshold,
   }) = _LowStockThresholdChanged;
   const factory InventoryCreateEvent.unitChanged({
     required i.MeasurementUnit measurementUnit,
   }) = _MeasurementUnitChanged;
-  const factory InventoryCreateEvent.expirationChanged({
-    required DateTime? expiration,
-  }) = _ExpirationChanged;
+  const factory InventoryCreateEvent.priceChanged({
+    required String price,
+  }) = _PriceChanged;
+  const factory InventoryCreateEvent.imageChanged({
+    required File? imageFile,
+  }) = _ImageChanged;
 }

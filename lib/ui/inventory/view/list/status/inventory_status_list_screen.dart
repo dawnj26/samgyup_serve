@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +22,6 @@ class InventoryStatusListScreen extends StatefulWidget {
 class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
   final _scrollController = ScrollController();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  InventoryItem _selectedItem = InventoryItem.empty();
 
   @override
   void initState() {
@@ -72,9 +73,6 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
             ),
           ],
         ),
-        endDrawer: DetailDrawer(
-          item: _selectedItem,
-        ),
         endDrawerEnableOpenDragGesture: false,
       ),
     );
@@ -124,10 +122,17 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
   }
 
   void _handleTap(InventoryItem item) {
-    setState(() {
-      _selectedItem = item;
-    });
-
-    scaffoldKey.currentState!.openEndDrawer();
+    unawaited(
+      context.router.push(
+        InventoryDetailsRoute(
+          item: item,
+          onChanged: () {
+            context.read<InventoryStatusBloc>().add(
+              const InventoryStatusEvent.reload(),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
