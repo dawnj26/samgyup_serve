@@ -67,6 +67,32 @@ class InventoryDetailsScreen extends StatelessWidget {
     );
   }
 
+  void _handleSelected(
+    BuildContext context,
+    InventoryItem item,
+    InventoryItemOption option,
+  ) {
+    switch (option) {
+      case InventoryItemOption.edit:
+        unawaited(_handleEdit(item, context));
+      case InventoryItemOption.delete:
+        unawaited(
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => InventoryDeleteDialog(
+              item: item,
+              onDelete: () {
+                context.read<InventoryDeleteBloc>().add(
+                  InventoryDeleteEvent.started(
+                    item: item,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+    }
+  }
   void _handlePressed(BuildContext context) {
     unawaited(
       context.router.push(
