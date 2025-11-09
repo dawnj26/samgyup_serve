@@ -22,7 +22,25 @@ class InventoryDetailsScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          Builder(
+            builder: (context) {
+              final item = context.select(
+                (InventoryDetailsBloc bloc) => bloc.state.item,
+              );
+
+              return ItemMoreOptionButton(
+                onSelected: (option) => _handleSelected(
+                  context,
+                  item,
+                  option,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
