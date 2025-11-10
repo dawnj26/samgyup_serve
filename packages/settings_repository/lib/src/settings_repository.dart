@@ -18,57 +18,50 @@ class SettingsRepository {
   String get _collectionId => _appwrite.environment.settingsCollectionId;
   String get _databaseId => _appwrite.environment.databaseId;
 
-  /// Fetches all settings from the Appwrite database.
-  Future<List<Setting>> getSettings() async {
+  /// Fetches the application settings from the backend.
+  Future<Settings> fetchSettings() async {
     try {
-      final documents = await _appwrite.databases.listRows(
+      final document = await _appwrite.databases.getRow(
         databaseId: _databaseId,
         tableId: _collectionId,
+        rowId: 'settings',
       );
-      return documents.rows
-          .map((e) => Setting.fromJson(_appwrite.rowToJson(e)))
-          .toList();
+      return Settings.fromJson(document.data);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
 
-  /// Updates the QR code setting with a new file.
-  Future<Setting> updateQrSetting(File file, Setting qrSetting) async {
+  /// Updates the application settings in the backend.
+  Future<Settings> updateSettings(Settings settings) async {
     try {
-      final upload = await _appwrite.uploadFile(file);
-      final u = qrSetting.copyWith(value: upload);
-
-      final updatedRow = await _appwrite.databases.updateRow(
+      final document = await _appwrite.databases.updateRow(
         databaseId: _databaseId,
         tableId: _collectionId,
-        rowId: u.id,
-        data: u.toJson(),
+        rowId: settings.id,
+        data: settings.toJson(),
       );
-      return Setting.fromJson(_appwrite.rowToJson(updatedRow));
+      return Settings.fromJson(document.data);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
 
-  /// Retrieves the file ID of the QR code setting.
-  Future<String?> getQrFileId() async {
+  /// Uploads the business logo file to the backend and returns its file ID.
+  Future<String> uploadQr(File file) async {
     try {
-      final document = await _appwrite.databases.listRows(
-        databaseId: _databaseId,
-        tableId: _collectionId,
-        queries: [
-          Query.equal('name', 'qr_code'),
-          Query.limit(1),
-        ],
-      );
-      if (document.total == 0) return null;
+      final fileId = await _appwrite.uploadFile(file);
+      return fileId;
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
 
-      final setting = Setting.fromJson(
-        _appwrite.rowToJson(document.rows.first),
-      );
-
-      return setting.value;
+  /// Uploads the QR code file to the backend and returns its file ID.
+  Future<String> uploadBusinessLogo(File file) async {
+    try {
+      final fileId = await _appwrite.uploadFile(file);
+      return fileId;
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }
