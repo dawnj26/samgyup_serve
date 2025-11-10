@@ -1,8 +1,8 @@
 part of 'settings_bloc.dart';
 
 @freezed
-class SettingsEvent with _$SettingsEvent {
-  const factory SettingsEvent.started() = _Started;
-  const factory SettingsEvent.qrCodeUpdated(File file, Setting qrSetting) =
-      _QrCodeUpdated;
+abstract class SettingsEvent with _$SettingsEvent {
+  const factory SettingsEvent.nameChanged(String name) = _NameChanged;
+  const factory SettingsEvent.logoChanged(File? logo) = _LogoChanged;
+  const factory SettingsEvent.qrChanged(File? qr) = _QrChanged;
 }

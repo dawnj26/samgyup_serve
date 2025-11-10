@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:device_repository/device_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:samgyup_serve/data/models/device_data.dart';
+import 'package:settings_repository/settings_repository.dart';
 import 'package:table_repository/table_repository.dart';
 
 part 'app_event.dart';
@@ -15,20 +16,39 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     required AuthenticationRepository authenticationRepository,
     required DeviceRepository deviceRepository,
     required TableRepository tableRepository,
+    required SettingsRepository settingsRepository,
   }) : _authenticationRepository = authenticationRepository,
        _deviceRepository = deviceRepository,
        _tableRepository = tableRepository,
-       super(const _Initial()) {
+       _settingsRepository = settingsRepository,
+       super(
+         _Initial(
+           settings: Settings.empty(),
+         ),
+       ) {
     on<_Started>(_onStarted);
     on<_Logout>(_onLogout);
     on<_Login>(_onLogin);
     on<_CheckDevice>(_onCheckDevice);
     on<_GuestSessionStarted>(_onGuestSessionStarted);
+    on<_SettingsChanged>(_onSettingsChanged);
   }
 
   final DeviceRepository _deviceRepository;
   final AuthenticationRepository _authenticationRepository;
   final TableRepository _tableRepository;
+  final SettingsRepository _settingsRepository;
+
+  Future<void> _onSettingsChanged(
+    _SettingsChanged event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        settings: event.settings,
+      ),
+    );
+  }
 
   Future<void> _onCheckDevice(
     _CheckDevice event,
@@ -68,6 +88,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     try {
       final user = await _authenticationRepository.currentUser;
+      final settings = await _settingsRepository.fetchSettings();
 
       if (user == User.empty()) {
         emit(
@@ -76,6 +97,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             authStatus: AuthStatus.unauthenticated,
             deviceStatus: deviceStatus,
             deviceData: deviceData,
+            settings: settings,
             user: null,
           ),
         );
@@ -85,6 +107,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             status: AppStatus.success,
             authStatus: AuthStatus.guest,
             deviceStatus: deviceStatus,
+            settings: settings,
             deviceData: deviceData,
             user: user,
           ),
@@ -95,6 +118,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             status: AppStatus.success,
             authStatus: AuthStatus.authenticated,
             deviceStatus: deviceStatus,
+            settings: settings,
             deviceData: deviceData,
             user: user,
           ),

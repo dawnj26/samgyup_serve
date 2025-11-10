@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:device_repository/device_repository.dart';
@@ -184,6 +186,7 @@ class AppRouter extends RootStackRouter {
               page: SettingsShellRoute.page,
               children: [
                 AutoRoute(page: SettingsRoute.page, initial: true),
+                AutoRoute(page: SettingDetailsRoute.page),
               ],
             ),
           ],

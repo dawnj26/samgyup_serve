@@ -16,6 +16,7 @@ enum DeviceStatus { registered, unregistered, unknown }
 @freezed
 abstract class AppState with _$AppState {
   const factory AppState.initial({
+    required Settings settings,
     @Default(AppStatus.initial) AppStatus status,
     @Default(AuthStatus.initial) AuthStatus authStatus,
     @Default(DeviceStatus.unregistered) DeviceStatus deviceStatus,

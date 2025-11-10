@@ -7,6 +7,7 @@ import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/l10n/l10n.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
+import 'package:settings_repository/settings_repository.dart';
 import 'package:table_repository/table_repository.dart';
 
 class App extends StatefulWidget {
@@ -20,6 +21,7 @@ class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
   late final DeviceRepository _deviceRepository;
   late final TableRepository _tableRepository;
+  late final SettingsRepository _settingsRepository;
 
   late final AppRouter _router;
 
@@ -29,6 +31,7 @@ class _AppState extends State<App> {
     _authenticationRepository = AuthenticationRepository();
     _deviceRepository = DeviceRepository();
     _tableRepository = TableRepository();
+    _settingsRepository = SettingsRepository();
 
     super.initState();
   }
@@ -40,6 +43,7 @@ class _AppState extends State<App> {
         RepositoryProvider.value(value: _authenticationRepository),
         RepositoryProvider.value(value: _deviceRepository),
         RepositoryProvider.value(value: _tableRepository),
+        RepositoryProvider.value(value: _settingsRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -48,6 +52,7 @@ class _AppState extends State<App> {
               authenticationRepository: _authenticationRepository,
               deviceRepository: _deviceRepository,
               tableRepository: _tableRepository,
+              settingsRepository: _settingsRepository,
             )..add(const AppEvent.started()),
           ),
         ],

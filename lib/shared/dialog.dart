@@ -175,3 +175,19 @@ void showImageDialog({
     ),
   );
 }
+
+Future<String?> showTextInputDialog({
+  required BuildContext context,
+  required String title,
+  String? initialValue,
+}) async {
+  final result = await showDialog<String>(
+    context: context,
+    useRootNavigator: false,
+    builder: (ctx) {
+      return TextInputDialog(title: title, initialValue: initialValue);
+    },
+  );
+
+  return result;
+}
