@@ -9,11 +9,13 @@ class BucketImage extends StatelessWidget {
     super.key,
     this.loadingWidget,
     this.fit = BoxFit.cover,
+    this.size,
   });
 
   final Widget? loadingWidget;
   final BoxFit fit;
   final String? fileId;
+  final double? size;
 
   String getFileUrl(String fileId) {
     return AppwriteRepository.instance.getFileUrl(fileId);
@@ -32,6 +34,14 @@ class BucketImage extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: getFileUrl(fileId!),
+      progressIndicatorBuilder: (context, url, progress) {
+        return Center(
+          child:
+              loadingWidget ??
+              CircularProgressIndicator(value: progress.progress),
+        );
+      },
+      width: size,
       errorWidget: (context, url, error) => const Icon(Icons.error),
       fit: fit,
     );
