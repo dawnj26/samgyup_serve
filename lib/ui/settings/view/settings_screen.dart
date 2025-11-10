@@ -1,89 +1,137 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/settings/settings_bloc.dart';
-import 'package:samgyup_serve/ui/components/components.dart';
-import 'package:samgyup_serve/ui/settings/components/qr_picker.dart';
-import 'package:settings_repository/settings_repository.dart';
+import 'package:samgyup_serve/router/router.dart';
+import 'package:samgyup_serve/shared/dialog.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final settings = context.select(
+      (SettingsBloc bloc) => bloc.state.settings,
+    );
+
     return Scaffold(
       appBar: AppBar(
         leading: const AutoLeadingButton(),
         title: const Text('Settings'),
       ),
-      body: BlocBuilder<SettingsBloc, SettingsState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case SettingsStatus.loading || SettingsStatus.initial:
-              return const Center(child: CircularProgressIndicator());
-            case SettingsStatus.success:
-              return ListView.builder(
-                itemCount: state.settings.length,
-                itemBuilder: (context, index) {
-                  final setting = state.settings[index];
-                  return ListTile(
-                    title: Text(setting.title),
-                    subtitle: Text(setting.value ?? 'Not set'),
-                    onTap: () => _handleTap(context, setting),
-                    trailing: _Trailing(setting: setting),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SettingLabel('Business'),
+              SettingTile(
+                name: 'Name',
+                value: settings.businessName,
+                onTap: () async {
+                  final newName = await showTextInputDialog(
+                    context: context,
+                    title: 'Business Name',
+                    initialValue: settings.businessName,
+                  );
+
+                  if (!context.mounted ||
+                      newName == null ||
+                      newName == settings.businessName) {
+                    return;
+                  }
+
+                  context.read<SettingsBloc>().add(
+                    SettingsEvent.nameChanged(newName),
                   );
                 },
-              );
-            case SettingsStatus.failure:
-              return Center(
-                child: Text(
-                  state.errorMessage ?? 'An unknown error occurred',
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-          }
-        },
+              ),
+              SettingTile(
+                name: 'Logo',
+                value: _formatValue(settings.businessLogo),
+                onTap: () async {
+                  await context.router.push(
+                    SettingDetailsRoute(
+                      name: 'Business Logo',
+                      fileId: settings.businessLogo,
+                      onSave: (file) {
+                        context.read<SettingsBloc>().add(
+                          SettingsEvent.logoChanged(file),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+              const SettingLabel('Payment'),
+              SettingTile(
+                name: 'QR Code',
+                value: _formatValue(settings.qrCode),
+                onTap: () async {
+                  await context.router.push(
+                    SettingDetailsRoute(
+                      name: 'QR Code',
+                      fileId: settings.qrCode,
+                      onSave: (file) {
+                        context.read<SettingsBloc>().add(
+                          SettingsEvent.qrChanged(file),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Future<void> _handleTap(BuildContext context, Setting setting) async {
-    if (setting.name == 'qr_code') {
-      final result = await showDialog<File?>(
-        context: context,
-        builder: (context) => const QrPicker(),
-      );
-      if (!context.mounted || result == null) return;
-
-      context.read<SettingsBloc>().add(
-        SettingsEvent.qrCodeUpdated(result, setting),
-      );
+  String _formatValue(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Not set';
     }
+    return 'Set';
   }
 }
 
-class _Trailing extends StatelessWidget {
-  const _Trailing({required this.setting});
+class SettingTile extends StatelessWidget {
+  const SettingTile({
+    required this.name,
+    required this.value,
+    super.key,
+    this.onTap,
+  });
 
-  final Setting setting;
+  final String name;
+  final String value;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    if (setting.name == 'qr_code' && setting.value != null) {
-      return AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: BucketImage(fileId: setting.value),
-        ),
-      );
-    }
+    return ListTile(
+      title: Text(name),
+      subtitle: Text(value),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: onTap,
+    );
+  }
+}
 
-    return const SizedBox.shrink();
+class SettingLabel extends StatelessWidget {
+  const SettingLabel(this.data, {super.key});
+
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+      child: Text(data, style: textTheme.labelLarge),
+    );
   }
 }
