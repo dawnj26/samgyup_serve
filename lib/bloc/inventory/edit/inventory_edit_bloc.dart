@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appwrite_repository/appwrite_repository.dart';
@@ -8,7 +9,7 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
-import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as m;
+import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 
@@ -24,7 +25,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
        _item = item,
        super(
          InventoryEditInitial(
-           measurementUnit: m.MeasurementUnit.pure(item.unit),
+           measurementUnit: MeasurementUnitInput.pure(item.unit),
            category: Category.pure(item.category),
            name: Name.pure(item.name),
            lowStockThreshold: LowStockThreshold.pure(
@@ -42,6 +43,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     on<_Saved>(_onSaved);
     on<_PriceChanged>(_onPriceChanged);
     on<_ImageChanged>(_onImageChanged);
+    on<_SubcategoryChanged>(_onSubcategoryChanged);
+    on<_Started>(_onStarted);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -53,6 +56,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
   ) {
     emit(
       InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -71,6 +76,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final price = Price.dirty(event.price);
     emit(
       InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -92,7 +99,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final lowStockThreshold = LowStockThreshold.dirty(
       state.lowStockThreshold.value,
     );
-    final measurementUnit = m.MeasurementUnit.dirty(
+    final measurementUnit = MeasurementUnitInput.dirty(
       state.measurementUnit.value,
     );
     final price = Price.dirty(state.price.value);
@@ -109,6 +116,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     if (!isValid) {
       emit(
         InventoryEditDirty(
+          subcategories: state.subcategories,
+          subcategory: state.subcategory,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -123,6 +132,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
 
     emit(
       InventoryEditLoading(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: measurementUnit,
         category: category,
         name: name,
@@ -147,6 +158,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         unit: measurementUnit.value!,
         price: double.parse(price.value),
         imageId: imageId,
+        tagId: state.subcategory?.id,
       );
 
       if (updatedItem == _item && state.imageFile == null) {
@@ -160,6 +172,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     } on Exception catch (e) {
       emit(
         InventoryEditFailure(
+          subcategories: state.subcategories,
+          subcategory: state.subcategory,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -177,6 +191,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final name = Name.dirty(event.name);
     emit(
       InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: name,
@@ -195,6 +211,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     final description = Description.dirty(event.description);
     emit(
       InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -206,13 +224,14 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     );
   }
 
-  void _onCategoryChanged(
+  Future<void> _onCategoryChanged(
     _CategoryChanged event,
     Emitter<InventoryEditState> emit,
-  ) {
+  ) async {
     final category = Category.dirty(event.category);
     emit(
-      InventoryEditDirty(
+      InventoryEditLoadingSubcategories(
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: category,
         name: state.name,
@@ -222,6 +241,55 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         imageFile: state.imageFile,
       ),
     );
+
+    try {
+      final subcategories = await _inventoryRepository.fetchSubcategories(
+        category: event.category,
+      );
+
+      emit(
+        InventoryEditLoadedSubcategories(
+          subcategories: subcategories,
+          measurementUnit: state.measurementUnit,
+          category: category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        InventoryEditFailure(
+          subcategories: state.subcategories,
+          subcategory: state.subcategory,
+          measurementUnit: state.measurementUnit,
+          category: category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          message: e.message,
+          imageFile: state.imageFile,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        InventoryEditFailure(
+          subcategories: state.subcategories,
+          subcategory: state.subcategory,
+          measurementUnit: state.measurementUnit,
+          category: category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          message: e.toString(),
+          imageFile: state.imageFile,
+        ),
+      );
+    }
   }
 
   void _onLowStockThresholdChanged(
@@ -233,6 +301,8 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     );
     emit(
       InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -248,9 +318,11 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
     _MeasurementUnitChanged event,
     Emitter<InventoryEditState> emit,
   ) {
-    final measurementUnit = m.MeasurementUnit.dirty(event.measurementUnit);
+    final measurementUnit = MeasurementUnitInput.dirty(event.measurementUnit);
     emit(
       InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: state.subcategory,
         measurementUnit: measurementUnit,
         category: state.category,
         name: state.name,
@@ -260,5 +332,95 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         imageFile: state.imageFile,
       ),
     );
+  }
+
+  FutureOr<void> _onSubcategoryChanged(
+    _SubcategoryChanged event,
+    Emitter<InventoryEditState> emit,
+  ) {
+    emit(
+      InventoryEditDirty(
+        subcategories: state.subcategories,
+        subcategory: event.subcategory,
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
+      ),
+    );
+  }
+
+  Future<void> _onStarted(
+    _Started event,
+    Emitter<InventoryEditState> emit,
+  ) async {
+    try {
+      emit(
+        InventoryEditInitializing(
+          subcategories: state.subcategories,
+          measurementUnit: state.measurementUnit,
+          category: state.category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+        ),
+      );
+
+      final subcategories = await _inventoryRepository.fetchSubcategories(
+        category: _item.category,
+      );
+      final subcategory = _item.tagId == null
+          ? null
+          : await _inventoryRepository.fetchSubcategory(id: _item.tagId!);
+
+      emit(
+        InventoryEditInitialized(
+          subcategories: subcategories,
+          subcategory: subcategory,
+          measurementUnit: state.measurementUnit,
+          category: state.category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        InventoryEditFailure(
+          subcategories: state.subcategories,
+          subcategory: state.subcategory,
+          measurementUnit: state.measurementUnit,
+          category: state.category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          message: e.message,
+          imageFile: state.imageFile,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        InventoryEditFailure(
+          subcategories: state.subcategories,
+          subcategory: state.subcategory,
+          measurementUnit: state.measurementUnit,
+          category: state.category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          message: e.toString(),
+          imageFile: state.imageFile,
+        ),
+      );
+    }
   }
 }
