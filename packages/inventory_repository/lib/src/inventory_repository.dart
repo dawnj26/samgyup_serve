@@ -143,8 +143,11 @@ class InventoryRepository {
         ?statusQuery,
         if (category != null) Query.equal('category', category.name),
         if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
+        if (subcategoryIds != null && subcategoryIds.isNotEmpty)
+          Query.equal('tagId', subcategoryIds),
         Query.limit(limit ?? 500),
       ];
+
       final response = await _appwrite.databases.listRows(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.inventoryCollectionId,
