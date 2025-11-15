@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inventory_repository/inventory_repository.dart' as i;
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
@@ -19,7 +20,7 @@ part 'inventory_create_state.dart';
 class InventoryCreateBloc
     extends Bloc<InventoryCreateEvent, InventoryCreateState> {
   InventoryCreateBloc({
-    required i.InventoryRepository inventoryRepository,
+    required InventoryRepository inventoryRepository,
   }) : _inventoryRepository = inventoryRepository,
        super(const InventoryCreateInitial()) {
     on<_NameChanged>(_onNameChanged);
@@ -30,9 +31,10 @@ class InventoryCreateBloc
     on<_Saved>(_onSaved);
     on<_PriceChanged>(_onPriceChanged);
     on<_ImageChanged>(_onImageChanged);
+    on<_SubcategoryChanged>(_onSubcategoryChanged);
   }
 
-  final i.InventoryRepository _inventoryRepository;
+  final InventoryRepository _inventoryRepository;
 
   void _onImageChanged(
     _ImageChanged event,
@@ -40,6 +42,8 @@ class InventoryCreateBloc
   ) {
     emit(
       InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -58,6 +62,8 @@ class InventoryCreateBloc
     final price = Price.dirty(event.price);
     emit(
       InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -79,7 +85,9 @@ class InventoryCreateBloc
     final lowStockThreshold = LowStockThreshold.dirty(
       state.lowStockThreshold.value,
     );
-    final measurementUnit = MeasurementUnit.dirty(state.measurementUnit.value);
+    final measurementUnit = MeasurementUnitInput.dirty(
+      state.measurementUnit.value,
+    );
     final price = Price.dirty(state.price.value);
 
     final isValid = Formz.validate([
@@ -94,6 +102,8 @@ class InventoryCreateBloc
     if (!isValid) {
       emit(
         InventoryCreateDirty(
+          subcategory: state.subcategory,
+          subcategories: state.subcategories,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -108,6 +118,8 @@ class InventoryCreateBloc
 
     emit(
       InventoryCreateLoading(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: measurementUnit,
         category: category,
         name: name,
@@ -125,7 +137,7 @@ class InventoryCreateBloc
           : null;
 
       await _inventoryRepository.addItem(
-        i.InventoryItem(
+        InventoryItem(
           id: '',
           name: name.value,
           description: description.value,
@@ -135,6 +147,7 @@ class InventoryCreateBloc
           createdAt: DateTime.now(),
           price: double.parse(price.value),
           imageId: imageId,
+          tagId: state.subcategory?.id,
         ),
       );
       emit(
@@ -143,6 +156,8 @@ class InventoryCreateBloc
     } on Exception catch (e) {
       emit(
         InventoryCreateFailure(
+          subcategory: state.subcategory,
+          subcategories: state.subcategories,
           measurementUnit: measurementUnit,
           category: category,
           name: name,
@@ -160,6 +175,8 @@ class InventoryCreateBloc
     final name = Name.dirty(event.name);
     emit(
       InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: name,
@@ -178,6 +195,8 @@ class InventoryCreateBloc
     final description = Description.dirty(event.description);
     emit(
       InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -189,13 +208,15 @@ class InventoryCreateBloc
     );
   }
 
-  void _onCategoryChanged(
+  Future<void> _onCategoryChanged(
     _CategoryChanged event,
     Emitter<InventoryCreateState> emit,
-  ) {
+  ) async {
     final category = Category.dirty(event.category);
+
     emit(
-      InventoryCreateDirty(
+      InventoryCreateLoadingSubcategories(
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: category,
         name: state.name,
@@ -205,6 +226,55 @@ class InventoryCreateBloc
         imageFile: state.imageFile,
       ),
     );
+
+    try {
+      final subcategories = await _inventoryRepository.fetchSubcategories(
+        category: event.category,
+      );
+
+      emit(
+        InventoryCreateLoadedSubcategories(
+          subcategories: subcategories,
+          measurementUnit: state.measurementUnit,
+          category: category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        InventoryCreateFailure(
+          message: e.message,
+          subcategories: state.subcategories,
+          measurementUnit: state.measurementUnit,
+          category: category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+          subcategory: state.subcategory,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        InventoryCreateFailure(
+          message: e.toString(),
+          subcategories: state.subcategories,
+          measurementUnit: state.measurementUnit,
+          category: category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+          subcategory: state.subcategory,
+        ),
+      );
+    }
   }
 
   void _onLowStockThresholdChanged(
@@ -216,6 +286,8 @@ class InventoryCreateBloc
     );
     emit(
       InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -231,9 +303,11 @@ class InventoryCreateBloc
     _MeasurementUnitChanged event,
     Emitter<InventoryCreateState> emit,
   ) {
-    final measurementUnit = MeasurementUnit.dirty(event.measurementUnit);
+    final measurementUnit = MeasurementUnitInput.dirty(event.measurementUnit);
     emit(
       InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
         measurementUnit: measurementUnit,
         category: state.category,
         name: state.name,
@@ -241,6 +315,24 @@ class InventoryCreateBloc
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+      ),
+    );
+  }
+
+  FutureOr<void> _onSubcategoryChanged(
+    _SubcategoryChanged event,
+    Emitter<InventoryCreateState> emit,
+  ) {
+    emit(
+      InventoryCreateDirty(
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: state.price,
+        subcategories: state.subcategories,
+        subcategory: event.subcategory,
       ),
     );
   }

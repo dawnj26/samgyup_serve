@@ -11,13 +11,16 @@ class InventoryCreateEvent with _$InventoryCreateEvent {
     required String description,
   }) = _DescriptionChanged;
   const factory InventoryCreateEvent.categoryChanged({
-    required i.InventoryCategory category,
+    required InventoryCategory category,
   }) = _CategoryChanged;
+  const factory InventoryCreateEvent.subcategoryChanged({
+    required Subcategory? subcategory,
+  }) = _SubcategoryChanged;
   const factory InventoryCreateEvent.lowStockThresholdChanged({
     required String lowStockThreshold,
   }) = _LowStockThresholdChanged;
   const factory InventoryCreateEvent.unitChanged({
-    required i.MeasurementUnit measurementUnit,
+    required MeasurementUnit measurementUnit,
   }) = _MeasurementUnitChanged;
   const factory InventoryCreateEvent.priceChanged({
     required String price,

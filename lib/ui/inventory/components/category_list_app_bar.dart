@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/category/inventory_category_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
+import 'package:samgyup_serve/router/router.dart';
 
 class CategoryListAppBar extends StatelessWidget {
   const CategoryListAppBar({super.key});
@@ -31,7 +34,26 @@ class CategoryListAppBar extends StatelessWidget {
           flexibleSpace: FlexibleSpaceBar(
             title: Text(category.label),
           ),
-          actions: const [SizedBox.shrink()],
+          actions: [
+            TextButton.icon(
+              onPressed: () {
+                unawaited(
+                  context.router.push(
+                    SubcategoriesRoute(
+                      category: category,
+                      onPop: () {
+                        context.read<InventoryCategoryBloc>().add(
+                          const InventoryCategoryEvent.reload(),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.category_outlined),
+              label: const Text('Categories'),
+            ),
+          ],
         );
       },
     );

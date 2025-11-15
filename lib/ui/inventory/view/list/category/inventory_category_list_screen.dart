@@ -46,6 +46,38 @@ class _InventoryCategoryListScreenState
             const CategoryListAppBar(),
             BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
               builder: (context, state) {
+                if (state is InventoryCategoryLoading ||
+                    state is InventoryCategoryInitial) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: FilterChipSkeleton(),
+                    ),
+                  );
+                }
+
+                if (state.subcategories.isEmpty) {
+                  return const SliverToBoxAdapter();
+                }
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: SubcategoryFilters(
+                      subcategories: state.subcategories,
+                      onSelectionChanged: (selected) {
+                        context.read<InventoryCategoryBloc>().add(
+                          InventoryCategoryEvent.subcategoryChanged(
+                            subcategories: selected,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+            BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
+              builder: (context, state) {
                 switch (state) {
                   case InventoryCategoryLoaded(:final items):
                     return InventoryItemList(

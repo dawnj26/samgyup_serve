@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class TextInputDialog extends StatefulWidget {
-  const TextInputDialog({required this.title, super.key, this.initialValue});
+  const TextInputDialog({
+    required this.title,
+    super.key,
+    this.initialValue,
+    this.validator,
+  });
 
   final String title;
   final String? initialValue;
+  final String? Function(String)? validator;
 
   @override
   State<TextInputDialog> createState() => _TextInputDialogState();
@@ -12,17 +18,38 @@ class TextInputDialog extends StatefulWidget {
 
 class _TextInputDialogState extends State<TextInputDialog> {
   late final TextEditingController _controller;
+  String? _errorMessage;
+  bool _hasInteracted = false;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
+    _controller.addListener(_validateInput);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller
+      ..removeListener(_validateInput)
+      ..dispose();
     super.dispose();
+  }
+
+  void _validateInput() {
+    if (widget.validator != null && _hasInteracted) {
+      setState(() {
+        _errorMessage = widget.validator!(_controller.text.trim());
+      });
+    }
+  }
+
+  void _onTextFieldChanged() {
+    if (!_hasInteracted) {
+      setState(() {
+        _hasInteracted = true;
+      });
+    }
   }
 
   @override
@@ -32,8 +59,10 @@ class _TextInputDialogState extends State<TextInputDialog> {
       content: TextField(
         controller: _controller,
         autofocus: true,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        onChanged: (_) => _onTextFieldChanged(),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          errorText: _errorMessage,
         ),
       ),
       actions: [
@@ -42,7 +71,9 @@ class _TextInputDialogState extends State<TextInputDialog> {
           child: const Text('Cancel'),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
+          onPressed: _errorMessage != null
+              ? null
+              : () => Navigator.of(context).pop(_controller.text.trim()),
           child: const Text('Ok'),
         ),
       ],

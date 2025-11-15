@@ -180,12 +180,17 @@ Future<String?> showTextInputDialog({
   required BuildContext context,
   required String title,
   String? initialValue,
+  String? Function(String)? validator,
 }) async {
   final result = await showDialog<String>(
     context: context,
     useRootNavigator: false,
     builder: (ctx) {
-      return TextInputDialog(title: title, initialValue: initialValue);
+      return TextInputDialog(
+        title: title,
+        initialValue: initialValue,
+        validator: validator,
+      );
     },
   );
 

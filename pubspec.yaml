@@ -39,6 +39,7 @@ dependencies:
   reservation_repository: any
   settings_repository: any
   shared_preferences: ^2.5.3
+  shimmer: ^3.0.0
   stream_transform: ^2.1.1
   string_validator: ^1.2.0
   table_repository: any

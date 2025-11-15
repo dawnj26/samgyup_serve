@@ -5,10 +5,10 @@ enum MeasurementUnitValidationError {
   empty,
 }
 
-class MeasurementUnit
+class MeasurementUnitInput
     extends FormzInput<i.MeasurementUnit?, MeasurementUnitValidationError> {
-  const MeasurementUnit.pure([super.value]) : super.pure();
-  const MeasurementUnit.dirty([super.value]) : super.dirty();
+  const MeasurementUnitInput.pure([super.value]) : super.pure();
+  const MeasurementUnitInput.dirty([super.value]) : super.dirty();
 
   @override
   MeasurementUnitValidationError? validator(i.MeasurementUnit? value) {

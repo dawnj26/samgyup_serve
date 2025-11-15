@@ -3,64 +3,124 @@ part of 'inventory_edit_bloc.dart';
 @freezed
 abstract class InventoryEditState with _$InventoryEditState {
   const factory InventoryEditState.initial({
-    required m.MeasurementUnit measurementUnit,
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
     required Price price,
+    @Default([]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
     File? imageFile,
   }) = InventoryEditInitial;
 
-  const factory InventoryEditState.dirty({
-    required m.MeasurementUnit measurementUnit,
+  const factory InventoryEditState.initializing({
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
     required Price price,
+    @Default([]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
+  }) = InventoryEditInitializing;
+
+  const factory InventoryEditState.initialized({
+    required MeasurementUnitInput measurementUnit,
+    required Category category,
+    required Name name,
+    required LowStockThreshold lowStockThreshold,
+    required Description description,
+    required Price price,
+    @Default([]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
+  }) = InventoryEditInitialized;
+
+  const factory InventoryEditState.dirty({
+    required MeasurementUnitInput measurementUnit,
+    required Category category,
+    required Name name,
+    required LowStockThreshold lowStockThreshold,
+    required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
     File? imageFile,
   }) = InventoryEditDirty;
 
   const factory InventoryEditState.loading({
-    required m.MeasurementUnit measurementUnit,
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
     required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
     File? imageFile,
   }) = InventoryEditLoading;
 
   const factory InventoryEditState.success({
     required InventoryItem item,
-    @Default(m.MeasurementUnit.pure()) m.MeasurementUnit measurementUnit,
+    @Default(MeasurementUnitInput.pure()) MeasurementUnitInput measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,
+    @Default([]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
     File? imageFile,
   }) = InventoryEditSuccess;
 
   const factory InventoryEditState.noChanges({
-    @Default(m.MeasurementUnit.pure()) m.MeasurementUnit measurementUnit,
+    @Default(MeasurementUnitInput.pure()) MeasurementUnitInput measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,
+    @Default([]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
     File? imageFile,
   }) = InventoryEditNoChanges;
 
   const factory InventoryEditState.failure({
-    required m.MeasurementUnit measurementUnit,
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
     required LowStockThreshold lowStockThreshold,
     required Description description,
     required Price price,
     required String message,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
     File? imageFile,
   }) = InventoryEditFailure;
+
+  const factory InventoryEditState.loadingSubcategories({
+    required MeasurementUnitInput measurementUnit,
+    required Category category,
+    required Name name,
+    required LowStockThreshold lowStockThreshold,
+    required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
+  }) = InventoryEditLoadingSubcategories;
+
+  const factory InventoryEditState.loadedSubcategories({
+    required MeasurementUnitInput measurementUnit,
+    required Category category,
+    required Name name,
+    required LowStockThreshold lowStockThreshold,
+    required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
+  }) = InventoryEditLoadedSubcategories;
 }

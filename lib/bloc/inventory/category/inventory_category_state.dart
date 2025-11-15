@@ -6,18 +6,32 @@ abstract class InventoryCategoryState with _$InventoryCategoryState {
     required InventoryCategory category,
     @Default([]) List<InventoryItem> items,
     @Default(false) bool hasReachedMax,
+    @Default([]) List<Subcategory> subcategories,
+    @Default([]) List<Subcategory> selectedSubcategories,
   }) = InventoryCategoryInitial;
 
   const factory InventoryCategoryState.loading({
     required List<InventoryItem> items,
     required bool hasReachedMax,
     required InventoryCategory category,
+    required List<Subcategory> subcategories,
+    required List<Subcategory> selectedSubcategories,
   }) = InventoryCategoryLoading;
+
+  const factory InventoryCategoryState.loadingItems({
+    required List<InventoryItem> items,
+    required bool hasReachedMax,
+    required InventoryCategory category,
+    required List<Subcategory> subcategories,
+    required List<Subcategory> selectedSubcategories,
+  }) = InventoryCategoryLoadingItems;
 
   const factory InventoryCategoryState.loaded({
     required List<InventoryItem> items,
     required bool hasReachedMax,
     required InventoryCategory category,
+    required List<Subcategory> subcategories,
+    required List<Subcategory> selectedSubcategories,
   }) = InventoryCategoryLoaded;
 
   const factory InventoryCategoryState.error({
@@ -25,5 +39,7 @@ abstract class InventoryCategoryState with _$InventoryCategoryState {
     required List<InventoryItem> items,
     required bool hasReachedMax,
     required InventoryCategory category,
+    required List<Subcategory> subcategories,
+    required List<Subcategory> selectedSubcategories,
   }) = InventoryCategoryError;
 }

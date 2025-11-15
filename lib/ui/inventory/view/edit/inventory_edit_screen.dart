@@ -6,7 +6,7 @@ import 'package:samgyup_serve/bloc/inventory/edit/inventory_edit_bloc.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart'
-    hide MeasurementUnit;
+    hide MeasurementUnitInput;
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
@@ -15,10 +15,17 @@ import 'package:samgyup_serve/ui/components/image_picker.dart';
 import 'package:samgyup_serve/ui/components/price_input.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
-class InventoryEditScreen extends StatelessWidget {
+class InventoryEditScreen extends StatefulWidget {
   const InventoryEditScreen({required this.item, super.key});
 
   final InventoryItem item;
+
+  @override
+  State<InventoryEditScreen> createState() => _InventoryEditScreenState();
+}
+
+class _InventoryEditScreenState extends State<InventoryEditScreen> {
+  final _subcategoryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +39,8 @@ class InventoryEditScreen extends StatelessWidget {
             showSnackBar(context, message);
           case InventoryEditNoChanges():
             context.router.pop();
+          default:
+            break;
         }
       },
       child: FormScaffold(
@@ -47,43 +56,84 @@ class InventoryEditScreen extends StatelessWidget {
               ),
               SliverPadding(
                 padding: const EdgeInsets.all(16),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      _NameInputField(
-                        item.name,
-                      ),
-                      const SizedBox(height: 16),
-                      _DescriptionInputField(
-                        item.description,
-                      ),
-                      const SizedBox(height: 16),
-                      _CategoryInputField(
-                        item.category,
-                      ),
-                      const SizedBox(height: 16),
-                      _LowStock(
-                        lowStockThreshold: item.lowStockThreshold,
-                      ),
-                      const SizedBox(height: 16),
-                      _MeasurementUnitInputField(
-                        item.unit,
-                      ),
-                      const SizedBox(height: 16),
-                      _Price(
-                        initialValue: item.price,
-                      ),
-                      const SizedBox(height: 16),
-                      const _Picker(),
-                      const SizedBox(height: 16),
-                      const SaveButton(),
-                    ],
-                  ),
+                sliver: BlocBuilder<InventoryEditBloc, InventoryEditState>(
+                  buildWhen: (previous, current) {
+                    return previous is InventoryEditInitializing ||
+                        current is InventoryEditInitialized;
+                  },
+                  builder: (context, state) {
+                    if (state is! InventoryEditInitialized) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                    return _Form(
+                      item: widget.item,
+                      subcategoryController: _subcategoryController,
+                      subcategory: state.subcategory,
+                    );
+                  },
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Form extends StatelessWidget {
+  const _Form({
+    required this.item,
+    required this.subcategoryController,
+    this.subcategory,
+  });
+
+  final InventoryItem item;
+  final TextEditingController subcategoryController;
+  final Subcategory? subcategory;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          _NameInputField(
+            item.name,
+          ),
+          const SizedBox(height: 16),
+          _DescriptionInputField(
+            item.description,
+          ),
+          const SizedBox(height: 16),
+          _CategoryInputField(
+            item.category,
+          ),
+          const SizedBox(height: 16),
+          _Subcategory(
+            controller: subcategoryController,
+            initialValue: subcategory,
+          ),
+          const SizedBox(height: 16),
+          _LowStock(
+            lowStockThreshold: item.lowStockThreshold,
+          ),
+          const SizedBox(height: 16),
+          _MeasurementUnitInputField(
+            item.unit,
+          ),
+          const SizedBox(height: 16),
+          _Price(
+            initialValue: item.price,
+          ),
+          const SizedBox(height: 16),
+          const _Picker(),
+          const SizedBox(height: 16),
+          const SaveButton(),
+        ],
       ),
     );
   }
@@ -293,6 +343,49 @@ class _MeasurementUnitInputField extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _Subcategory extends StatefulWidget {
+  const _Subcategory({
+    required this.initialValue,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+  final Subcategory? initialValue;
+
+  @override
+  State<_Subcategory> createState() => _SubcategoryState();
+}
+
+class _SubcategoryState extends State<_Subcategory> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      widget.controller.text = widget.initialValue!.name;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final category = context.select(
+      (InventoryEditBloc bloc) => bloc.state.category,
+    );
+    final subcategories = context.select(
+      (InventoryEditBloc bloc) => bloc.state.subcategories,
+    );
+
+    return SubcategoryInput(
+      enabled: category.isValid && subcategories.isNotEmpty,
+      value: widget.initialValue,
+      controller: widget.controller,
+      subcategories: subcategories,
+      onSelected: (value) => context.read<InventoryEditBloc>().add(
+        InventoryEditEvent.subcategoryChanged(subcategory: value),
+      ),
     );
   }
 }
