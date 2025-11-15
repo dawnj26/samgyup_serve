@@ -28,6 +28,7 @@ class BucketImage extends StatelessWidget {
         color: Colors.grey.shade200,
         child: const AppLogoIcon(
           variant: AppLogoIconVariant.blackAndWhite,
+          useFallback: true,
         ),
       );
     }
