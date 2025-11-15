@@ -12,6 +12,7 @@ export 'datetime_picker.dart';
 export 'description_input.dart';
 export 'dialogs/dialogs.dart';
 export 'empty_fallback.dart';
+export 'filter_chip_skeleton.dart';
 export 'form_scaffold.dart';
 export 'image_picker.dart';
 export 'info_card.dart';
