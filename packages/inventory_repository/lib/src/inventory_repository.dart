@@ -21,6 +21,100 @@ class InventoryRepository {
   late final ProjectInfo _projectInfo;
 
   String get _batchCollectionId => _appwrite.environment.batchCollectionId;
+  String get _subcategoryCollectionId =>
+      _appwrite.environment.subcategoryCollectionId;
+
+  /// Fetches a list of subcategories for a given inventory category.
+  Future<List<Subcategory>> fetchSubcategories({
+    required InventoryCategory category,
+  }) async {
+    try {
+      final queries = [
+        Query.equal('parent', category.name),
+        Query.limit(200),
+      ];
+
+      final response = await _appwrite.databases.listRows(
+        databaseId: _projectInfo.databaseId,
+        tableId: _subcategoryCollectionId,
+        queries: queries,
+      );
+
+      return response.rows.map((row) {
+        final json = _appwrite.rowToJson(row);
+        return Subcategory.fromJson(json);
+      }).toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch subcategories: $e');
+    }
+  }
+
+  /// Fetch subcategory by ID
+  Future<Subcategory?> fetchSubcategory({
+    required String id,
+  }) async {
+    try {
+      final response = await _appwrite.databases.getRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _subcategoryCollectionId,
+        rowId: id,
+      );
+
+      final json = _appwrite.rowToJson(response);
+
+      return Subcategory.fromJson(json);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Adds a new subcategory to a given inventory category.
+  Future<Subcategory> addSubcategory({
+    required InventoryCategory category,
+    required String subcategory,
+  }) async {
+    try {
+      final rowId = ID.unique();
+
+      final row = await _appwrite.databases.createRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _subcategoryCollectionId,
+        rowId: rowId,
+        data: {
+          'id': rowId,
+          'name': subcategory,
+          'parent': category.name,
+        },
+      );
+
+      final json = _appwrite.rowToJson(row);
+
+      return Subcategory.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to add subcategory: $e');
+    }
+  }
+
+  /// Removes a subcategory by its ID.
+  Future<void> removeSubcategory({
+    required String subcategoryId,
+  }) async {
+    try {
+      await _appwrite.databases.deleteRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _subcategoryCollectionId,
+        rowId: subcategoryId,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to remove subcategory: $e');
+    }
+  }
 
   /// Fetches a list of inventory items.
   ///
