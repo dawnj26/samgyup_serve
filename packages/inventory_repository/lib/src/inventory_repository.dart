@@ -130,6 +130,7 @@ class InventoryRepository {
     InventoryItemStatus? status,
     InventoryCategory? category,
     List<String>? itemIds,
+    List<String>? subcategoryIds,
     bool includeBatches = false,
   }) async {
     try {
