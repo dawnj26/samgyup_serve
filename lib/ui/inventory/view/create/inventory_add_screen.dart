@@ -5,15 +5,28 @@ import 'package:samgyup_serve/bloc/inventory/create/inventory_create_bloc.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
-import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
+import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart' as f;
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
-class InventoryAddScreen extends StatelessWidget {
+class InventoryAddScreen extends StatefulWidget {
   const InventoryAddScreen({super.key});
+
+  @override
+  State<InventoryAddScreen> createState() => _InventoryAddScreenState();
+}
+
+class _InventoryAddScreenState extends State<InventoryAddScreen> {
+  final _subcategoryController = TextEditingController();
+
+  @override
+  void dispose() {
+    _subcategoryController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +60,11 @@ class InventoryAddScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       const _DescriptionInputField(),
                       const SizedBox(height: 16),
-                      const _CategoryInputField(),
+                      _CategoryInputField(
+                        onChanged: _subcategoryController.clear,
+                      ),
+                      const SizedBox(height: 16),
+                      _Subcategory(controller: _subcategoryController),
                       const SizedBox(height: 16),
                       const _LowStockThresholdInputField(),
                       const SizedBox(height: 16),
@@ -174,7 +191,9 @@ class _DescriptionInputField extends StatelessWidget {
 }
 
 class _CategoryInputField extends StatelessWidget {
-  const _CategoryInputField();
+  const _CategoryInputField({this.onChanged});
+
+  final void Function()? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +215,8 @@ class _CategoryInputField extends StatelessWidget {
             context.read<InventoryCreateBloc>().add(
               InventoryCreateEvent.categoryChanged(category: value),
             );
+
+            onChanged?.call();
           },
         );
       },
@@ -254,7 +275,7 @@ class _MeasurementUnitInputField extends StatelessWidget {
       builder: (context, state) {
         final unit = state.measurementUnit;
         String? errorText;
-        if (unit.displayError == MeasurementUnitValidationError.empty) {
+        if (unit.displayError == f.MeasurementUnitValidationError.empty) {
           errorText = 'Measurement unit is required';
         }
         return MeasurementUnitInput(
@@ -269,6 +290,31 @@ class _MeasurementUnitInputField extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _Subcategory extends StatelessWidget {
+  const _Subcategory({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final category = context.select(
+      (InventoryCreateBloc bloc) => bloc.state.category,
+    );
+    final subcategories = context.select(
+      (InventoryCreateBloc bloc) => bloc.state.subcategories,
+    );
+
+    return SubcategoryInput(
+      enabled: category.isValid && subcategories.isNotEmpty,
+      controller: controller,
+      subcategories: subcategories,
+      onSelected: (value) => context.read<InventoryCreateBloc>().add(
+        InventoryCreateEvent.subcategoryChanged(subcategory: value),
+      ),
     );
   }
 }
