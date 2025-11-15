@@ -26,6 +26,7 @@ abstract class InventoryItem with _$InventoryItem {
     required double price,
     @Default(InventoryItemStatus.inStock) InventoryItemStatus status,
     @JsonKey(includeToJson: false) @Default([]) List<StockBatch> stockBatches,
+    String? tagId,
     String? imageId,
     DateTime? updatedAt,
     String? description,
