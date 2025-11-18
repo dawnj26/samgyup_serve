@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 
 @RoutePage()
-class MenuPackageWrapperPage extends StatelessWidget
+class InventoryPackageWrapperPage extends StatelessWidget
     implements AutoRouteWrapper {
-  const MenuPackageWrapperPage({super.key});
+  const InventoryPackageWrapperPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MenuPackageWrapperPage extends StatelessWidget
   @override
   Widget wrappedRoute(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => MenuRepository(),
+      create: (context) => InventoryRepository(),
       child: this,
     );
   }
