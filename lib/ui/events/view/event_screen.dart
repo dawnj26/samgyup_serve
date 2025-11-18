@@ -23,7 +23,7 @@ class EventScreen extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -39,7 +39,7 @@ class EventScreen extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       'Events',
-                      style: textTheme.headlineSmall,
+                      style: textTheme.titleMedium,
                     ),
                   ],
                 ),
