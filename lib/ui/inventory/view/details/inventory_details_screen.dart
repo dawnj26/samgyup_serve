@@ -23,6 +23,7 @@ class InventoryDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: const AutoLeadingButton(),
         actions: [
           Builder(
             builder: (context) {

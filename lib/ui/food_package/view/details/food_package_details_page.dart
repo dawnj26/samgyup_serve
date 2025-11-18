@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/delete/food_package_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/details/food_package_details_bloc.dart';
-import 'package:samgyup_serve/bloc/food_package/menu/food_package_menu_bloc.dart';
+import 'package:samgyup_serve/bloc/food_package/inventory/food_package_inventory_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/navigation.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
@@ -26,7 +26,7 @@ class FoodPackageDetailsPage extends StatelessWidget
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<FoodPackageMenuBloc, FoodPackageMenuState>(
+        BlocListener<FoodPackageInventoryBloc, FoodPackageInventoryState>(
           listener: _handleMenuListener,
         ),
         BlocListener<FoodPackageDeleteBloc, FoodPackageDeleteState>(
@@ -53,12 +53,12 @@ class FoodPackageDetailsPage extends StatelessWidget
         BlocProvider<FoodPackageDetailsBloc>(
           create: (context) => FoodPackageDetailsBloc(
             packageRepository: context.read(),
-            menuRepository: context.read(),
+            inventoryRepository: context.read(),
             package: package,
           )..add(const FoodPackageDetailsEvent.started()),
         ),
-        BlocProvider<FoodPackageMenuBloc>(
-          create: (context) => FoodPackageMenuBloc(
+        BlocProvider<FoodPackageInventoryBloc>(
+          create: (context) => FoodPackageInventoryBloc(
             packageRepository: context.read(),
             packageId: package.id,
           ),
@@ -73,17 +73,20 @@ class FoodPackageDetailsPage extends StatelessWidget
     );
   }
 
-  void _handleMenuListener(BuildContext context, FoodPackageMenuState state) {
+  void _handleMenuListener(
+    BuildContext context,
+    FoodPackageInventoryState state,
+  ) {
     switch (state) {
-      case FoodPackageMenuLoading():
+      case FoodPackageInventoryLoading():
         showLoadingDialog(context: context, message: 'Saving changes...');
-      case FoodPackageMenuFailure(:final errorMessage):
+      case FoodPackageInventoryFailure(:final errorMessage):
         context.router.pop();
         showErrorDialog(
           context: context,
           message: errorMessage ?? 'An error occurred',
         );
-      case FoodPackageMenuSuccess():
+      case FoodPackageInventorySuccess():
         context.router.pop();
         context.read<FoodPackageDetailsBloc>().add(
           const FoodPackageDetailsEvent.refreshed(),

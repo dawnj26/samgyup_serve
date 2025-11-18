@@ -3,18 +3,18 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:package_repository/package_repository.dart';
 
-part 'food_package_menu_bloc.freezed.dart';
-part 'food_package_menu_event.dart';
-part 'food_package_menu_state.dart';
+part 'food_package_inventory_bloc.freezed.dart';
+part 'food_package_inventory_event.dart';
+part 'food_package_inventory_state.dart';
 
-class FoodPackageMenuBloc
-    extends Bloc<FoodPackageMenuEvent, FoodPackageMenuState> {
-  FoodPackageMenuBloc({
+class FoodPackageInventoryBloc
+    extends Bloc<FoodPackageInventoryEvent, FoodPackageInventoryState> {
+  FoodPackageInventoryBloc({
     required PackageRepository packageRepository,
     required String packageId,
   }) : _packageRepository = packageRepository,
        _packageId = packageId,
-       super(const FoodPackageMenuState.initial()) {
+       super(const FoodPackageInventoryState.initial()) {
     on<_Started>(_onStarted);
   }
 
@@ -23,20 +23,19 @@ class FoodPackageMenuBloc
 
   Future<void> _onStarted(
     _Started event,
-    Emitter<FoodPackageMenuState> emit,
+    Emitter<FoodPackageInventoryState> emit,
   ) async {
-    emit(const FoodPackageMenuLoading());
-
+    emit(const FoodPackageInventoryLoading());
     try {
       await _packageRepository.updateMenuIds(
         packageId: _packageId,
         menuIds: event.menuIds,
       );
-      emit(const FoodPackageMenuSuccess());
+      emit(const FoodPackageInventorySuccess());
     } on ResponseException catch (e) {
-      emit(FoodPackageMenuFailure(errorMessage: e.message));
+      emit(FoodPackageInventoryFailure(errorMessage: e.message));
     } on Exception catch (e) {
-      emit(FoodPackageMenuFailure(errorMessage: e.toString()));
+      emit(FoodPackageInventoryFailure(errorMessage: e.toString()));
     }
   }
 }

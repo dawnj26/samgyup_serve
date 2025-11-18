@@ -122,35 +122,19 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(
-              page: InventoryShellRoute.page,
-              children: [
-                AutoRoute(page: InventoryRoute.page, initial: true),
-                AutoRoute(page: InventoryAddRoute.page),
-                AutoRoute(page: InventoryStatusListRoute.page),
-                AutoRoute(page: InventoryCategoryListRoute.page),
-                AutoRoute(page: InventoryEditRoute.page),
-                AutoRoute(page: AddStockRoute.page),
-                AutoRoute(page: InventoryDetailsRoute.page),
-                AutoRoute(page: SubcategoriesRoute.page),
-              ],
-            ),
-            AutoRoute(
-              page: MenuPackageWrapperRoute.page,
+              page: InventoryPackageWrapperRoute.page,
               children: [
                 AutoRoute(
-                  page: MenuShellRoute.page,
+                  page: InventoryShellRoute.page,
                   children: [
-                    AutoRoute(page: MenuRoute.page, initial: true),
-                    AutoRoute(
-                      page: MenuCreateRoute.page,
-                      children: [
-                        AutoRoute(page: MenuFormRoute.page, initial: true),
-                        AutoRoute(page: MenuIngredientRoute.page),
-                      ],
-                    ),
-                    AutoRoute(page: IngredientSelectRoute.page),
-                    AutoRoute(page: MenuDetailsRoute.page),
-                    AutoRoute(page: MenuEditRoute.page),
+                    AutoRoute(page: InventoryRoute.page, initial: true),
+                    AutoRoute(page: InventoryAddRoute.page),
+                    AutoRoute(page: InventoryStatusListRoute.page),
+                    AutoRoute(page: InventoryCategoryListRoute.page),
+                    AutoRoute(page: InventoryEditRoute.page),
+                    AutoRoute(page: AddStockRoute.page),
+                    AutoRoute(page: InventoryDetailsRoute.page),
+                    AutoRoute(page: SubcategoriesRoute.page),
                   ],
                 ),
                 AutoRoute(
@@ -160,7 +144,7 @@ class AppRouter extends RootStackRouter {
                     AutoRoute(page: FoodPackageCreateRoute.page),
                     AutoRoute(page: FoodPackageDetailsRoute.page),
                     AutoRoute(page: FoodPackageEditRoute.page),
-                    AutoRoute(page: MenuSelectRoute.page),
+                    AutoRoute(page: InventorySelectRoute.page),
                   ],
                 ),
               ],
@@ -201,3 +185,20 @@ class AppRouter extends RootStackRouter {
     ),
   ];
 }
+
+// AutoRoute(
+//   page: MenuShellRoute.page,
+//   children: [
+//     AutoRoute(page: MenuRoute.page, initial: true),
+//     AutoRoute(
+//       page: MenuCreateRoute.page,
+//       children: [
+//         AutoRoute(page: MenuFormRoute.page, initial: true),
+//         AutoRoute(page: MenuIngredientRoute.page),
+//       ],
+//     ),
+//     AutoRoute(page: IngredientSelectRoute.page),
+//     AutoRoute(page: MenuDetailsRoute.page),
+//     AutoRoute(page: MenuEditRoute.page),
+//   ],
+// ),

@@ -39,12 +39,12 @@ class _Main extends StatelessWidget {
                 children: [
                   Text(
                     'Table Availability',
-                    style: textTheme.titleMedium,
+                    style: textTheme.labelLarge,
                   ),
                   const SizedBox(height: 8),
                   CircularPercentIndicator(
                     animation: true,
-                    radius: screenWidth * 0.13,
+                    radius: screenWidth * 0.12,
                     percent: state.totalTables == 0
                         ? 0
                         : state.availableTables / state.totalTables,

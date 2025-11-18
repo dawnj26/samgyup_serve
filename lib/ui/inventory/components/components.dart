@@ -8,6 +8,7 @@ export 'expiration_input.dart';
 export 'inventory_delete_dialog.dart';
 export 'inventory_description_input.dart';
 export 'inventory_item_list.dart';
+export 'inventory_list_item.dart';
 export 'inventory_name_input.dart';
 export 'item_more_option_button.dart';
 export 'item_tile.dart';
