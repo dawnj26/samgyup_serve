@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/food_package/delete/food_package_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/details/food_package_details_bloc.dart';
-import 'package:samgyup_serve/bloc/food_package/menu/food_package_menu_bloc.dart';
+import 'package:samgyup_serve/bloc/food_package/inventory/food_package_inventory_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/food_package/components/components.dart';
-import 'package:samgyup_serve/ui/menu/components/menu_list_item.dart';
+import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class FoodPackageDetailsScreen extends StatefulWidget {
   const FoodPackageDetailsScreen({super.key});
@@ -123,9 +123,9 @@ class _MenuItems extends StatelessWidget {
           itemCount: menuItems.length,
           itemBuilder: (ctx, i) {
             final item = menuItems[i];
-            return MenuListItem(
-              onTap: () => _handleTap(context, item),
+            return InventoryListItem(
               item: item,
+              onTap: () => _handleTap(ctx, item),
             );
           },
         );
@@ -133,17 +133,22 @@ class _MenuItems extends StatelessWidget {
     );
   }
 
-  Future<void> _handleTap(BuildContext context, MenuItem item) async {
+  Future<void> _handleTap(BuildContext context, InventoryItem item) async {
     final router = context.router.parent<StackRouter>();
     await router?.push(
-      MenuDetailsRoute(
-        menuItem: item,
-        onChange: ({required needsReload}) {
-          if (needsReload) {
-            context.read<FoodPackageDetailsBloc>().add(
-              const FoodPackageDetailsEvent.refreshed(),
-            );
-          }
+      InventoryDetailsRoute(
+        item: item,
+        onChanged: () {
+          context.read<FoodPackageInventoryBloc>().add(
+            FoodPackageInventoryEvent.started(
+              menuIds: context
+                  .read<FoodPackageDetailsBloc>()
+                  .state
+                  .menuItems
+                  .map((e) => e.id)
+                  .toList(),
+            ),
+          );
         },
       ),
     );
@@ -172,15 +177,18 @@ class _MenuHeader extends StatelessWidget {
               onPressed: isLoading
                   ? null
                   : () {
+                      final initialItems = context
+                          .read<FoodPackageDetailsBloc>()
+                          .state
+                          .menuItems;
+
                       unawaited(
                         context.router.push(
-                          MenuSelectRoute(
-                            initialItems: state.menuItems,
-                            allowedCategories: const [
-                              MenuCategory.grilledMeats,
-                              MenuCategory.sideDishes,
-                            ],
-                            onSave: (items) => _handleChange(context, items),
+                          InventorySelectRoute(
+                            initialItems: initialItems,
+                            onSave: (items) {
+                              _handleChange(context, items);
+                            },
                           ),
                         ),
                       );
@@ -193,10 +201,10 @@ class _MenuHeader extends StatelessWidget {
     );
   }
 
-  void _handleChange(BuildContext context, List<MenuItem> items) {
+  void _handleChange(BuildContext context, List<InventoryItem> items) {
     final ids = items.map((e) => e.id).toList();
-    context.read<FoodPackageMenuBloc>().add(
-      FoodPackageMenuEvent.started(menuIds: ids),
+    context.read<FoodPackageInventoryBloc>().add(
+      FoodPackageInventoryEvent.started(menuIds: ids),
     );
   }
 }
@@ -219,7 +227,7 @@ class _Details extends StatelessWidget {
             );
             return Text(
               name,
-              style: textTheme.headlineMedium,
+              style: textTheme.titleLarge,
             );
           },
         ),
@@ -234,13 +242,13 @@ class _Details extends StatelessWidget {
 
                 return Text(
                   formatToPHP(price),
-                  style: textTheme.titleMedium?.copyWith(
+                  style: textTheme.labelLarge?.copyWith(
                     color: colorScheme.primary,
                   ),
                 );
               },
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 4),
             Row(
               children: [
                 Icon(
@@ -258,7 +266,7 @@ class _Details extends StatelessWidget {
 
                     return Text(
                       '$duration minutes',
-                      style: textTheme.titleMedium?.copyWith(
+                      style: textTheme.labelLarge?.copyWith(
                         color: Colors.red.shade700,
                       ),
                     );
