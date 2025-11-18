@@ -191,14 +191,14 @@ class AppRouter extends RootStackRouter {
 //   children: [
 //     AutoRoute(page: MenuRoute.page, initial: true),
 //     AutoRoute(
-                //       page: MenuCreateRoute.page,
-                //       children: [
-                //         AutoRoute(page: MenuFormRoute.page, initial: true),
-                //         AutoRoute(page: MenuIngredientRoute.page),
-                //       ],
-                //     ),
-                //     AutoRoute(page: IngredientSelectRoute.page),
-                //     AutoRoute(page: MenuDetailsRoute.page),
-                //     AutoRoute(page: MenuEditRoute.page),
-                //   ],
-                // ),
+//       page: MenuCreateRoute.page,
+//       children: [
+//         AutoRoute(page: MenuFormRoute.page, initial: true),
+//         AutoRoute(page: MenuIngredientRoute.page),
+//       ],
+//     ),
+//     AutoRoute(page: IngredientSelectRoute.page),
+//     AutoRoute(page: MenuDetailsRoute.page),
+//     AutoRoute(page: MenuEditRoute.page),
+//   ],
+// ),
