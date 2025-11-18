@@ -11,6 +11,7 @@ class NoImageFallback extends StatelessWidget {
       child: const Center(
         child: AppLogoIcon(
           variant: AppLogoIconVariant.blackAndWhite,
+          useFallback: true,
           size: 64,
         ),
       ),
