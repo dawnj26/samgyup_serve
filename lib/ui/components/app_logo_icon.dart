@@ -29,9 +29,12 @@ class AppLogoIcon extends StatelessWidget {
     );
 
     if (businessLogo != null && !useFallback) {
-      return BucketImage(
-        fileId: businessLogo,
-        size: size,
+      return Padding(
+        padding: padding,
+        child: BucketImage(
+          fileId: businessLogo,
+          size: size,
+        ),
       );
     }
 
