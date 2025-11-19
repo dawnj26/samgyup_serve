@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
@@ -235,8 +235,8 @@ class _MenuItems extends StatelessWidget {
           name: cart.item.name,
           price: price,
           quantity: cart.quantity,
-          imageId: cart.item.imageFileName,
-          maxValue: cart.item.stock,
+          imageId: cart.item.imageId,
+          maxValue: cart.item.getAvailableStock().toInt(),
           onQuantityChanged: (quantity) {
             context.read<OrderCartBloc>().add(
               OrderCartEvent.updateMenuItemQuantity(
@@ -253,7 +253,7 @@ class _MenuItems extends StatelessWidget {
 
   Future<void> _handleDeleteItem(
     BuildContext context,
-    CartItem<MenuItem> item,
+    CartItem<InventoryItem> item,
   ) async {
     final confirm = await showConfirmationDialog(
       context: context,

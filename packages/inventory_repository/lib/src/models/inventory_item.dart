@@ -66,4 +66,10 @@ abstract class InventoryItem with _$InventoryItem {
         )
         .fold(0, (sum, batch) => sum + batch.quantity);
   }
+
+  /// Indicates whether the item is currently available for use or sale.
+  bool get isAvailable {
+    final stock = getAvailableStock();
+    return stock > 0;
+  }
 }

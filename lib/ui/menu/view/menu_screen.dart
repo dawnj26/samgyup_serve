@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
 import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -43,12 +42,12 @@ class MenuScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16),
             ),
           ),
-          MenuItemList(
-            itemBuilder: (context, menu) => MenuListItem(
-              item: menu,
-              onTap: () => _handleTap(context, menu),
-            ),
-          ),
+          // MenuItemList(
+          //   itemBuilder: (context, menu) => MenuListItem(
+          //     item: menu,
+          //     onTap: () => _handleTap(context, menu),
+          //   ),
+          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -58,22 +57,22 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  void _handleTap(BuildContext context, MenuItem menu) {
-    unawaited(
-      context.router.push(
-        MenuDetailsRoute(
-          menuItem: menu,
-          onChange: ({required needsReload}) {
-            if (needsReload) {
-              context.read<MenuBloc>().add(
-                const MenuEvent.refresh(),
-              );
-            }
-          },
-        ),
-      ),
-    );
-  }
+  // void _handleTap(BuildContext context, MenuItem menu) {
+  //   unawaited(
+  //     context.router.push(
+  //       MenuDetailsRoute(
+  //         menuItem: menu,
+  //         onChange: ({required needsReload}) {
+  //           if (needsReload) {
+  //             context.read<MenuBloc>().add(
+  //               const MenuEvent.refresh(),
+  //             );
+  //           }
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _handlePressed(BuildContext context) {
     unawaited(

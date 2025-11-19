@@ -214,10 +214,10 @@ class MenuDetailsBloc extends Bloc<MenuDetailsEvent, MenuDetailsState> {
 
         if (diff < 0) {
           // Increase stock
-          await _inventoryRepository.incrementStock(
-            itemId: inventoryItem.id,
-            quantity: incrementValue,
-          );
+          // await _inventoryRepository.incrementStock(
+          //   itemId: inventoryItem.id,
+          //   quantity: incrementValue,
+          // );
         } else {
           // Decrease stock
           await _inventoryRepository.decrementStock(

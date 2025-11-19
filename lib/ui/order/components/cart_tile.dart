@@ -28,7 +28,7 @@ class CartTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return AspectRatio(
-      aspectRatio: 3.5,
+      aspectRatio: 3,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(

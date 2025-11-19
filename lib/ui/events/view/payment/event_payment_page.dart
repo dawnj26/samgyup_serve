@@ -71,7 +71,7 @@ class EventPaymentPage extends StatelessWidget implements AutoRouteWrapper {
         BlocProvider(
           create: (context) => OrderListBloc(
             orderRepository: context.read(),
-            menuRepository: context.read(),
+            inventoryRepository: context.read(),
             packageRepository: context.read(),
           ),
         ),

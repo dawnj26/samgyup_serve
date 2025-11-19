@@ -7,7 +7,7 @@ abstract class OrderListState with _$OrderListState {
   const factory OrderListState.initial({
     @Default([]) List<String> orderIds,
     @Default([]) List<CartItem<FoodPackage>> packages,
-    @Default([]) List<CartItem<MenuItem>> menuItems,
+    @Default([]) List<CartItem<InventoryItem>> menuItems,
     @Default(OrderListStatus.initial) OrderListStatus status,
     String? errorMessage,
   }) = _Initial;

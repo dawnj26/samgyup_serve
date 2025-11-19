@@ -1,7 +1,7 @@
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
@@ -12,17 +12,17 @@ part 'order_list_bloc.freezed.dart';
 class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
   OrderListBloc({
     required OrderRepository orderRepository,
-    required MenuRepository menuRepository,
+    required InventoryRepository inventoryRepository,
     required PackageRepository packageRepository,
   }) : _orderRepo = orderRepository,
-       _menuRepo = menuRepository,
+       _inventoryRepo = inventoryRepository,
        _packageRepo = packageRepository,
        super(const _Initial()) {
     on<_Started>(_onStarted);
   }
 
   final OrderRepository _orderRepo;
-  final MenuRepository _menuRepo;
+  final InventoryRepository _inventoryRepo;
   final PackageRepository _packageRepo;
 
   Future<void> _onStarted(
@@ -44,8 +44,8 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
       final packages = await _packageRepo.fetchPackages(
         ids: packageOrders.map((order) => order.cartId).toSet().toList(),
       );
-      final menuItems = await _menuRepo.fetchItems(
-        menuIds: menuOrders.map((order) => order.cartId).toSet().toList(),
+      final menuItems = await _inventoryRepo.fetchItems(
+        itemIds: menuOrders.map((order) => order.cartId).toSet().toList(),
       );
 
       final packageCart = packageOrders.map(
@@ -65,7 +65,7 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
           final menuItem = menuItems.firstWhere(
             (item) => item.id == order.cartId,
           );
-          return CartItem<MenuItem>(
+          return CartItem<InventoryItem>(
             id: order.id,
             item: menuItem,
             quantity: order.quantity,

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
@@ -25,7 +25,7 @@ class ReservationRefillPage extends StatelessWidget
   final FoodPackage package;
   final DateTime startTime;
   final int quantity;
-  final void Function(List<CartItem<MenuItem>> items)? onSave;
+  final void Function(List<CartItem<InventoryItem>> items)? onSave;
 
   @override
   Widget build(BuildContext context) {

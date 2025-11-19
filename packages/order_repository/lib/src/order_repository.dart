@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/src/enums/order_type.dart';
 import 'package:order_repository/src/models/models.dart';
 import 'package:package_repository/package_repository.dart';
@@ -22,7 +22,7 @@ class OrderRepository {
   String get _databaseId => _appwrite.environment.databaseId;
 
   /// Creates a new menu order from the given cart item.
-  Future<Order> createMenuOrder(CartItem<MenuItem> cart) async {
+  Future<Order> createMenuOrder(CartItem<InventoryItem> cart) async {
     try {
       final order = Order(
         id: ID.unique(),
@@ -69,11 +69,11 @@ class OrderRepository {
 
   /// Creates orders for all menu and package items in the cart.
   Future<List<Order>> createOrders({
-    required List<CartItem<MenuItem>> menuItems,
+    required List<CartItem<InventoryItem>> inventoryItems,
     required List<CartItem<FoodPackage>> packageItems,
   }) async {
     final orders = <Order>[];
-    for (final cart in menuItems) {
+    for (final cart in inventoryItems) {
       final order = await createMenuOrder(cart);
       orders.add(order);
     }

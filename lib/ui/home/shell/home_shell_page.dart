@@ -3,7 +3,7 @@ import 'package:billing_repository/billing_repository.dart';
 import 'package:event_repository/event_repository.dart' hide EventStatus;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
@@ -77,7 +77,7 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
-          create: (context) => MenuRepository(),
+          create: (context) => InventoryRepository(),
         ),
         RepositoryProvider(
           create: (context) => PackageRepository(),

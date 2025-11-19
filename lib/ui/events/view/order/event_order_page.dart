@@ -44,7 +44,7 @@ class EventOrderPage extends StatelessWidget implements AutoRouteWrapper {
 
               return OrderListBloc(
                 orderRepository: context.read<OrderRepository>(),
-                menuRepository: context.read(),
+                inventoryRepository: context.read(),
                 packageRepository: context.read(),
               )..add(
                 OrderListEvent.started(orderIds: orderIds),

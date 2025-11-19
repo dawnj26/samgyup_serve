@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
@@ -12,6 +12,7 @@ import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
+import 'package:samgyup_serve/ui/inventory/components/inventory_list_item.dart';
 import 'package:samgyup_serve/ui/menu/components/components.dart';
 
 class ReservationAddOrderScreen extends StatelessWidget {
@@ -39,7 +40,7 @@ class ReservationAddOrderScreen extends StatelessWidget {
               );
 
               if (cartIndex == -1) {
-                return MenuListItem(
+                return InventoryListItem(
                   item: menu,
                   onTap: menu.isAvailable
                       ? () => _handleItemTap(context, menu)
@@ -53,7 +54,7 @@ class ReservationAddOrderScreen extends StatelessWidget {
 
                 offset: const Offset(-12, -26),
                 count: cart.quantity,
-                child: MenuListItem(
+                child: InventoryListItem(
                   item: menu,
                   onTap: menu.isAvailable
                       ? () => _handleItemTap(context, menu)
@@ -73,16 +74,16 @@ class ReservationAddOrderScreen extends StatelessWidget {
 
   Future<void> _handleItemTap(
     BuildContext context,
-    MenuItem item, [
+    InventoryItem item, [
     int? initialValue,
   ]) async {
     final quantity = await showAddCartItemDialog(
       context: context,
       name: item.name,
-      description: item.description,
+      description: item.description ?? 'No description available.',
       price: item.price,
-      maxQuantity: item.stock,
-      imageId: item.imageFileName,
+      maxQuantity: item.getAvailableStock().toInt(),
+      imageId: item.imageId,
       initialValue: initialValue,
     );
 

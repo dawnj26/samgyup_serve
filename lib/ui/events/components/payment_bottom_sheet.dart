@@ -90,7 +90,7 @@ class _Sheet extends StatelessWidget {
               children: [
                 Text(
                   'Payment (${formatToPHP(amount)})',
-                  style: textTheme.titleLarge,
+                  style: textTheme.titleMedium,
                 ),
                 const _Qr(),
               ],
