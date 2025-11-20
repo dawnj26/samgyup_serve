@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
-import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/refill/reservation_refill_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
@@ -64,10 +64,10 @@ class ReservationRefillPage extends StatelessWidget
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => MenuListBloc(
-            menuIds: package.menuIds,
-            menuRepository: context.read(),
-          )..add(const MenuListEvent.started()),
+          create: (context) => InventoryListBloc(
+            itemIds: package.menuIds,
+            inventoryRepository: context.read(),
+          )..add(const InventoryListEvent.started()),
         ),
         BlocProvider(
           create: (context) => OrderCartBloc(),
@@ -76,7 +76,7 @@ class ReservationRefillPage extends StatelessWidget
           create: (context) => ReservationRefillBloc(
             startTime: startTime,
             package: package,
-            menuRepository: context.read(),
+            inventoryRepository: context.read(),
           ),
         ),
       ],
