@@ -8,6 +8,7 @@ import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/inventory_list_item.dart';
+import 'package:samgyup_serve/ui/inventory/components/subcategory_filters.dart';
 
 class MenuTab extends StatelessWidget {
   const MenuTab({required this.category, super.key});
@@ -54,8 +55,40 @@ class _TabState extends State<_Tab> with AutomaticKeepAliveClientMixin {
           );
         },
         physics: const AlwaysScrollableScrollPhysics(),
-        slivers: const [
-          _MenuList(),
+        slivers: [
+          BlocBuilder<InventoryTabBloc, InventoryTabState>(
+            builder: (context, state) {
+              if (state.status == MenuTabStatus.loading ||
+                  state.status == MenuTabStatus.initial) {
+                return const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: FilterChipSkeleton(),
+                  ),
+                );
+              }
+
+              if (state.subcategories.isEmpty) {
+                return const SliverToBoxAdapter();
+              }
+              return SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: SubcategoryFilters(
+                    subcategories: state.subcategories,
+                    onSelectionChanged: (selected) {
+                      context.read<InventoryTabBloc>().add(
+                        InventoryTabEvent.subcategoriesChanged(
+                          selectedSubcategories: selected,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+          const _MenuList(),
         ],
       ),
     );
@@ -73,7 +106,9 @@ class _MenuList extends StatelessWidget {
     return BlocBuilder<InventoryTabBloc, InventoryTabState>(
       builder: (context, state) {
         switch (state.status) {
-          case MenuTabStatus.initial || MenuTabStatus.loading:
+          case MenuTabStatus.initial ||
+              MenuTabStatus.loading ||
+              MenuTabStatus.loadingItems:
             return const SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: CircularProgressIndicator()),
