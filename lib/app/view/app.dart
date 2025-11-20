@@ -129,6 +129,9 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocListener<AppBloc, AppState>(
+      listenWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.authStatus != current.authStatus,
       listener: (context, state) {
         if (state.status == AppStatus.failure) {
           showErrorDialog(
