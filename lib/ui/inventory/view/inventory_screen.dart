@@ -19,6 +19,14 @@ class InventoryScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: const Text('Inventory'),
         backgroundColor: colorTheme.primaryContainer,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<InventoryBloc>().add(const InventoryEvent.sync());
+            },
+            icon: const Icon(Icons.sync),
+          ),
+        ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
