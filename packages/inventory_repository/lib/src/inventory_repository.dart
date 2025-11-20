@@ -499,6 +499,9 @@ class InventoryRepository {
         );
         remainingQuantity -= deductQuantity;
       }
+
+      final item = await fetchItemById(itemId, includeBatch: true);
+      await syncItem(item);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
