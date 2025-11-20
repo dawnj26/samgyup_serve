@@ -144,7 +144,8 @@ class _Stock extends StatelessWidget {
       final inventoryItem = inventoryItems[ingredient.inventoryItemId];
       if (inventoryItem == null || ingredient.quantity <= 0) continue;
 
-      final possibleStock = (inventoryItem.stock / ingredient.quantity).floor();
+      final possibleStock =
+          (inventoryItem.getAvailableStock() / ingredient.quantity).floor();
       if (possibleStock < maxStock) {
         maxStock = possibleStock.toDouble();
       }

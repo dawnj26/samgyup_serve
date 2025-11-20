@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/ui/order/components/components.dart';
@@ -13,12 +13,12 @@ class CartList extends StatelessWidget {
     this.menuTrailing,
   });
 
-  final List<CartItem<MenuItem>> menus;
+  final List<CartItem<InventoryItem>> menus;
   final List<CartItem<FoodPackage>> packages;
 
   final Widget Function(BuildContext context, CartItem<FoodPackage> cart)?
   packageTrailing;
-  final Widget Function(BuildContext context, CartItem<MenuItem> cart)?
+  final Widget Function(BuildContext context, CartItem<InventoryItem> cart)?
   menuTrailing;
 
   @override
@@ -80,7 +80,7 @@ class CartList extends StatelessWidget {
                 name: menu.name,
                 price: menu.price,
                 quantity: cartItem.quantity,
-                imageId: menu.imageFileName,
+                imageId: menu.imageId,
                 trailing: menuTrailing?.call(context, cartItem),
               );
             },

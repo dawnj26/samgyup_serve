@@ -6,7 +6,7 @@ enum EmailValidationError {
 }
 
 class Email extends FormzInput<String, EmailValidationError> {
-  const Email.pure() : super.pure('');
+  const Email.pure([super.value = '']) : super.pure();
   const Email.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _emailRegExp = RegExp(

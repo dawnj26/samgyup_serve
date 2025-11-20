@@ -10,11 +10,13 @@ class ManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = managementItems.where((item) => item.enabled).toList();
+
     return Scaffold(
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         itemBuilder: (context, index) {
-          final item = managementItems[index];
+          final item = items[index];
 
           return ActionCard(
             title: item.title,
@@ -32,7 +34,7 @@ class ManagementScreen extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
-        itemCount: managementItems.length,
+        itemCount: items.length,
       ),
     );
   }

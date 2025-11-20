@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
@@ -25,9 +27,15 @@ class InventoryCategoryBloc
         const Duration(milliseconds: 300),
       ),
     );
-    on<_Reload>(_onReload);
+    on<_Reload>(
+      _onReload,
+      transformer: debounce(
+        const Duration(milliseconds: 300),
+      ),
+    );
     on<_ItemRemoved>(_onItemRemoved);
     on<_ItemChanged>(_onItemChanged);
+    on<_SubcategoryChanged>(_onSubcategoryChanged);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -42,12 +50,18 @@ class InventoryCategoryBloc
         items: state.items,
         hasReachedMax: state.hasReachedMax,
         category: state.category,
+        subcategories: state.subcategories,
+        selectedSubcategories: state.selectedSubcategories,
       ),
     );
 
     try {
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
+        categories: [state.category],
+        includeBatches: true,
+      );
+      final subcategories = await _inventoryRepository.fetchSubcategories(
         category: state.category,
       );
 
@@ -56,6 +70,8 @@ class InventoryCategoryBloc
           items: items,
           hasReachedMax: items.length < _pageSize,
           category: state.category,
+          subcategories: subcategories,
+          selectedSubcategories: state.selectedSubcategories,
         ),
       );
     } on Exception catch (e) {
@@ -65,6 +81,8 @@ class InventoryCategoryBloc
           items: state.items,
           hasReachedMax: state.hasReachedMax,
           category: state.category,
+          subcategories: state.subcategories,
+          selectedSubcategories: state.selectedSubcategories,
         ),
       );
     }
@@ -80,8 +98,10 @@ class InventoryCategoryBloc
       final lastItem = state.items.isNotEmpty ? state.items.last : null;
       final items = await _inventoryRepository.fetchItems(
         lastDocumentId: lastItem?.id,
-        category: state.category,
+        categories: [state.category],
         limit: _pageSize,
+        subcategoryIds: state.subcategories.map((e) => e.id).toList(),
+        includeBatches: true,
       );
 
       emit(
@@ -89,6 +109,8 @@ class InventoryCategoryBloc
           items: List.of(state.items)..addAll(items),
           hasReachedMax: items.length < _pageSize,
           category: state.category,
+          subcategories: state.subcategories,
+          selectedSubcategories: state.selectedSubcategories,
         ),
       );
     } on Exception catch (e) {
@@ -98,6 +120,8 @@ class InventoryCategoryBloc
           items: state.items,
           hasReachedMax: state.hasReachedMax,
           category: state.category,
+          subcategories: state.subcategories,
+          selectedSubcategories: state.selectedSubcategories,
         ),
       );
     }
@@ -107,7 +131,45 @@ class InventoryCategoryBloc
     _Reload event,
     Emitter<InventoryCategoryState> emit,
   ) async {
-    // TODO(reload): Implement reload logic if needed.
+    emit(
+      InventoryCategoryLoadingItems(
+        items: state.items,
+        hasReachedMax: state.hasReachedMax,
+        category: state.category,
+        subcategories: state.subcategories,
+        selectedSubcategories: state.selectedSubcategories,
+      ),
+    );
+
+    try {
+      final items = await _inventoryRepository.fetchItems(
+        limit: _pageSize,
+        categories: [state.category],
+        subcategoryIds: state.selectedSubcategories.map((e) => e.id).toList(),
+        includeBatches: true,
+      );
+
+      emit(
+        InventoryCategoryLoaded(
+          items: items,
+          hasReachedMax: items.length < _pageSize,
+          category: state.category,
+          subcategories: state.subcategories,
+          selectedSubcategories: state.selectedSubcategories,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        InventoryCategoryError(
+          message: e.toString(),
+          items: state.items,
+          hasReachedMax: state.hasReachedMax,
+          category: state.category,
+          subcategories: state.subcategories,
+          selectedSubcategories: state.selectedSubcategories,
+        ),
+      );
+    }
   }
 
   Future<void> _onItemRemoved(
@@ -122,6 +184,8 @@ class InventoryCategoryBloc
         items: items,
         hasReachedMax: state.hasReachedMax,
         category: state.category,
+        subcategories: state.subcategories,
+        selectedSubcategories: state.selectedSubcategories,
       ),
     );
   }
@@ -138,7 +202,25 @@ class InventoryCategoryBloc
         items: items,
         hasReachedMax: state.hasReachedMax,
         category: state.category,
+        subcategories: state.subcategories,
+        selectedSubcategories: state.selectedSubcategories,
       ),
     );
+  }
+
+  FutureOr<void> _onSubcategoryChanged(
+    _SubcategoryChanged event,
+    Emitter<InventoryCategoryState> emit,
+  ) {
+    emit(
+      InventoryCategoryLoaded(
+        items: state.items,
+        hasReachedMax: state.hasReachedMax,
+        category: state.category,
+        subcategories: state.subcategories,
+        selectedSubcategories: event.subcategories,
+      ),
+    );
+    add(const InventoryCategoryEvent.reload());
   }
 }

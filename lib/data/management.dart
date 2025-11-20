@@ -12,6 +12,7 @@ final List<ManagementItem> managementItems = [
     title: 'Menu',
     icon: Icons.restaurant_menu,
     route: MenuShellRoute(),
+    enabled: false,
   ),
   const ManagementItem(
     title: 'Packages',
@@ -27,5 +28,10 @@ final List<ManagementItem> managementItems = [
     title: 'Settings',
     icon: Icons.settings,
     route: SettingsRoute(),
+  ),
+  const ManagementItem(
+    title: 'Users',
+    icon: Icons.people,
+    route: UsersRoute(),
   ),
 ];

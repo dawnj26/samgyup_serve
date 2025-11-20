@@ -16,9 +16,9 @@ dependencies:
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0
+  inventory_repository:
+    path: ../inventory_repository
   json_annotation: ^4.9.0
-  menu_repository:
-    path: ../menu_repository
   package_repository:
     path: ../package_repository
 

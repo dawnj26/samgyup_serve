@@ -10,8 +10,6 @@ extension InventoryItemStatusX on InventoryItemStatus {
         return Colors.orange;
       case InventoryItemStatus.outOfStock:
         return Colors.red;
-      case InventoryItemStatus.expired:
-        return Colors.grey;
     }
   }
 }

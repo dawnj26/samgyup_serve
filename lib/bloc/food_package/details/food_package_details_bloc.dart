@@ -1,7 +1,7 @@
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
 part 'food_package_details_bloc.freezed.dart';
@@ -12,10 +12,10 @@ class FoodPackageDetailsBloc
     extends Bloc<FoodPackageDetailsEvent, FoodPackageDetailsState> {
   FoodPackageDetailsBloc({
     required PackageRepository packageRepository,
-    required MenuRepository menuRepository,
+    required InventoryRepository inventoryRepository,
     required FoodPackage package,
   }) : _packageRepository = packageRepository,
-       _menuRepository = menuRepository,
+       _inventoryRepository = inventoryRepository,
        super(FoodPackageDetailsInitial(package: package)) {
     on<_Started>(_onStarted);
     on<_Refreshed>(_onRefreshed);
@@ -23,7 +23,7 @@ class FoodPackageDetailsBloc
   }
 
   final PackageRepository _packageRepository;
-  final MenuRepository _menuRepository;
+  final InventoryRepository _inventoryRepository;
 
   void _onChanged(
     _Changed event,
@@ -50,9 +50,12 @@ class FoodPackageDetailsBloc
       ),
     );
     try {
-      final menuItems = await _menuRepository.fetchItemsByIds(
-        state.package.menuIds,
-      );
+      final menuItems = state.package.menuIds.isEmpty
+          ? <InventoryItem>[]
+          : await _inventoryRepository.fetchItems(
+              itemIds: state.package.menuIds,
+              includeBatches: true,
+            );
 
       emit(
         FoodPackageDetailsSuccess(
@@ -98,9 +101,12 @@ class FoodPackageDetailsBloc
         state.package.id,
       );
 
-      final menuItems = await _menuRepository.fetchItemsByIds(
-        updatedPackage.menuIds,
-      );
+      final menuItems = updatedPackage.menuIds.isEmpty
+          ? <InventoryItem>[]
+          : await _inventoryRepository.fetchItems(
+              itemIds: updatedPackage.menuIds,
+              includeBatches: true,
+            );
 
       emit(
         FoodPackageDetailsSuccess(

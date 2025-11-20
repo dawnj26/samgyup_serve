@@ -3,8 +3,8 @@ import 'package:billing_repository/billing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/payment/form/payment_form_bloc.dart';
-import 'package:samgyup_serve/bloc/settings/qr/bloc/qr_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
@@ -30,11 +30,6 @@ class PaymentBottomSheet extends StatelessWidget {
             totalAmount: totalAmount,
             billingRepository: context.read(),
           ),
-        ),
-        BlocProvider(
-          create: (context) => QrBloc(
-            settingsRepository: context.read(),
-          )..add(const QrEvent.started()),
         ),
       ],
       child: BlocListener<PaymentFormBloc, PaymentFormState>(
@@ -95,7 +90,7 @@ class _Sheet extends StatelessWidget {
               children: [
                 Text(
                   'Payment (${formatToPHP(amount)})',
-                  style: textTheme.titleLarge,
+                  style: textTheme.titleMedium,
                 ),
                 const _Qr(),
               ],
@@ -120,43 +115,22 @@ class _Qr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<QrBloc, QrState>(
-      builder: (context, state) {
-        final isLoading =
-            state.status == QrStatus.loading ||
-            state.status == QrStatus.initial;
+    final fileId = context.select(
+      (AppBloc bloc) => bloc.state.settings.qrCode,
+    );
 
-        return TextButton(
-          onPressed: isLoading
-              ? null
-              : () {
-                  if (state.fileId == null) {
-                    return showErrorDialog(
-                      context: context,
-                      message: 'No QR code available',
-                    );
-                  }
+    return TextButton(
+      onPressed: () {
+        if (fileId == null) {
+          return showErrorDialog(
+            context: context,
+            message: 'No QR code available',
+          );
+        }
 
-                  showImageDialog(context: context, fileId: state.fileId!);
-                },
-          child: Row(
-            children: [
-              const Text('Show QR Code'),
-              if (isLoading) ...[
-                const SizedBox(width: 8),
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        );
+        showImageDialog(context: context, fileId: fileId);
       },
+      child: const Text('Show QR Code'),
     );
   }
 }

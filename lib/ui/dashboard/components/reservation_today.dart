@@ -26,8 +26,7 @@ class _Main extends StatelessWidget {
     return BlocBuilder<ReservationTotalBloc, ReservationTotalState>(
       builder: (context, state) {
         switch (state.status) {
-          case ReservationTotalStatus.initial:
-          case ReservationTotalStatus.loading:
+          case ReservationTotalStatus.initial || ReservationTotalStatus.loading:
             return const Center(child: CircularProgressIndicator());
           case ReservationTotalStatus.success:
             return Padding(
@@ -37,10 +36,16 @@ class _Main extends StatelessWidget {
                 children: [
                   Text(
                     'Reservations Today',
-                    style: textTheme.titleMedium,
+                    style: textTheme.labelLarge,
                   ),
-                  const SizedBox(height: 32),
-                  Text('${state.todayTotal}', style: textTheme.headlineLarge),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        '${state.todayTotal}',
+                        style: textTheme.headlineLarge,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );

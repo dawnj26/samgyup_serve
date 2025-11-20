@@ -3,6 +3,7 @@ part of 'inventory_edit_bloc.dart';
 @freezed
 class InventoryEditEvent with _$InventoryEditEvent {
   const factory InventoryEditEvent.saved() = _Saved;
+  const factory InventoryEditEvent.started() = _Started;
 
   const factory InventoryEditEvent.nameChanged({
     required String name,
@@ -13,16 +14,19 @@ class InventoryEditEvent with _$InventoryEditEvent {
   const factory InventoryEditEvent.categoryChanged({
     required InventoryCategory category,
   }) = _CategoryChanged;
-  const factory InventoryEditEvent.stockChanged({
-    required String stock,
-  }) = _StockChanged;
+  const factory InventoryEditEvent.subcategoryChanged({
+    required Subcategory? subcategory,
+  }) = _SubcategoryChanged;
   const factory InventoryEditEvent.lowStockThresholdChanged({
     required String lowStockThreshold,
   }) = _LowStockThresholdChanged;
   const factory InventoryEditEvent.unitChanged({
     required MeasurementUnit measurementUnit,
   }) = _MeasurementUnitChanged;
-  const factory InventoryEditEvent.expirationChanged({
-    required DateTime? expiration,
-  }) = _ExpirationChanged;
+  const factory InventoryEditEvent.priceChanged({
+    required String price,
+  }) = _PriceChanged;
+  const factory InventoryEditEvent.imageChanged({
+    required File? imageFile,
+  }) = _ImageChanged;
 }

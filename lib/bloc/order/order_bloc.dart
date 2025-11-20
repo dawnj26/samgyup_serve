@@ -2,7 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:billing_repository/billing_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
@@ -18,11 +18,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     required OrderRepository orderRepository,
     required BillingRepository billingRepository,
     required ReservationRepository reservationRepository,
-    required MenuRepository menuRepository,
+    required InventoryRepository inventoryRepository,
     required TableRepository tableRepository,
   }) : _orderRepository = orderRepository,
        _tableRepository = tableRepository,
-       _menuRepository = menuRepository,
+       _inventoryRepository = inventoryRepository,
        _billingRepository = billingRepository,
        _reservationRepository = reservationRepository,
        super(
@@ -34,7 +34,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final OrderRepository _orderRepository;
   final BillingRepository _billingRepository;
   final ReservationRepository _reservationRepository;
-  final MenuRepository _menuRepository;
+  final InventoryRepository _inventoryRepository;
   final TableRepository _tableRepository;
 
   Future<void> _onStarted(
@@ -44,16 +44,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     emit(state.copyWith(status: OrderStatus.loading));
     try {
       final orders = await _orderRepository.createOrders(
-        menuItems: event.menuItems,
+        inventoryItems: event.inventoryItems,
         packageItems: event.packages,
       );
 
-      for (final menu in event.menuItems) {
-        if (menu.item.stock == 0) continue;
+      for (final menu in event.inventoryItems) {
+        if (!menu.item.isAvailable) continue;
 
-        await _menuRepository.decrementStock(
-          menuId: menu.item.id,
-          quantity: menu.quantity,
+        await _inventoryRepository.decrementStock(
+          itemId: menu.item.id,
+          quantity: menu.quantity.toDouble(),
         );
       }
 

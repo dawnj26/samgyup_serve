@@ -3,53 +3,87 @@ part of 'inventory_create_bloc.dart';
 @freezed
 abstract class InventoryCreateState with _$InventoryCreateState {
   const factory InventoryCreateState.initial({
-    DateTime? expiration,
-    @Default(MeasurementUnit.pure()) MeasurementUnit measurementUnit,
+    @Default(MeasurementUnitInput.pure()) MeasurementUnitInput measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
-    @Default(Stock.pure()) Stock stock,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
+    @Default(Price.pure()) Price price,
+    @Default(<Subcategory>[]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
   }) = InventoryCreateInitial;
 
   const factory InventoryCreateState.dirty({
-    required DateTime? expiration,
-    required MeasurementUnit measurementUnit,
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
-    required Stock stock,
     required LowStockThreshold lowStockThreshold,
     required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
   }) = InventoryCreateDirty;
 
   const factory InventoryCreateState.loading({
-    required DateTime? expiration,
-    required MeasurementUnit measurementUnit,
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
-    required Stock stock,
     required LowStockThreshold lowStockThreshold,
     required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
   }) = InventoryCreateLoading;
 
   const factory InventoryCreateState.success({
-    DateTime? expiration,
-    @Default(MeasurementUnit.pure()) MeasurementUnit measurementUnit,
+    @Default(MeasurementUnitInput.pure()) MeasurementUnitInput measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
-    @Default(Stock.pure()) Stock stock,
     @Default(LowStockThreshold.pure()) LowStockThreshold lowStockThreshold,
     @Default(Description.pure()) Description description,
+    @Default(Price.pure()) Price price,
+    @Default(<Subcategory>[]) List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
   }) = InventoryCreateSuccess;
 
   const factory InventoryCreateState.failure({
-    required DateTime? expiration,
-    required MeasurementUnit measurementUnit,
+    required MeasurementUnitInput measurementUnit,
     required Category category,
     required Name name,
-    required Stock stock,
     required LowStockThreshold lowStockThreshold,
     required Description description,
     required String message,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
   }) = InventoryCreateFailure;
+
+  const factory InventoryCreateState.loadingSubcategories({
+    required MeasurementUnitInput measurementUnit,
+    required Category category,
+    required Name name,
+    required LowStockThreshold lowStockThreshold,
+    required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
+  }) = InventoryCreateLoadingSubcategories;
+
+  const factory InventoryCreateState.loadedSubcategories({
+    required MeasurementUnitInput measurementUnit,
+    required Category category,
+    required Name name,
+    required LowStockThreshold lowStockThreshold,
+    required Description description,
+    required Price price,
+    required List<Subcategory> subcategories,
+    Subcategory? subcategory,
+    File? imageFile,
+  }) = InventoryCreateLoadedSubcategories;
 }

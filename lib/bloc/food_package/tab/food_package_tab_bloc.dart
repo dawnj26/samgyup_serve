@@ -14,10 +14,44 @@ class FoodPackageTabBloc
       super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_FetchMore>(_onFetchMore);
+    on<_Refresh>(_onRefreshed);
   }
 
   final PackageRepository _repo;
   final int _pageSize = 20;
+
+  Future<void> _onRefreshed(
+    _Refresh event,
+    Emitter<FoodPackageTabState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: FoodPackageTabStatus.refreshing));
+      final items = await _repo.fetchPackages(
+        limit: _pageSize,
+      );
+      emit(
+        state.copyWith(
+          status: FoodPackageTabStatus.success,
+          items: items,
+          hasReachedMax: items.length < _pageSize,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          status: FoodPackageTabStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: FoodPackageTabStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
 
   Future<void> _onStarted(
     _Started event,

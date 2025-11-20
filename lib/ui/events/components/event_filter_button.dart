@@ -20,7 +20,7 @@ class _EventFilterButtonState extends State<EventFilterButton> {
 
     return DropdownButton<EventStatus>(
       value: value,
-      style: textTheme.headlineSmall,
+      style: textTheme.titleMedium,
       onChanged: (EventStatus? value) {
         setState(() {
           this.value = value!;

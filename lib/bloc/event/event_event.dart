@@ -8,6 +8,10 @@ abstract class EventEvent with _$EventEvent {
     required int tableNumber,
     required List<Order> orders,
   }) = _OrderCreated;
+  const factory EventEvent.orderCancelled({
+    required String reservationId,
+    required int tableNumber,
+  }) = _OrderCancelled;
   const factory EventEvent.itemsAdded({
     required String reservationId,
     required int tableNumber,
@@ -16,7 +20,7 @@ abstract class EventEvent with _$EventEvent {
   const factory EventEvent.refillRequested({
     required String reservationId,
     required int tableNumber,
-    required List<CartItem<MenuItem>> items,
+    required List<CartItem<InventoryItem>> items,
   }) = _RefillRequested;
   const factory EventEvent.paymentRequested({
     required String reservationId,

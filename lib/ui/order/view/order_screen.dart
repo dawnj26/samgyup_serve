@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
@@ -32,8 +32,8 @@ class _OrderScreenState extends State<OrderScreen>
     super.initState();
 
     // Exclude menu categories that are included in unli packages
-    final categories = MenuCategory.values.where(
-      (c) => c != MenuCategory.grilledMeats && c != MenuCategory.sideDishes,
+    final categories = InventoryCategory.values.where(
+      (c) => c != InventoryCategory.storage && c != InventoryCategory.unknown,
     );
 
     _tabs = [
@@ -132,7 +132,7 @@ class _ViewCartButton extends StatelessWidget {
     context.read<OrderBloc>().add(
       OrderEvent.started(
         tableId: tableId,
-        menuItems: menuCart,
+        inventoryItems: menuCart,
         packages: packageCart,
       ),
     );

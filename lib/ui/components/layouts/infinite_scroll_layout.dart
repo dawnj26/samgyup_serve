@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class InfiniteScrollLayout extends StatefulWidget {
   const InfiniteScrollLayout({
@@ -6,11 +6,13 @@ class InfiniteScrollLayout extends StatefulWidget {
     super.key,
     this.onLoadMore,
     this.threshold = 0.9,
+    this.physics,
   });
 
   final void Function()? onLoadMore;
   final List<Widget> slivers;
   final double threshold;
+  final ScrollPhysics? physics;
 
   @override
   State<InfiniteScrollLayout> createState() => _InfiniteScrollLayoutState();
@@ -38,6 +40,7 @@ class _InfiniteScrollLayoutState extends State<InfiniteScrollLayout> {
     return CustomScrollView(
       controller: _scrollController,
       slivers: widget.slivers,
+      physics: widget.physics,
     );
   }
 

@@ -12,7 +12,7 @@ enum ReservationRefillStatus {
 abstract class ReservationRefillState with _$ReservationRefillState {
   const factory ReservationRefillState.initial({
     @Default(ReservationRefillStatus.initial) ReservationRefillStatus status,
-    @Default([]) List<CartItem<MenuItem>> cartItems,
+    @Default([]) List<CartItem<InventoryItem>> cartItems,
     String? message,
   }) = _Initial;
 }

@@ -57,7 +57,10 @@ class _AppLogoBounceState extends State<AppLogoBounce>
           transform: Matrix4.identity()
             ..translateByDouble(0, dy, 0, 1)
             ..scaleByDouble(sx, sy, sx, 1),
-          child: const AppLogoIcon(size: 72),
+          child: const AppLogoIcon(
+            size: 72,
+            useFallback: true,
+          ),
         );
       },
     );

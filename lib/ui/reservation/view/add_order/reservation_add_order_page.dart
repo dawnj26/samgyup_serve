@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
-import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/order/reservation_order_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
@@ -34,7 +34,10 @@ class ReservationAddOrderPage extends StatelessWidget
 
         if (state.status == ReservationOrderStatus.success) {
           context.router.pop();
-          goToPreviousRoute(context);
+          context.router.pop();
+
+          final router = context.router.parent<StackRouter>();
+          router?.pop();
 
           final reservationId = context
               .read<ReservationBloc>()
@@ -74,25 +77,21 @@ class ReservationAddOrderPage extends StatelessWidget
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              MenuBloc(
-                menuRepository: context.read(),
-              )..add(
-                MenuEvent.started(
-                  initialCategories: MenuCategory.values
-                      .where(
-                        (m) =>
-                            m != MenuCategory.grilledMeats &&
-                            m != MenuCategory.sideDishes,
-                      )
-                      .toList(),
-                ),
-              ),
+          create: (context) => InventoryListBloc(
+            inventoryRepository: context.read(),
+            categories: InventoryCategory.values
+                .where(
+                  (c) =>
+                      c != InventoryCategory.unknown ||
+                      c != InventoryCategory.storage,
+                )
+                .toList(),
+          )..add(const InventoryListEvent.started()),
         ),
         BlocProvider(
           create: (context) => ReservationOrderBloc(
             billingRepository: context.read(),
-            menuRepository: context.read(),
+            inventoryRepository: context.read(),
             orderRepository: context.read(),
           ),
         ),

@@ -37,21 +37,32 @@ class _TabState extends State<_Tab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return InfiniteScrollLayout(
-      onLoadMore: () {
-        context.read<FoodPackageTabBloc>().add(
-          const FoodPackageTabEvent.fetchMore(),
+    return RefreshIndicator(
+      onRefresh: () async {
+        final bloc = context.read<FoodPackageTabBloc>()
+          ..add(const FoodPackageTabEvent.refresh());
+
+        await bloc.stream.firstWhere(
+          (state) => state.status != FoodPackageTabStatus.refreshing,
         );
       },
-      slivers: const [
-        SliverPadding(
-          padding: EdgeInsets.all(16),
-          sliver: _PackageList(),
-        ),
-        SliverToBoxAdapter(
-          child: _BottomLoader(),
-        ),
-      ],
+      child: InfiniteScrollLayout(
+        onLoadMore: () {
+          context.read<FoodPackageTabBloc>().add(
+            const FoodPackageTabEvent.fetchMore(),
+          );
+        },
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: const [
+          SliverPadding(
+            padding: EdgeInsets.all(16),
+            sliver: _PackageList(),
+          ),
+          SliverToBoxAdapter(
+            child: _BottomLoader(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -74,7 +85,7 @@ class _PackageList extends StatelessWidget {
                 child: CircularProgressIndicator(),
               ),
             );
-          case FoodPackageTabStatus.success:
+          case FoodPackageTabStatus.success || FoodPackageTabStatus.refreshing:
             final packages = state.items;
 
             if (packages.isEmpty) {

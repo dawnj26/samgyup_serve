@@ -39,9 +39,11 @@ dependencies:
   reservation_repository: any
   settings_repository: any
   shared_preferences: ^2.5.3
+  shimmer: ^3.0.0
   stream_transform: ^2.1.1
   string_validator: ^1.2.0
   table_repository: any
+  talker_bloc_logger: ^5.0.2
   timeago: ^3.7.1
 
 dev_dependencies:
@@ -90,11 +92,15 @@ melos:
 
     generate:packages:
       name: Generate code for all packages
-      run: melos exec --order-dependents --depends-on="build_runner" --ignore="samgyup_serve" -- dart run build_runner build --delete-conflicting-outputs
+      run: melos exec --order-dependents --depends-on="build_runner"
+        --ignore="samgyup_serve" -- dart run build_runner build
+        --delete-conflicting-outputs
 
     generate:app:
       name: Generate code for main app
-      run: melos exec --order-dependents --depends-on="build_runner" --scope="samgyup_serve" -- dart run build_runner build --delete-conflicting-outputs
+      run: melos exec --order-dependents --depends-on="build_runner"
+        --scope="samgyup_serve" -- dart run build_runner build
+        --delete-conflicting-outputs
 
     generate:
       name: Generate code for all packages and main app
@@ -106,7 +112,8 @@ melos:
       name: Analyze all packages
       run: |
         melos exec -- dart analyze .
-    
+
     release-prod:
       name: Build production APK
-      run: flutter build apk --flavor production -t lib/main_production.dart --split-per-abi
+      run: flutter build apk --flavor production -t lib/main_production.dart
+        --split-per-abi

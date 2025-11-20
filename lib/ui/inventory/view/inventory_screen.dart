@@ -19,41 +19,62 @@ class InventoryScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: const Text('Inventory'),
         backgroundColor: colorTheme.primaryContainer,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<InventoryBloc>().add(const InventoryEvent.sync());
+            },
+            icon: const Icon(Icons.sync),
+          ),
+        ],
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            const SliverPadding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-              sliver: SliverToBoxAdapter(
-                child: StatusSection(),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Categories',
-                  style: textTheme.titleMedium,
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final category = InventoryCategory.values[index];
+        child: RefreshIndicator(
+          onRefresh: () async {
+            final bloc = context.read<InventoryBloc>()
+              ..add(const InventoryEvent.reload());
 
-                    return CategoryCard(
-                      category: category,
-                    );
-                  },
-                  childCount: InventoryCategory.values.length,
+            await bloc.stream.firstWhere(
+              (state) => state is! InventoryReloading,
+            );
+          },
+          child: CustomScrollView(
+            slivers: [
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                sliver: SliverToBoxAdapter(
+                  child: StatusSection(),
                 ),
               ),
-            ),
-          ],
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Categories',
+                    style: textTheme.titleMedium,
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final category = InventoryCategory.values[index];
+
+                      return CategoryCard(
+                        category: category,
+                      );
+                    },
+                    childCount: InventoryCategory.values.length,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

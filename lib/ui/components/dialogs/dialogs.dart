@@ -5,3 +5,4 @@ export 'image_dialog.dart';
 export 'info_dialog.dart';
 export 'loading_dialog.dart';
 export 'quantity_dialog.dart';
+export 'text_input_dialog.dart';

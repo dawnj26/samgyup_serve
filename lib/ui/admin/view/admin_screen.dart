@@ -13,8 +13,18 @@ class AdminScreen extends StatelessWidget {
     return AutoTabsScaffold(
       appBarBuilder: (context, tabsRouter) {
         return AppBar(
-          title: const AppLogoIcon(
+          leading: const AppLogoIcon(
+            padding: EdgeInsets.all(8),
             size: 40,
+          ),
+          title: Builder(
+            builder: (context) {
+              final businessName = context.select(
+                (AppBloc bloc) => bloc.state.settings.businessName,
+              );
+
+              return Text(businessName);
+            },
           ),
           actions: [
             IconButton(

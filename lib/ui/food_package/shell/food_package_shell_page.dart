@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
 @RoutePage()
@@ -21,7 +21,7 @@ class FoodPackageShellPage extends StatelessWidget implements AutoRouteWrapper {
           create: (context) => PackageRepository(),
         ),
         RepositoryProvider.value(
-          value: context.read<MenuRepository>(),
+          value: context.read<InventoryRepository>(),
         ),
       ],
       child: this,

@@ -9,4 +9,7 @@ class AppEvent with _$AppEvent {
     required User user,
   }) = _Login;
   const factory AppEvent.guestSessionStarted() = _GuestSessionStarted;
+  const factory AppEvent.settingsChanged({
+    required Settings settings,
+  }) = _SettingsChanged;
 }

@@ -3,7 +3,18 @@ import 'package:formz/formz.dart';
 enum LowStockThresholdValidationError {
   empty,
   negative,
-  invalid,
+  invalid;
+
+  String get message {
+    switch (this) {
+      case LowStockThresholdValidationError.empty:
+        return 'Low stock threshold cannot be empty.';
+      case LowStockThresholdValidationError.invalid:
+        return 'Low stock threshold must be a valid number.';
+      case LowStockThresholdValidationError.negative:
+        return 'Low stock threshold cannot be negative.';
+    }
+  }
 }
 
 class LowStockThreshold

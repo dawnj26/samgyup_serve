@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
-import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/refill/reservation_refill_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
-import 'package:samgyup_serve/ui/menu/components/menu_list_item.dart';
+import 'package:samgyup_serve/shared/enums/loading_status.dart';
+import 'package:samgyup_serve/ui/inventory/components/inventory_list_item.dart';
 
 class ReservationRefillScreen extends StatelessWidget {
   const ReservationRefillScreen({
@@ -21,16 +22,16 @@ class ReservationRefillScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Request package menus'),
       ),
-      body: BlocBuilder<MenuListBloc, MenuListState>(
+      body: BlocBuilder<InventoryListBloc, InventoryListState>(
         builder: (context, state) {
-          if (state.status == MenuListStatus.loading ||
-              state.status == MenuListStatus.initial) {
+          if (state.status == LoadingStatus.loading ||
+              state.status == LoadingStatus.initial) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if (state.status == MenuListStatus.failure) {
+          if (state.status == LoadingStatus.failure) {
             return const Center(
               child: Text('Failed to load menu items.'),
             );
@@ -57,11 +58,21 @@ class ReservationRefillScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
+        onPressed: () async {
+          final cartItems = context.read<OrderCartBloc>().state.menuItems;
+
+          if (cartItems.isNotEmpty) {
+            final confirm = await showConfirmationDialog(
+              context: context,
+              title: 'Confirm',
+              message: 'Request refill for selected items?',
+            );
+
+            if (!context.mounted || !confirm) return;
+          }
+
           context.read<ReservationRefillBloc>().add(
-            ReservationRefillEvent.started(
-              cartItems: context.read<OrderCartBloc>().state.menuItems,
-            ),
+            ReservationRefillEvent.started(cartItems: cartItems),
           );
         },
         label: const Text('Request'),
@@ -77,7 +88,7 @@ class _Item extends StatelessWidget {
     required this.quantity,
   });
 
-  final MenuItem item;
+  final InventoryItem item;
   final int quantity;
 
   @override
@@ -95,14 +106,14 @@ class _Item extends StatelessWidget {
         alignment: Alignment.bottomRight,
         offset: const Offset(-12, -26),
         count: cart.quantity,
-        child: MenuListItem(
+        child: InventoryListItem(
           item: item,
           onTap: () => _handleItemTap(context, item),
         ),
       );
     }
 
-    return MenuListItem(
+    return InventoryListItem(
       item: item,
       onTap: () => _handleItemTap(context, item),
     );
@@ -110,7 +121,7 @@ class _Item extends StatelessWidget {
 
   Future<void> _handleItemTap(
     BuildContext context,
-    MenuItem item, [
+    InventoryItem item, [
     int? initialValue,
   ]) async {
     if (!item.isAvailable) return;
@@ -118,10 +129,10 @@ class _Item extends StatelessWidget {
     final quantity = await showAddCartItemDialog(
       context: context,
       name: item.name,
-      description: item.description,
+      description: item.description ?? 'No description available.',
       price: item.price,
       maxQuantity: this.quantity,
-      imageId: item.imageFileName,
+      imageId: item.imageId,
       initialValue: initialValue,
     );
 
