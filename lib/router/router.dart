@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:device_repository/device_repository.dart';
@@ -28,6 +29,7 @@ import 'package:samgyup_serve/ui/payment/payment.dart';
 import 'package:samgyup_serve/ui/reservation/reservation.dart';
 import 'package:samgyup_serve/ui/settings/settings.dart';
 import 'package:samgyup_serve/ui/table/table.dart';
+import 'package:samgyup_serve/ui/users/users.dart';
 import 'package:table_repository/table_repository.dart';
 
 part 'router.gr.dart';
@@ -172,6 +174,14 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: SettingsRoute.page, initial: true),
                 AutoRoute(page: SettingDetailsRoute.page),
+              ],
+            ),
+            AutoRoute(
+              page: UsersRoute.page,
+              children: [
+                AutoRoute(page: UsersListRoute.page, initial: true),
+                AutoRoute(page: UserAddRoute.page),
+                AutoRoute(page: UserEditRoute.page),
               ],
             ),
           ],
