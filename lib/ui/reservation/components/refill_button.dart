@@ -65,7 +65,6 @@ class _Button extends StatelessWidget {
               onPressed: state.isFinished ? null : onPressed,
               child: child,
             ),
-            const SizedBox(height: 4),
             Text(
               '$hours:$minutes:$seconds',
               style: textTheme.bodyMedium?.copyWith(
