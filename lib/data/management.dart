@@ -29,4 +29,9 @@ final List<ManagementItem> managementItems = [
     icon: Icons.settings,
     route: SettingsRoute(),
   ),
+  const ManagementItem(
+    title: 'Users',
+    icon: Icons.people,
+    route: UsersRoute(),
+  ),
 ];
