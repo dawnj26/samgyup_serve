@@ -21,10 +21,7 @@ class InventoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final price = formatToPHP(item.price);
-    final stock = item.getAvailableStock();
-    final isAvailable =
-        item.status == InventoryItemStatus.inStock &&
-        stock > item.lowStockThreshold;
+    final isAvailable = item.isAvailable;
 
     return AspectRatio(
       aspectRatio: 3,

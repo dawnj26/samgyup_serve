@@ -128,7 +128,7 @@ class InventoryRepository {
     String? lastDocumentId,
     int? limit,
     InventoryItemStatus? status,
-    InventoryCategory? category,
+    List<InventoryCategory>? categories,
     List<String>? itemIds,
     List<String>? subcategoryIds,
     bool includeBatches = false,
@@ -142,7 +142,11 @@ class InventoryRepository {
       final queries = [
         if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
         ?statusQuery,
-        if (category != null) Query.equal('category', category.name),
+        if (categories != null && categories.isNotEmpty)
+          Query.equal(
+            'category',
+            categories.map((e) => e.name).toList(),
+          ),
         if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
         if (subcategoryIds != null && subcategoryIds.isNotEmpty)
           Query.equal('tagId', subcategoryIds),
@@ -484,7 +488,7 @@ class InventoryRepository {
 
         final deductQuantity = math.min(batch.quantity, remainingQuantity);
         final newQuantity = math
-            .min(batch.quantity - deductQuantity, 0)
+            .max(batch.quantity - deductQuantity, 0)
             .toDouble();
 
         await _appwrite.databases.updateRow(
@@ -495,6 +499,9 @@ class InventoryRepository {
         );
         remainingQuantity -= deductQuantity;
       }
+
+      final item = await fetchItemById(itemId, includeBatch: true);
+      await syncItem(item);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
@@ -528,27 +535,27 @@ class InventoryRepository {
     return availableBatches;
   }
 
-  /// Increments the stock of an inventory item by a specified quantity.
-  Future<void> incrementStock({
-    required String itemId,
-    required int quantity,
-  }) async {
-    // TODO(stock): implement increment stock using FEFO
+  // /// Increments the stock of an inventory item by a specified quantity.
+  // Future<void> incrementStock({
+  //   required String itemId,
+  //   required int quantity,
+  // }) async {
+  //   // TODO(stock): implement increment stock using FEFO
 
-    try {
-      await _appwrite.databases.incrementRowColumn(
-        databaseId: _appwrite.environment.databaseId,
-        tableId: _projectInfo.inventoryCollectionId,
-        rowId: itemId,
-        column: 'stock',
-        value: quantity.toDouble(),
-      );
-    } on AppwriteException catch (e) {
-      throw ResponseException.fromCode(e.code ?? 500);
-    } on Exception catch (e) {
-      throw Exception('Failed to increment stock: $e');
-    }
-  }
+  //   try {
+  //     await _appwrite.databases.incrementRowColumn(
+  //       databaseId: _appwrite.environment.databaseId,
+  //       tableId: _projectInfo.inventoryCollectionId,
+  //       rowId: itemId,
+  //       column: 'stock',
+  //       value: quantity.toDouble(),
+  //     );
+  //   } on AppwriteException catch (e) {
+  //     throw ResponseException.fromCode(e.code ?? 500);
+  //   } on Exception catch (e) {
+  //     throw Exception('Failed to increment stock: $e');
+  //   }
+  // }
 
   InventoryInfo _queryInventoryInfo(List<InventoryItem> items) {
     final totalItems = items.length;

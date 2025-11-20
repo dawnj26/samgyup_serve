@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
-import 'package:samgyup_serve/bloc/menu/tab/menu_tab_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/tab/inventory_tab_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
-import 'package:samgyup_serve/ui/menu/components/menu_list_item.dart';
+import 'package:samgyup_serve/ui/inventory/components/inventory_list_item.dart';
+import 'package:samgyup_serve/ui/inventory/components/subcategory_filters.dart';
 
 class MenuTab extends StatelessWidget {
   const MenuTab({required this.category, super.key});
 
-  final MenuCategory category;
+  final InventoryCategory category;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MenuTabBloc(
-        menuRepository: context.read<MenuRepository>(),
+      create: (context) => InventoryTabBloc(
+        inventoryRepository: context.read<InventoryRepository>(),
         category: category,
-      )..add(const MenuTabEvent.started()),
+      )..add(const InventoryTabEvent.started()),
       child: const _Tab(),
     );
   }
@@ -40,8 +41,8 @@ class _TabState extends State<_Tab> with AutomaticKeepAliveClientMixin {
 
     return RefreshIndicator(
       onRefresh: () async {
-        final bloc = context.read<MenuTabBloc>()
-          ..add(const MenuTabEvent.refresh());
+        final bloc = context.read<InventoryTabBloc>()
+          ..add(const InventoryTabEvent.refresh());
 
         await bloc.stream.firstWhere(
           (state) => state.status != MenuTabStatus.refreshing,
@@ -49,11 +50,45 @@ class _TabState extends State<_Tab> with AutomaticKeepAliveClientMixin {
       },
       child: InfiniteScrollLayout(
         onLoadMore: () {
-          context.read<MenuTabBloc>().add(const MenuTabEvent.fetchMore());
+          context.read<InventoryTabBloc>().add(
+            const InventoryTabEvent.fetchMore(),
+          );
         },
         physics: const AlwaysScrollableScrollPhysics(),
-        slivers: const [
-          _MenuList(),
+        slivers: [
+          BlocBuilder<InventoryTabBloc, InventoryTabState>(
+            builder: (context, state) {
+              if (state.status == MenuTabStatus.loading ||
+                  state.status == MenuTabStatus.initial) {
+                return const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: FilterChipSkeleton(),
+                  ),
+                );
+              }
+
+              if (state.subcategories.isEmpty) {
+                return const SliverToBoxAdapter();
+              }
+              return SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: SubcategoryFilters(
+                    subcategories: state.subcategories,
+                    onSelectionChanged: (selected) {
+                      context.read<InventoryTabBloc>().add(
+                        InventoryTabEvent.subcategoriesChanged(
+                          selectedSubcategories: selected,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+          const _MenuList(),
         ],
       ),
     );
@@ -68,10 +103,12 @@ class _MenuList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuTabBloc, MenuTabState>(
+    return BlocBuilder<InventoryTabBloc, InventoryTabState>(
       builder: (context, state) {
         switch (state.status) {
-          case MenuTabStatus.initial || MenuTabStatus.loading:
+          case MenuTabStatus.initial ||
+              MenuTabStatus.loading ||
+              MenuTabStatus.loadingItems:
             return const SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: CircularProgressIndicator()),
@@ -112,7 +149,7 @@ class _MenuList extends StatelessWidget {
 class _Item extends StatelessWidget {
   const _Item({required this.item});
 
-  final MenuItem item;
+  final InventoryItem item;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +159,7 @@ class _Item extends StatelessWidget {
     final cartIndex = cartItems.indexWhere((e) => e.item.id == item.id);
 
     if (cartIndex == -1) {
-      return MenuListItem(
+      return InventoryListItem(
         item: item,
         onTap: item.isAvailable ? () => _handleItemTap(context, item) : null,
       );
@@ -134,7 +171,7 @@ class _Item extends StatelessWidget {
 
       offset: const Offset(-12, -26),
       count: cart.quantity,
-      child: MenuListItem(
+      child: InventoryListItem(
         item: item,
         onTap: item.isAvailable
             ? () => _handleItemTap(context, item, cart.quantity)
@@ -145,16 +182,16 @@ class _Item extends StatelessWidget {
 
   Future<void> _handleItemTap(
     BuildContext context,
-    MenuItem item, [
+    InventoryItem item, [
     int? initialValue,
   ]) async {
     final quantity = await showAddCartItemDialog(
       context: context,
       name: item.name,
-      description: item.description,
+      description: item.description ?? 'No description available.',
       price: item.price,
-      maxQuantity: item.stock,
-      imageId: item.imageFileName,
+      maxQuantity: item.getAvailableStock().toInt(),
+      imageId: item.imageId,
       initialValue: initialValue,
       onTap: () => context.read<ActivityBloc>().add(
         const ActivityEvent.started(),

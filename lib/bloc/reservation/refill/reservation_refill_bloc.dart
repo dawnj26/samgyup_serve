@@ -1,7 +1,7 @@
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
@@ -12,17 +12,17 @@ part 'reservation_refill_bloc.freezed.dart';
 class ReservationRefillBloc
     extends Bloc<ReservationRefillEvent, ReservationRefillState> {
   ReservationRefillBloc({
-    required MenuRepository menuRepository,
+    required InventoryRepository inventoryRepository,
     required FoodPackage package,
     required DateTime startTime,
-  }) : _menuRepository = menuRepository,
+  }) : _inventoryRepository = inventoryRepository,
        _startTime = startTime,
        _package = package,
        super(const _Initial()) {
     on<_Started>(_onStarted);
   }
 
-  final MenuRepository _menuRepository;
+  final InventoryRepository _inventoryRepository;
   final FoodPackage _package;
   final DateTime _startTime;
 
@@ -43,9 +43,9 @@ class ReservationRefillBloc
       for (final cartItem in event.cartItems) {
         if (!cartItem.item.isAvailable) continue;
 
-        await _menuRepository.decrementStock(
-          menuId: cartItem.item.id,
-          quantity: cartItem.quantity,
+        await _inventoryRepository.decrementStock(
+          itemId: cartItem.item.id,
+          quantity: cartItem.quantity.toDouble(),
         );
       }
 

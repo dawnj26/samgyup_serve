@@ -20,7 +20,7 @@ abstract class EventEvent with _$EventEvent {
   const factory EventEvent.refillRequested({
     required String reservationId,
     required int tableNumber,
-    required List<CartItem<MenuItem>> items,
+    required List<CartItem<InventoryItem>> items,
   }) = _RefillRequested;
   const factory EventEvent.paymentRequested({
     required String reservationId,

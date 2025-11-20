@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:samgyup_serve/bloc/menu/list/menu_list_bloc.dart';
-import 'package:samgyup_serve/ui/menu/components/menu_list_item.dart';
+import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
+import 'package:samgyup_serve/shared/enums/loading_status.dart';
+import 'package:samgyup_serve/ui/inventory/components/inventory_list_item.dart';
 
 class PackageMenuList extends StatelessWidget {
   const PackageMenuList({required this.menuIds, super.key});
@@ -13,10 +14,10 @@ class PackageMenuList extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return BlocProvider(
-      create: (context) => MenuListBloc(
-        menuRepository: context.read(),
-        menuIds: menuIds,
-      )..add(const MenuListEvent.started()),
+      create: (context) => InventoryListBloc(
+        inventoryRepository: context.read(),
+        itemIds: menuIds,
+      )..add(const InventoryListEvent.started()),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,12 +41,12 @@ class _List extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuListBloc, MenuListState>(
+    return BlocBuilder<InventoryListBloc, InventoryListState>(
       builder: (context, state) {
         switch (state.status) {
-          case MenuListStatus.loading || MenuListStatus.initial:
+          case LoadingStatus.loading || LoadingStatus.initial:
             return const Center(child: CircularProgressIndicator());
-          case MenuListStatus.success:
+          case LoadingStatus.success:
             final menus = state.items;
             if (menus.isEmpty) {
               return const Center(child: Text('No menus available'));
@@ -56,12 +57,12 @@ class _List extends StatelessWidget {
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   final menu = menus[index];
-                  return MenuListItem(item: menu);
+                  return InventoryListItem(item: menu);
                 },
                 itemCount: menus.length,
               ),
             );
-          case MenuListStatus.failure:
+          case LoadingStatus.failure:
             return const Center(child: Text('Failed to load menus'));
         }
       },

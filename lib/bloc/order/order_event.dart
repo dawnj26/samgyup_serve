@@ -4,7 +4,7 @@ part of 'order_bloc.dart';
 abstract class OrderEvent with _$OrderEvent {
   const factory OrderEvent.started({
     required String tableId,
-    required List<CartItem<MenuItem>> menuItems,
+    required List<CartItem<InventoryItem>> inventoryItems,
     required List<CartItem<FoodPackage>> packages,
   }) = _Started;
 }

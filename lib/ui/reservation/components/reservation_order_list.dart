@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/order/list/order_list_bloc.dart';
@@ -15,7 +15,7 @@ class ReservationOrderList extends StatelessWidget {
 
   final Widget Function(BuildContext context, CartItem<FoodPackage> cart)?
   packageTrailing;
-  final Widget Function(BuildContext context, CartItem<MenuItem> cart)?
+  final Widget Function(BuildContext context, CartItem<InventoryItem> cart)?
   menuTrailing;
 
   @override
@@ -32,7 +32,7 @@ class _List extends StatelessWidget {
 
   final Widget Function(BuildContext context, CartItem<FoodPackage> cart)?
   packageTrailing;
-  final Widget Function(BuildContext context, CartItem<MenuItem> cart)?
+  final Widget Function(BuildContext context, CartItem<InventoryItem> cart)?
   menuTrailing;
 
   @override

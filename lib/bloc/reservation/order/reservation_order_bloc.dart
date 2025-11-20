@@ -2,7 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:billing_repository/billing_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 
 part 'reservation_order_event.dart';
@@ -13,19 +13,18 @@ class ReservationOrderBloc
     extends Bloc<ReservationOrderEvent, ReservationOrderState> {
   ReservationOrderBloc({
     required BillingRepository billingRepository,
-    required MenuRepository menuRepository,
+    required InventoryRepository inventoryRepository,
     required OrderRepository orderRepository,
   }) : _billingRepository = billingRepository,
-
        _orderRepository = orderRepository,
-       _menuRepository = menuRepository,
+       _inventoryRepository = inventoryRepository,
        super(const _Initial()) {
     on<_Started>(_onStarted);
   }
 
   final OrderRepository _orderRepository;
   final BillingRepository _billingRepository;
-  final MenuRepository _menuRepository;
+  final InventoryRepository _inventoryRepository;
 
   Future<void> _onStarted(
     _Started event,
@@ -42,14 +41,14 @@ class ReservationOrderBloc
     try {
       emit(state.copyWith(status: ReservationOrderStatus.loading));
       final orders = await _orderRepository.createOrders(
-        menuItems: event.items,
+        inventoryItems: event.items,
         packageItems: [],
       );
 
       for (final order in orders) {
-        await _menuRepository.decrementStock(
-          menuId: order.cartId,
-          quantity: order.quantity,
+        await _inventoryRepository.decrementStock(
+          itemId: order.cartId,
+          quantity: order.quantity.toDouble(),
         );
       }
 

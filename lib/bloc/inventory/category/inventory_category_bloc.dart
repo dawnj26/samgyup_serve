@@ -58,7 +58,7 @@ class InventoryCategoryBloc
     try {
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
-        category: state.category,
+        categories: [state.category],
         includeBatches: true,
       );
       final subcategories = await _inventoryRepository.fetchSubcategories(
@@ -98,7 +98,7 @@ class InventoryCategoryBloc
       final lastItem = state.items.isNotEmpty ? state.items.last : null;
       final items = await _inventoryRepository.fetchItems(
         lastDocumentId: lastItem?.id,
-        category: state.category,
+        categories: [state.category],
         limit: _pageSize,
         subcategoryIds: state.subcategories.map((e) => e.id).toList(),
         includeBatches: true,
@@ -144,7 +144,7 @@ class InventoryCategoryBloc
     try {
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
-        category: state.category,
+        categories: [state.category],
         subcategoryIds: state.selectedSubcategories.map((e) => e.id).toList(),
         includeBatches: true,
       );

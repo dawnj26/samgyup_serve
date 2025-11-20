@@ -199,7 +199,7 @@ class AppwriteRepository {
   }
 
   /// Executes a server-side function with optional data payload.
-  Future<void> executeFunction({
+  Future<String?> executeFunction({
     required String endpoint,
     Map<String, dynamic>? data,
   }) async {
@@ -225,6 +225,8 @@ class AppwriteRepository {
         'Function execution failed: ${response.statusCode}: ${response.body}',
       );
     }
+
+    return response.body;
   }
 
   String _getFilename(File file) {

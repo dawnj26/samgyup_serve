@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
-import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
+import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
+import 'package:samgyup_serve/shared/enums/loading_status.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
 
 class MenuItemList extends StatelessWidget {
@@ -10,17 +11,17 @@ class MenuItemList extends StatelessWidget {
     super.key,
   });
 
-  final Widget Function(BuildContext context, MenuItem menu) itemBuilder;
+  final Widget Function(BuildContext context, InventoryItem item) itemBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuBloc, MenuState>(
+    return BlocBuilder<InventoryListBloc, InventoryListState>(
       builder: (context, state) {
-        switch (state) {
-          case MenuLoaded(
-            items: final items,
-            hasReachedMax: final hasReachedMax,
-          ):
+        final items = state.items;
+        final hasReachedMax = state.hasReachedMax;
+
+        switch (state.status) {
+          case LoadingStatus.success:
             if (items.isEmpty) {
               return const SliverFillRemaining(
                 hasScrollBody: false,
@@ -44,14 +45,14 @@ class MenuItemList extends StatelessWidget {
                 itemCount: hasReachedMax ? items.length : items.length + 1,
               ),
             );
-          case MenuError(:final message):
+          case LoadingStatus.failure:
             return SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                child: Text(message),
+                child: Text(state.errorMessage ?? 'Something went wrong'),
               ),
             );
-          default:
+          case LoadingStatus.loading || LoadingStatus.initial:
             return const SliverFillRemaining(
               hasScrollBody: false,
               child: Center(

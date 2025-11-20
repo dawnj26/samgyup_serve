@@ -25,7 +25,7 @@ class ReservationSection extends StatelessWidget {
           create: (context) => OrderListBloc(
             orderRepository: context.read(),
             packageRepository: context.read(),
-            menuRepository: context.read(),
+            inventoryRepository: context.read(),
           ),
         ),
       ],

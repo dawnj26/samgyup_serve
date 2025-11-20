@@ -23,7 +23,7 @@ class ReservationBillingPage extends StatelessWidget
 
         return OrderListBloc(
           orderRepository: context.read(),
-          menuRepository: context.read(),
+          inventoryRepository: context.read(),
           packageRepository: context.read(),
         )..add(
           OrderListEvent.started(orderIds: invoice.orderIds),

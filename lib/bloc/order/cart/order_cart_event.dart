@@ -2,10 +2,11 @@ part of 'order_cart_bloc.dart';
 
 @freezed
 abstract class OrderCartEvent with _$OrderCartEvent {
-  const factory OrderCartEvent.addMenuItem(CartItem<MenuItem> cartItem) =
-      _AddMenuItem;
-  const factory OrderCartEvent.removeMenuItem(CartItem<MenuItem> cartItem) =
-      _RemoveMenuItem;
+  const factory OrderCartEvent.addMenuItem(CartItem<InventoryItem> cartItem) =
+      _AddInventoryItem;
+  const factory OrderCartEvent.removeMenuItem(
+    CartItem<InventoryItem> cartItem,
+  ) = _RemoveMenuItem;
   const factory OrderCartEvent.addPackage(CartItem<FoodPackage> cartItem) =
       _AddPackage;
   const factory OrderCartEvent.removePackage(CartItem<FoodPackage> cartItem) =

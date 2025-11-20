@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
@@ -11,7 +11,7 @@ part 'order_cart_bloc.freezed.dart';
 
 class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
   OrderCartBloc() : super(const _Initial()) {
-    on<_AddMenuItem>(_onAddMenuItem);
+    on<_AddInventoryItem>(_onAddMenuItem);
     on<_RemoveMenuItem>(_onRemoveMenuItem);
     on<_AddPackage>(_onAddPackage);
     on<_RemovePackage>(_onRemovePackage);
@@ -20,7 +20,7 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
     on<_UpdatePackageQuantity>(_onUpdatePackageQuantity);
   }
 
-  void _onAddMenuItem(_AddMenuItem event, Emitter<OrderCartState> emit) {
+  void _onAddMenuItem(_AddInventoryItem event, Emitter<OrderCartState> emit) {
     final menuItems = [...state.menuItems];
     final index = menuItems.indexWhere(
       (item) => item.item.id == event.cartItem.item.id,
@@ -135,7 +135,7 @@ class OrderCartBloc extends Bloc<OrderCartEvent, OrderCartState> {
   }
 
   double _getTotalPrice(
-    List<CartItem<MenuItem>> menuItems,
+    List<CartItem<InventoryItem>> menuItems,
     List<CartItem<FoodPackage>> packages,
   ) {
     double total = 0;
