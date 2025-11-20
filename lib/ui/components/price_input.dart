@@ -23,6 +23,15 @@ class PriceInput extends StatelessWidget {
       initialValue: initialValue,
       errorText: errorText,
       keyboardType: TextInputType.number,
+      prefixIcon: Container(
+        width: 48,
+        height: 48,
+        alignment: Alignment.center,
+        child: const Text(
+          '₱',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+        ),
+      ),
     );
   }
 }
