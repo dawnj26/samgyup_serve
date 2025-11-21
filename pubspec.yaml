@@ -19,7 +19,7 @@ dependencies:
   device_repository: any
   dotted_border: ^3.1.0
   event_repository: any
-  file_picker: ^10.3.2
+  file_picker: ^10.3.7
   fl_chart: ^1.1.1
   flutter:
     sdk: flutter
