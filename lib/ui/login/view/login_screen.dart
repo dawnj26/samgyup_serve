@@ -24,6 +24,31 @@ class LoginScreen extends StatelessWidget {
             },
           );
 
+    const body = Padding(
+      padding: EdgeInsets.all(kIsWeb ? 0 : 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.admin_panel_settings_outlined, size: 32),
+              SizedBox(width: 8),
+              Text(
+                'Admin Login',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
+          LoginForm(),
+        ],
+      ),
+    );
+
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         switch (state) {
@@ -37,30 +62,17 @@ class LoginScreen extends StatelessWidget {
         appBar: AppBar(
           leading: appbar,
         ),
-        body: const Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.admin_panel_settings_outlined, size: 32),
-                  SizedBox(width: 8),
-                  Text(
-                    'Admin Login',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
+        body: kIsWeb
+            ? Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: body,
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              LoginForm(),
-            ],
-          ),
-        ),
+                ),
+              )
+            : body,
       ),
     );
   }

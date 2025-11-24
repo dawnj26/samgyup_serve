@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/create/inventory_create_bloc.dart';
@@ -42,44 +43,51 @@ class _InventoryAddScreenState extends State<InventoryAddScreen> {
       },
       child: FormScaffold(
         body: SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              const SliverAppBar(
-                pinned: true,
-                expandedHeight: 200,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text('Add Item'),
-                ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: kIsWeb ? 1200 : double.infinity,
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      const _NameInputField(),
-                      const SizedBox(height: 16),
-                      const _DescriptionInputField(),
-                      const SizedBox(height: 16),
-                      _CategoryInputField(
-                        onChanged: _subcategoryController.clear,
-                      ),
-                      const SizedBox(height: 16),
-                      _Subcategory(controller: _subcategoryController),
-                      const SizedBox(height: 16),
-                      const _LowStockThresholdInputField(),
-                      const SizedBox(height: 16),
-                      const _MeasurementUnitInputField(),
-                      const SizedBox(height: 16),
-                      const _Price(),
-                      const SizedBox(height: 16),
-                      const _Image(),
-                      const SizedBox(height: 16),
-                      const AddButton(),
-                    ],
+              child: CustomScrollView(
+                slivers: [
+                  const SliverAppBar(
+                    pinned: true,
+                    expandedHeight: 200,
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Text('Add Item'),
+                    ),
                   ),
-                ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          const _NameInputField(),
+                          const SizedBox(height: 16),
+                          const _DescriptionInputField(),
+                          const SizedBox(height: 16),
+                          _CategoryInputField(
+                            onChanged: _subcategoryController.clear,
+                          ),
+                          const SizedBox(height: 16),
+                          _Subcategory(controller: _subcategoryController),
+                          const SizedBox(height: 16),
+                          const _LowStockThresholdInputField(),
+                          const SizedBox(height: 16),
+                          const _MeasurementUnitInputField(),
+                          const SizedBox(height: 16),
+                          const _Price(),
+                          const SizedBox(height: 16),
+                          const _Image(),
+                          const SizedBox(height: 16),
+                          const AddButton(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

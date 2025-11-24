@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
@@ -30,27 +31,34 @@ class _FoodPackageDetailsScreenState extends State<FoodPackageDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          _AppBar(
-            expandedHeight: _expandedHeight,
-            isExpanded: _isExpanded,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: kIsWeb ? 1200 : double.infinity,
           ),
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-              child: _Details(),
-            ),
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              _AppBar(
+                expandedHeight: _expandedHeight,
+                isExpanded: _isExpanded,
+              ),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+                  child: _Details(),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: _MenuHeader(),
+                ),
+              ),
+              const _MenuItems(),
+            ],
           ),
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-              child: _MenuHeader(),
-            ),
-          ),
-          const _MenuItems(),
-        ],
+        ),
       ),
     );
   }

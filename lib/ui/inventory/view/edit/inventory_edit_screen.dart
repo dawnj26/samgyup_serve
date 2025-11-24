@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
@@ -45,39 +46,46 @@ class _InventoryEditScreenState extends State<InventoryEditScreen> {
       },
       child: FormScaffold(
         body: SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              const SliverAppBar(
-                pinned: true,
-                expandedHeight: 200,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text('Edit Item'),
-                ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: kIsWeb ? 1200 : double.infinity,
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: BlocBuilder<InventoryEditBloc, InventoryEditState>(
-                  buildWhen: (previous, current) {
-                    return previous is InventoryEditInitializing ||
-                        current is InventoryEditInitialized;
-                  },
-                  builder: (context, state) {
-                    if (state is! InventoryEditInitialized) {
-                      return const SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    return _Form(
-                      item: widget.item,
-                      subcategoryController: _subcategoryController,
-                      subcategory: state.subcategory,
-                    );
-                  },
-                ),
+              child: CustomScrollView(
+                slivers: [
+                  const SliverAppBar(
+                    pinned: true,
+                    expandedHeight: 200,
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Text('Edit Item'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: BlocBuilder<InventoryEditBloc, InventoryEditState>(
+                      buildWhen: (previous, current) {
+                        return previous is InventoryEditInitializing ||
+                            current is InventoryEditInitialized;
+                      },
+                      builder: (context, state) {
+                        if (state is! InventoryEditInitialized) {
+                          return const SliverFillRemaining(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        return _Form(
+                          item: widget.item,
+                          subcategoryController: _subcategoryController,
+                          subcategory: state.subcategory,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

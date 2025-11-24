@@ -42,22 +42,30 @@ class InventoryDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _Header(),
-            const SizedBox(height: 16),
-            Text(
-              'Batches',
-              style: textTheme.labelLarge,
-            ),
-            const SizedBox(height: 16),
-            const Expanded(
-              child: _BatchList(),
-            ),
-          ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: CustomScrollView(
+            slivers: [
+              const SliverPadding(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                sliver: SliverToBoxAdapter(child: _Header()),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Batches',
+                    style: textTheme.labelLarge,
+                  ),
+                ),
+              ),
+              const SliverPadding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                sliver: _BatchList(),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -212,36 +220,44 @@ class _BatchList extends StatelessWidget {
         final status = state.status;
 
         if (status == LoadingStatus.loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return const SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(child: CircularProgressIndicator()),
           );
         }
 
         if (status == LoadingStatus.failure) {
-          return Center(
-            child: Text(
-              state.errorMessage ?? 'Something went wrong.',
-              style: textTheme.bodyMedium,
+          return SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Text(
+                state.errorMessage ?? 'Something went wrong.',
+                style: textTheme.bodyMedium,
+              ),
             ),
           );
         }
 
         if (item.stockBatches.isEmpty) {
-          return Center(
-            child: Text(
-              'No stock batches available.',
-              style: textTheme.bodyMedium,
+          return SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Text(
+                'No stock batches available.',
+                style: textTheme.bodyMedium,
+              ),
             ),
           );
         }
 
-        return ListView.builder(
-          itemCount: item.stockBatches.length,
-          itemBuilder: (context, index) {
-            final batch = item.stockBatches[index];
-
-            return StockBatchCard(batch: batch, unit: item.unit);
-          },
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final batch = item.stockBatches[index];
+              return StockBatchCard(batch: batch, unit: item.unit);
+            },
+            childCount: item.stockBatches.length,
+          ),
         );
       },
     );

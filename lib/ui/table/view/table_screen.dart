@@ -21,26 +21,32 @@ class TableScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: const Text('Tables'),
       ),
-      body: InfiniteScrollLayout(
-        onLoadMore: () => _handleLoadMore(context),
-        slivers: [
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-              child: _Total(),
-            ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: InfiniteScrollLayout(
+            onLoadMore: () => _handleLoadMore(context),
+            slivers: [
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  child: _Total(),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: TableStatusFilter(
+                  onChanged: (statuses) =>
+                      _handleStatusChanged(context, statuses),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                ),
+              ),
+              const SliverPadding(
+                padding: EdgeInsets.all(16),
+                sliver: _TableList(),
+              ),
+            ],
           ),
-          SliverToBoxAdapter(
-            child: TableStatusFilter(
-              onChanged: (statuses) => _handleStatusChanged(context, statuses),
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            ),
-          ),
-          const SliverPadding(
-            padding: EdgeInsets.all(16),
-            sliver: _TableList(),
-          ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _handlePressed(context),

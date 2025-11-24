@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
@@ -41,37 +42,44 @@ class _InventoryStatusListScreenState extends State<InventoryStatusListScreen> {
       listener: _handleListener,
       child: Scaffold(
         key: scaffoldKey,
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            const StatusListAppBar(),
-            BlocBuilder<InventoryStatusBloc, InventoryStatusState>(
-              builder: (context, state) {
-                switch (state) {
-                  case InventoryStatusLoaded(:final items):
-                    return InventoryItemList(
-                      key: const Key('inventory_status_list'),
-                      items: items,
-                      hasReachedMax: state.hasReachedMax,
-                      onEdit: _handleEdit,
-                      onTap: _handleTap,
-                    );
-                  case InventoryStatusError(:final message):
-                    return SliverFillRemaining(
-                      child: Center(
-                        child: Text(message),
-                      ),
-                    );
-                  default:
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                }
-              },
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: kIsWeb ? 1200 : double.infinity,
             ),
-          ],
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                const StatusListAppBar(),
+                BlocBuilder<InventoryStatusBloc, InventoryStatusState>(
+                  builder: (context, state) {
+                    switch (state) {
+                      case InventoryStatusLoaded(:final items):
+                        return InventoryItemList(
+                          key: const Key('inventory_status_list'),
+                          items: items,
+                          hasReachedMax: state.hasReachedMax,
+                          onEdit: _handleEdit,
+                          onTap: _handleTap,
+                        );
+                      case InventoryStatusError(:final message):
+                        return SliverFillRemaining(
+                          child: Center(
+                            child: Text(message),
+                          ),
+                        );
+                      default:
+                        return const SliverFillRemaining(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
         endDrawerEnableOpenDragGesture: false,
       ),

@@ -19,71 +19,76 @@ class SettingsScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: const Text('Settings'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SettingLabel('Business'),
-              SettingTile(
-                name: 'Name',
-                value: settings.businessName,
-                onTap: () async {
-                  final newName = await showTextInputDialog(
-                    context: context,
-                    title: 'Business Name',
-                    initialValue: settings.businessName,
-                  );
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SettingLabel('Business'),
+                  SettingTile(
+                    name: 'Name',
+                    value: settings.businessName,
+                    onTap: () async {
+                      final newName = await showTextInputDialog(
+                        context: context,
+                        title: 'Business Name',
+                        initialValue: settings.businessName,
+                      );
 
-                  if (!context.mounted ||
-                      newName == null ||
-                      newName == settings.businessName) {
-                    return;
-                  }
+                      if (!context.mounted ||
+                          newName == null ||
+                          newName == settings.businessName) {
+                        return;
+                      }
 
-                  context.read<SettingsBloc>().add(
-                    SettingsEvent.nameChanged(newName),
-                  );
-                },
+                      context.read<SettingsBloc>().add(
+                        SettingsEvent.nameChanged(newName),
+                      );
+                    },
+                  ),
+                  SettingTile(
+                    name: 'Logo',
+                    value: _formatValue(settings.businessLogo),
+                    onTap: () async {
+                      await context.router.push(
+                        SettingDetailsRoute(
+                          name: 'Business Logo',
+                          fileId: settings.businessLogo,
+                          onSave: (file) {
+                            context.read<SettingsBloc>().add(
+                              SettingsEvent.logoChanged(file),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  const SettingLabel('Payment'),
+                  SettingTile(
+                    name: 'QR Code',
+                    value: _formatValue(settings.qrCode),
+                    onTap: () async {
+                      await context.router.push(
+                        SettingDetailsRoute(
+                          name: 'QR Code',
+                          fileId: settings.qrCode,
+                          onSave: (file) {
+                            context.read<SettingsBloc>().add(
+                              SettingsEvent.qrChanged(file),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-              SettingTile(
-                name: 'Logo',
-                value: _formatValue(settings.businessLogo),
-                onTap: () async {
-                  await context.router.push(
-                    SettingDetailsRoute(
-                      name: 'Business Logo',
-                      fileId: settings.businessLogo,
-                      onSave: (file) {
-                        context.read<SettingsBloc>().add(
-                          SettingsEvent.logoChanged(file),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              const SettingLabel('Payment'),
-              SettingTile(
-                name: 'QR Code',
-                value: _formatValue(settings.qrCode),
-                onTap: () async {
-                  await context.router.push(
-                    SettingDetailsRoute(
-                      name: 'QR Code',
-                      fileId: settings.qrCode,
-                      onSave: (file) {
-                        context.read<SettingsBloc>().add(
-                          SettingsEvent.qrChanged(file),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),

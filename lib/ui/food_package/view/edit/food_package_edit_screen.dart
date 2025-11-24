@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_repository/package_repository.dart';
@@ -26,20 +27,31 @@ class FoodPackageEditScreen extends StatelessWidget {
               title: Text('Edit Package'),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _NameInput(initialValue: package.name),
-                const SizedBox(height: 16),
-                _DescriptionInput(initialValue: package.description),
-                const SizedBox(height: 16),
-                _PriceInput(initialValue: package.price.toString()),
-                const SizedBox(height: 16),
-                _TimeLimitInput(initialValue: package.timeLimit.toString()),
-                const SizedBox(height: 16),
-                _ImagePicker(initialValue: package.imageFilename),
-              ]),
+          SliverToBoxAdapter(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: kIsWeb ? 1200 : double.infinity,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _NameInput(initialValue: package.name),
+                      const SizedBox(height: 16),
+                      _DescriptionInput(initialValue: package.description),
+                      const SizedBox(height: 16),
+                      _PriceInput(initialValue: package.price.toString()),
+                      const SizedBox(height: 16),
+                      _TimeLimitInput(
+                        initialValue: package.timeLimit.toString(),
+                      ),
+                      const SizedBox(height: 16),
+                      _ImagePicker(initialValue: package.imageFilename),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ],
