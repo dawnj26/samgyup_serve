@@ -9,8 +9,13 @@ class PaymentScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Payment Screen'),
       ),
-      body: const Center(
-        child: Text('This is the Payment Screen'),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: const Center(
+            child: Text('This is the Payment Screen'),
+          ),
+        ),
       ),
     );
   }

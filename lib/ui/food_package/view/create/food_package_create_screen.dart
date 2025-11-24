@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/create/food_package_create_bloc.dart';
@@ -23,20 +24,29 @@ class FoodPackageCreateScreen extends StatelessWidget {
               title: Text('Create Package'),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                const _Name(),
-                const SizedBox(height: 16),
-                const _Description(),
-                const SizedBox(height: 16),
-                const _Price(),
-                const SizedBox(height: 16),
-                const _TimeLimit(),
-                const SizedBox(height: 16),
-                const _Picker(),
-              ]),
+          SliverToBoxAdapter(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: kIsWeb ? 1200 : double.infinity,
+                ),
+                child: SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      const _Name(),
+                      const SizedBox(height: 16),
+                      const _Description(),
+                      const SizedBox(height: 16),
+                      const _Price(),
+                      const SizedBox(height: 16),
+                      const _TimeLimit(),
+                      const SizedBox(height: 16),
+                      const _Picker(),
+                    ]),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

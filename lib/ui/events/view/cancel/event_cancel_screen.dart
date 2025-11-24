@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:event_repository/event_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/event/cancel/cancel_bloc.dart';
@@ -19,50 +20,14 @@ class EventCancelScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            leading: const AutoLeadingButton(),
-            title: Text(event.type.label),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Table #${event.tableNumber}',
-                        style: textTheme.headlineLarge,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Created at: ${formatTime(event.createdAt!.toLocal())}',
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Divider(),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-              child: Text(
-                'Event history',
-                style: textTheme.labelLarge,
+      body: kIsWeb
+          ? Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: _buildContent(textTheme),
               ),
-            ),
-          ),
-          const _Events(),
-        ],
-      ),
+            )
+          : _buildContent(textTheme),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -109,6 +74,53 @@ class EventCancelScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildContent(TextTheme textTheme) {
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          pinned: true,
+          leading: const AutoLeadingButton(),
+          title: Text(event.type.label),
+        ),
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Table #${event.tableNumber}',
+                      style: textTheme.headlineLarge,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Created at: ${formatTime(event.createdAt!.toLocal())}',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Divider(),
+            ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+            child: Text(
+              'Event history',
+              style: textTheme.labelLarge,
+            ),
+          ),
+        ),
+        const _Events(),
+      ],
     );
   }
 }

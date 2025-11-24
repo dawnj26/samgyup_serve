@@ -23,20 +23,25 @@ class TableDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: _Header(),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                child: _Header(),
+              ),
+              Divider(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                child: _CurrentReservationHeader(),
+              ),
+              Expanded(child: _Reservation()),
+            ],
           ),
-          Divider(),
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: _CurrentReservationHeader(),
-          ),
-          Expanded(child: _Reservation()),
-        ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_repository/package_repository.dart';
@@ -17,22 +18,29 @@ class FoodPackageScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: const Text('Packages'),
       ),
-      body: const CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: _Status(),
-            ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: kIsWeb ? 1200 : double.infinity,
           ),
-          SliverPadding(
-            padding: EdgeInsets.all(16),
-            sliver: _PackageList(),
+          child: const CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: _Status(),
+                ),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.all(16),
+                sliver: _PackageList(),
+              ),
+              SliverToBoxAdapter(
+                child: _Loader(),
+              ),
+            ],
           ),
-          SliverToBoxAdapter(
-            child: _Loader(),
-          ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

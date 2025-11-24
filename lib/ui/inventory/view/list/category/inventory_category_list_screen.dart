@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
@@ -40,69 +41,76 @@ class _InventoryCategoryListScreenState
     return BlocListener<InventoryDeleteBloc, InventoryDeleteState>(
       listener: _handleListener,
       child: Scaffold(
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            const CategoryListAppBar(),
-            BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
-              builder: (context, state) {
-                if (state is InventoryCategoryLoading ||
-                    state is InventoryCategoryInitial) {
-                  return const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: FilterChipSkeleton(),
-                    ),
-                  );
-                }
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: kIsWeb ? 1200 : double.infinity,
+            ),
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                const CategoryListAppBar(),
+                BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
+                  builder: (context, state) {
+                    if (state is InventoryCategoryLoading ||
+                        state is InventoryCategoryInitial) {
+                      return const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          child: FilterChipSkeleton(),
+                        ),
+                      );
+                    }
 
-                if (state.subcategories.isEmpty) {
-                  return const SliverToBoxAdapter();
-                }
-                return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: SubcategoryFilters(
-                      subcategories: state.subcategories,
-                      onSelectionChanged: (selected) {
-                        context.read<InventoryCategoryBloc>().add(
-                          InventoryCategoryEvent.subcategoryChanged(
-                            subcategories: selected,
+                    if (state.subcategories.isEmpty) {
+                      return const SliverToBoxAdapter();
+                    }
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: SubcategoryFilters(
+                          subcategories: state.subcategories,
+                          onSelectionChanged: (selected) {
+                            context.read<InventoryCategoryBloc>().add(
+                              InventoryCategoryEvent.subcategoryChanged(
+                                subcategories: selected,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
+                  builder: (context, state) {
+                    switch (state) {
+                      case InventoryCategoryLoaded(:final items):
+                        return InventoryItemList(
+                          key: const Key('inventory_category_list'),
+                          items: items,
+                          hasReachedMax: state.hasReachedMax,
+                          onEdit: _handleEdit,
+                          onTap: _handleTap,
+                        );
+                      case InventoryCategoryError(:final message):
+                        return SliverFillRemaining(
+                          child: Center(
+                            child: Text(message),
                           ),
                         );
-                      },
-                    ),
-                  ),
-                );
-              },
+                      default:
+                        return const SliverFillRemaining(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                    }
+                  },
+                ),
+              ],
             ),
-            BlocBuilder<InventoryCategoryBloc, InventoryCategoryState>(
-              builder: (context, state) {
-                switch (state) {
-                  case InventoryCategoryLoaded(:final items):
-                    return InventoryItemList(
-                      key: const Key('inventory_category_list'),
-                      items: items,
-                      hasReachedMax: state.hasReachedMax,
-                      onEdit: _handleEdit,
-                      onTap: _handleTap,
-                    );
-                  case InventoryCategoryError(:final message):
-                    return SliverFillRemaining(
-                      child: Center(
-                        child: Text(message),
-                      ),
-                    );
-                  default:
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                }
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );
