@@ -7,12 +7,7 @@ class ReservationToday extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ReservationTotalBloc(
-        reservationRepository: context.read(),
-      )..add(const ReservationTotalEvent.started()),
-      child: const Card(child: _Main()),
-    );
+    return const Card(child: _Main());
   }
 }
 
@@ -35,7 +30,7 @@ class _Main extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Reservations Today',
+                    'Customers Today',
                     style: textTheme.labelLarge,
                   ),
                   Expanded(
