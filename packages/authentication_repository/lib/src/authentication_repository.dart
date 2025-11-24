@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
@@ -57,12 +58,19 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      await _appwrite.account.deleteSession(sessionId: 'current');
+      if (await currentUser != User.empty()) {
+        await _appwrite.account.deleteSession(sessionId: 'current');
+      }
+
       await _appwrite.account.createEmailPasswordSession(
         email: email,
         password: password,
       );
     } on AppwriteException catch (e) {
+      log(
+        'AppwriteException: ${e.message}, Code: ${e.code}',
+        name: 'AuthenticationRepository',
+      );
       throw ResponseException.fromCode(e.code ?? -1);
     } on Exception catch (_) {
       throw const ResponseException('Unknown error occurred during login.');
