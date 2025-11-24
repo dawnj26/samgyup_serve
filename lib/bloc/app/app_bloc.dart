@@ -2,6 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:device_repository/device_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:samgyup_serve/data/models/device_data.dart';
 import 'package:settings_repository/settings_repository.dart';
@@ -175,13 +176,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     if (state.authStatus == AuthStatus.guest ||
-        state.authStatus == AuthStatus.authenticated) {
+        state.authStatus == AuthStatus.authenticated ||
+        kIsWeb) {
       return;
     }
 
     emit(state.copyWith(status: AppStatus.loading));
 
-    await _authenticationRepository.createGuestSession();
+    if (!kIsWeb) {
+      await _authenticationRepository.createGuestSession();
+    }
     final user = await _authenticationRepository.currentUser;
 
     var deviceStatus = DeviceStatus.unregistered;

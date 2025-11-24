@@ -1,7 +1,7 @@
 part of 'app_bloc.dart';
 
 @freezed
-class AppEvent with _$AppEvent {
+abstract class AppEvent with _$AppEvent {
   const factory AppEvent.started() = _Started;
   const factory AppEvent.checkDevice() = _CheckDevice;
   const factory AppEvent.logout() = _Logout;

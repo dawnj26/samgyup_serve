@@ -30,6 +30,7 @@ class InventoryRepository {
   }) async {
     try {
       final queries = [
+        Query.orderDesc(r'$createdAt'),
         Query.equal('parent', category.name),
         Query.limit(200),
       ];

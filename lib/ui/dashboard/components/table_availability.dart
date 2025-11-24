@@ -8,12 +8,7 @@ class TableAvailability extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TableAvailabilityBloc(
-        tableRepository: context.read(),
-      )..add(const TableAvailabilityEvent.started()),
-      child: const Card(child: _Main()),
-    );
+    return const Card(child: _Main());
   }
 }
 

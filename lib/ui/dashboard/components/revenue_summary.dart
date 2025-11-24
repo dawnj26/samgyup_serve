@@ -1,4 +1,3 @@
-import 'package:billing_repository/billing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/revenue/revenue_bloc.dart';
@@ -10,12 +9,7 @@ class RevenueSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RevenueBloc(
-        billingRepository: context.read<BillingRepository>(),
-      )..add(const RevenueEvent.started()),
-      child: const _Main(),
-    );
+    return const _Main();
   }
 }
 
@@ -32,7 +26,7 @@ class _Main extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Revenue',
+              'Sales',
               style: textTheme.labelLarge,
             ),
             ChartPeriodDropdown(

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
@@ -24,10 +25,11 @@ class SettingsRepository {
       final document = await _appwrite.databases.getRow(
         databaseId: _databaseId,
         tableId: _collectionId,
-        rowId: 'settings',
+        rowId: '6920045a0029bf6c6dec',
       );
       return Settings.fromJson(document.data);
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'SettingsRepository.fetchSettings');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }

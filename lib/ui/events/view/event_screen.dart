@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:event_repository/event_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order_repository/order_repository.dart';
@@ -19,7 +20,7 @@ class EventScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return InfiniteScrollLayout(
+    final content = InfiniteScrollLayout(
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
@@ -58,6 +59,17 @@ class EventScreen extends StatelessWidget {
         const SliverPadding(padding: EdgeInsets.all(16), sliver: _List()),
       ],
     );
+
+    if (kIsWeb) {
+      return Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: content,
+        ),
+      );
+    }
+
+    return content;
   }
 }
 

@@ -100,7 +100,6 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
             routes: (_) {
               if (appStatus == AppStatus.loading ||
                   appStatus == AppStatus.initial ||
-                  authStatus == AuthStatus.unauthenticated ||
                   authStatus == AuthStatus.initial) {
                 return [
                   LoadingRoute(message: 'Cooking things up...'),
@@ -114,6 +113,8 @@ class AppWrapperPage extends StatelessWidget implements AutoRouteWrapper {
               return [
                 if (authStatus == AuthStatus.guest)
                   home
+                else if (authStatus == AuthStatus.unauthenticated)
+                  const LoginRoute()
                 else if (authStatus == AuthStatus.unauthenticating)
                   LoadingRoute(message: 'Logging out...')
                 else

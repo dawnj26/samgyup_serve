@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
@@ -37,6 +38,7 @@ class DeviceRepository {
 
       return Device.fromJson(_appwrite.rowToJson(response));
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'DeviceRepository.addDevice');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
@@ -60,6 +62,7 @@ class DeviceRepository {
 
       return Device.fromJson(json);
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'DeviceRepository.getDevice');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
@@ -103,6 +106,7 @@ class DeviceRepository {
       final json = _appwrite.rowToJson(response.rows.first);
       return Device.fromJson(json);
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'DeviceRepository.getDeviceByTable');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
@@ -122,6 +126,7 @@ class DeviceRepository {
           .map((row) => Device.fromJson(_appwrite.rowToJson(row)))
           .toList();
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'DeviceRepository.getAllDevices');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }
@@ -138,6 +143,7 @@ class DeviceRepository {
 
       return Device.fromJson(_appwrite.rowToJson(response));
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'DeviceRepository.updateDevice');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }

@@ -38,28 +38,33 @@ class _SettingDetailsScreenState extends State<SettingDetailsScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (widget.fileId != null) ...[
-              AspectRatio(
-                aspectRatio: 1,
-                child: BucketImage(
-                  fileId: widget.fileId,
-                  loadingWidget: const CircularProgressIndicator(),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                if (widget.fileId != null) ...[
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child: BucketImage(
+                      fileId: widget.fileId,
+                      loadingWidget: const CircularProgressIndicator(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                ImagePicker(
+                  onChange: (image) {
+                    setState(() {
+                      _selectedImage = image;
+                    });
+                  },
                 ),
-              ),
-              const SizedBox(height: 16),
-            ],
-            ImagePicker(
-              onChange: (image) {
-                setState(() {
-                  _selectedImage = image;
-                });
-              },
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

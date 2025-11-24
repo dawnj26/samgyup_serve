@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/subcategory/action/subcategory_action_bloc.dart';
@@ -22,50 +23,57 @@ class SubcategoriesScreen extends StatelessWidget {
           },
         ),
       ),
-      body: BlocBuilder<SubcategoryBloc, SubcategoryState>(
-        builder: (context, state) {
-          if (state.status == LoadingStatus.loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (state.status == LoadingStatus.failure) {
-            return Center(
-              child: Text(state.errorMessage ?? 'Something went wrong'),
-            );
-          }
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: kIsWeb ? 1200 : double.infinity,
+          ),
+          child: BlocBuilder<SubcategoryBloc, SubcategoryState>(
+            builder: (context, state) {
+              if (state.status == LoadingStatus.loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state.status == LoadingStatus.failure) {
+                return Center(
+                  child: Text(state.errorMessage ?? 'Something went wrong'),
+                );
+              }
 
-          if (state.subcategories.isEmpty) {
-            return const Center(
-              child: Text('No subcategories found. Add a new one!'),
-            );
-          }
+              if (state.subcategories.isEmpty) {
+                return const Center(
+                  child: Text('No subcategories found. Add a new one!'),
+                );
+              }
 
-          return ListView.builder(
-            itemCount: state.subcategories.length,
-            itemBuilder: (context, index) {
-              final subcategory = state.subcategories[index];
-              return SubcategoryCard(
-                subcategory: subcategory,
-                onDelete: () async {
-                  final confirm = await showDeleteDialog(
-                    context: context,
-                    message:
-                        'Are you sure you want to delete the '
-                        'subcategory "${subcategory.name}"? This action '
-                        'cannot be undone.',
-                  );
+              return ListView.builder(
+                itemCount: state.subcategories.length,
+                itemBuilder: (context, index) {
+                  final subcategory = state.subcategories[index];
+                  return SubcategoryCard(
+                    subcategory: subcategory,
+                    onDelete: () async {
+                      final confirm = await showDeleteDialog(
+                        context: context,
+                        message:
+                            'Are you sure you want to delete the '
+                            'subcategory "${subcategory.name}"? This action '
+                            'cannot be undone.',
+                      );
 
-                  if (!context.mounted || !confirm) return;
+                      if (!context.mounted || !confirm) return;
 
-                  context.read<SubcategoryActionBloc>().add(
-                    SubcategoryActionEvent.removed(id: subcategory.id),
+                      context.read<SubcategoryActionBloc>().add(
+                        SubcategoryActionEvent.removed(id: subcategory.id),
+                      );
+                    },
                   );
                 },
               );
             },
-          );
-        },
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {

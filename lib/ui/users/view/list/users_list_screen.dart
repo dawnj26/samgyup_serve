@@ -40,61 +40,67 @@ class UsersListScreen extends StatelessWidget {
         label: const Text('Add User'),
         icon: const Icon(Icons.add),
       ),
-      body: BlocBuilder<UsersListBloc, UsersListState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case LoadingStatus.initial:
-            case LoadingStatus.loading:
-              return const Center(child: CircularProgressIndicator());
-            case LoadingStatus.success:
-              if (state.users.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.people_outline,
-                        size: 64,
-                        color: colorScheme.outline,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: BlocBuilder<UsersListBloc, UsersListState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case LoadingStatus.initial:
+                case LoadingStatus.loading:
+                  return const Center(child: CircularProgressIndicator());
+                case LoadingStatus.success:
+                  if (state.users.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64,
+                            color: colorScheme.outline,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No users yet',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: colorScheme.outline,
+                                ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No users yet',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: colorScheme.outline,
-                            ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: state.users.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final user = state.users[index];
-                  return UserCard(user: user);
-                },
-              );
-            case LoadingStatus.failure:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 48,
-                      color: colorScheme.error,
+                    );
+                  }
+                  return ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: state.users.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final user = state.users[index];
+                      return UserCard(user: user);
+                    },
+                  );
+                case LoadingStatus.failure:
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: colorScheme.error,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(state.errorMessage ?? 'An unknown error occurred'),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    Text(state.errorMessage ?? 'An unknown error occurred'),
-                  ],
-                ),
-              );
-          }
-        },
+                  );
+              }
+            },
+          ),
+        ),
       ),
     );
   }

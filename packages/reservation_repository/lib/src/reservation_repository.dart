@@ -165,6 +165,60 @@ class ReservationRepository {
     }
   }
 
+  /// Gets the reservation counts per hour
+  /// for a specific date (defaults to today).
+  ///
+  /// Returns a list of 24 integers representing counts for each hour (0-23)
+  /// in local time.
+  Future<List<int>> getHourlyReservationCounts([DateTime? date]) async {
+    try {
+      final targetDate = date ?? DateTime.now();
+      final startOfDay = DateTime(
+        targetDate.year,
+        targetDate.month,
+        targetDate.day,
+      );
+      final endOfDay = startOfDay
+          .add(const Duration(days: 1))
+          .subtract(const Duration(milliseconds: 1));
+
+      final result = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        queries: [
+          Query.greaterThanEqual(
+            'startTime',
+            startOfDay.toUtc().toIso8601String(),
+          ),
+          Query.lessThanEqual(
+            'startTime',
+            endOfDay.toUtc().toIso8601String(),
+          ),
+          Query.limit(1000),
+        ],
+      );
+
+      final hourlyCounts = List<int>.filled(24, 0);
+
+      for (final doc in result.rows) {
+        final data = _appwrite.rowToJson(doc);
+        final reservation = Reservation.fromJson(data);
+        final localHour = reservation.startTime.toLocal().hour;
+        if (localHour >= 0 && localHour < 24) {
+          hourlyCounts[localHour]++;
+        }
+      }
+
+      return hourlyCounts;
+    } on AppwriteException catch (e) {
+      log(
+        e.toString(),
+        name: 'ReservationRepository.getHourlyReservationCounts',
+      );
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
   /// Cancels a reservation by updating its status and end time.
   Future<Reservation> cancelReservation(
     String reservationId, {

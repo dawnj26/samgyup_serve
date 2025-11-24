@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:event_repository/event_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/event/actions/event_actions_bloc.dart';
@@ -21,46 +22,14 @@ class EventRefillScreen extends StatelessWidget {
         leading: const AutoLeadingButton(),
         title: Text(event.type.label),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Table #${event.tableNumber}',
-                        style: textTheme.headlineLarge,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Created at: ${formatTime(event.createdAt!.toLocal())}',
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Divider(),
-              ],
-            ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-              child: Text(
-                'Items',
-                style: textTheme.labelLarge,
+      body: kIsWeb
+          ? Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: _buildContent(textTheme),
               ),
-            ),
-          ),
-          const _List(),
-        ],
-      ),
+            )
+          : _buildContent(textTheme),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: FilledButton(
@@ -72,6 +41,48 @@ class EventRefillScreen extends StatelessWidget {
           child: const Text('Mark as done'),
         ),
       ),
+    );
+  }
+
+  Widget _buildContent(TextTheme textTheme) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Table #${event.tableNumber}',
+                      style: textTheme.headlineLarge,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Created at: ${formatTime(event.createdAt!.toLocal())}',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Divider(),
+            ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            child: Text(
+              'Items',
+              style: textTheme.labelLarge,
+            ),
+          ),
+        ),
+        const _List(),
+      ],
     );
   }
 }

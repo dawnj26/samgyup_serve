@@ -26,6 +26,7 @@ import 'package:samgyup_serve/ui/management/management.dart';
 import 'package:samgyup_serve/ui/menu/menu.dart';
 import 'package:samgyup_serve/ui/order/order.dart';
 import 'package:samgyup_serve/ui/payment/payment.dart';
+import 'package:samgyup_serve/ui/reports/reports.dart';
 import 'package:samgyup_serve/ui/reservation/reservation.dart';
 import 'package:samgyup_serve/ui/settings/settings.dart';
 import 'package:samgyup_serve/ui/table/table.dart';
@@ -183,6 +184,9 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(page: UserAddRoute.page),
                 AutoRoute(page: UserEditRoute.page),
               ],
+            ),
+            AutoRoute(
+              page: ReportsRoute.page,
             ),
           ],
         ),
