@@ -108,6 +108,7 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
       if (isEditMode) {
         await _authenticationRepository.updateUser(
           User(id: _user!.id, name: name.value, email: email.value),
+          password: password.value.isNotEmpty ? password.value : null,
         );
       } else {
         await _authenticationRepository.createUser(
