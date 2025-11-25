@@ -6,7 +6,7 @@ enum FoodPackageTabStatus { initial, loading, success, failure, refreshing }
 abstract class FoodPackageTabState with _$FoodPackageTabState {
   const factory FoodPackageTabState.initial({
     @Default(FoodPackageTabStatus.initial) FoodPackageTabStatus status,
-    @Default([]) List<FoodPackage> items,
+    @Default([]) List<FoodPackageFull> items,
     @Default(false) bool hasReachedMax,
     String? errorMessage,
   }) = _Initial;

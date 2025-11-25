@@ -7,10 +7,11 @@ abstract class OrderCartEvent with _$OrderCartEvent {
   const factory OrderCartEvent.removeMenuItem(
     CartItem<InventoryItem> cartItem,
   ) = _RemoveMenuItem;
-  const factory OrderCartEvent.addPackage(CartItem<FoodPackage> cartItem) =
+  const factory OrderCartEvent.addPackage(CartItem<FoodPackageItem> cartItem) =
       _AddPackage;
-  const factory OrderCartEvent.removePackage(CartItem<FoodPackage> cartItem) =
-      _RemovePackage;
+  const factory OrderCartEvent.removePackage(
+    CartItem<FoodPackageItem> cartItem,
+  ) = _RemovePackage;
   const factory OrderCartEvent.clearCart() = _ClearCart;
   const factory OrderCartEvent.updateMenuItemQuantity(int index, int quantity) =
       _UpdateMenuItemQuantity;

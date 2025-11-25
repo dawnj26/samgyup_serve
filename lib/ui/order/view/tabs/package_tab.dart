@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
@@ -20,6 +21,7 @@ class PackageTab extends StatelessWidget {
     return BlocProvider(
       create: (context) => FoodPackageTabBloc(
         packageRepository: context.read<PackageRepository>(),
+        inventoryRepository: context.read<InventoryRepository>(),
       )..add(const FoodPackageTabEvent.started()),
       child: const _Tab(),
     );
@@ -141,7 +143,7 @@ class _BottomLoader extends StatelessWidget {
 class _Item extends StatelessWidget {
   const _Item({required this.package});
 
-  final FoodPackage package;
+  final FoodPackageFull package;
 
   @override
   Widget build(BuildContext context) {
@@ -149,11 +151,18 @@ class _Item extends StatelessWidget {
       (OrderCartBloc bloc) => bloc.state.packages,
     );
     final cartIndex = cartItems.indexWhere((e) => e.item.id == package.id);
+    final unavailableItems = package.items
+        .where((item) => item.isAvailable)
+        .toList();
+
+    final isAvailable = unavailableItems.length == package.items.length;
 
     if (cartIndex == -1) {
       return PackageTile(
-        onTap: () => _handlePackageTap(context, package),
+        onTap: () =>
+            _handlePackageTap(context, package, unavailableItems, isAvailable),
         package: package,
+        isAvailable: isAvailable,
       );
     }
 
@@ -164,7 +173,14 @@ class _Item extends StatelessWidget {
       alignment: Alignment.bottomRight,
       offset: const Offset(-16, -12),
       child: PackageTile(
-        onTap: () => _handlePackageTap(context, package, cart.quantity),
+        isAvailable: isAvailable,
+        onTap: () => _handlePackageTap(
+          context,
+          package,
+          unavailableItems,
+          isAvailable,
+          cart.quantity,
+        ),
         package: package,
       ),
     );
@@ -172,9 +188,13 @@ class _Item extends StatelessWidget {
 
   Future<void> _handlePackageTap(
     BuildContext context,
-    FoodPackage package, [
+    FoodPackageFull package,
+    List<InventoryItem> unavailableItems,
+    bool isAvailable, [
     int? initialValue,
   ]) async {
+    if (!isAvailable) return;
+
     final tableSize = context.read<AppBloc>().state.deviceData!.table!.capacity;
     final timeLimit = package.timeLimit / 60;
 
@@ -186,7 +206,9 @@ class _Item extends StatelessWidget {
       price: package.price,
       maxQuantity: tableSize,
       imageId: package.imageFilename,
-      content: PackageMenuList(menuIds: package.menuIds),
+      content: PackageMenuList(
+        menus: package.items,
+      ),
       onTap: () => context.read<ActivityBloc>().add(
         const ActivityEvent.started(),
       ),
@@ -194,10 +216,36 @@ class _Item extends StatelessWidget {
 
     if (!context.mounted || quantity == null) return;
 
+    var confirm = true;
+
+    if (unavailableItems.isNotEmpty) {
+      final itemNames = unavailableItems.map((e) => e.name).join(', ');
+      confirm = await showConfirmationDialog(
+        context: context,
+        title: 'Unavailable Items',
+        message:
+            'The following items are unavailable: $itemNames. '
+            'Do you want to proceed adding the package to the cart?',
+      );
+    }
+
+    if (!context.mounted || !confirm) return;
+
+    final p = FoodPackageItem(
+      id: package.id,
+      name: package.name,
+      description: package.description,
+      price: package.price,
+      timeLimit: package.timeLimit,
+      imageFilename: package.imageFilename,
+      menuIds: package.menuIds,
+      createdAt: package.createdAt,
+    );
+
     context.read<OrderCartBloc>().add(
       OrderCartEvent.addPackage(
         CartItem(
-          item: package,
+          item: p,
           quantity: quantity,
         ),
       ),

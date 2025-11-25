@@ -186,7 +186,7 @@ class _PackageItems extends StatelessWidget {
 
   Future<void> _handleDeleteItem(
     BuildContext context,
-    CartItem<FoodPackage> item,
+    CartItem<FoodPackageItem> item,
   ) async {
     final confirm = await showConfirmationDialog(
       context: context,

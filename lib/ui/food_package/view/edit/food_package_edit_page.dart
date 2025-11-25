@@ -12,8 +12,8 @@ import 'package:samgyup_serve/ui/food_package/view/edit/food_package_edit_screen
 class FoodPackageEditPage extends StatelessWidget implements AutoRouteWrapper {
   const FoodPackageEditPage({required this.package, super.key, this.onChanged});
 
-  final FoodPackage package;
-  final void Function(FoodPackage package)? onChanged;
+  final FoodPackageItem package;
+  final void Function(FoodPackageItem package)? onChanged;
 
   @override
   Widget build(BuildContext context) {

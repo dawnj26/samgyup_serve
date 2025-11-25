@@ -18,7 +18,7 @@ class FoodPackageEditBloc
     extends Bloc<FoodPackageEditEvent, FoodPackageEditState> {
   FoodPackageEditBloc({
     required PackageRepository packageRepository,
-    required FoodPackage package,
+    required FoodPackageItem package,
   }) : _repo = packageRepository,
        _package = package,
        super(
@@ -38,7 +38,7 @@ class FoodPackageEditBloc
   }
 
   final PackageRepository _repo;
-  final FoodPackage _package;
+  final FoodPackageItem _package;
 
   void _onNameChanged(
     _NameChanged event,
