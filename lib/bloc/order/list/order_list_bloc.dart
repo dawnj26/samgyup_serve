@@ -43,9 +43,11 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
 
       final packages = await _packageRepo.fetchPackages(
         ids: packageOrders.map((order) => order.cartId).toSet().toList(),
+        includeDeleted: true,
       );
       final menuItems = await _inventoryRepo.fetchItems(
         itemIds: menuOrders.map((order) => order.cartId).toSet().toList(),
+        includeDeleted: true,
       );
 
       final packageCart = packageOrders.map(
@@ -53,13 +55,14 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
           final package = packages.firstWhere(
             (pkg) => pkg.id == order.cartId,
           );
-          return CartItem<FoodPackage>(
+          return CartItem<FoodPackageItem>(
             id: order.id,
             item: package,
             quantity: order.quantity,
           );
         },
       ).toList();
+
       final menuItemCart = menuOrders.map(
         (order) {
           final menuItem = menuItems.firstWhere(

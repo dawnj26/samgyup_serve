@@ -5,6 +5,6 @@ abstract class OrderEvent with _$OrderEvent {
   const factory OrderEvent.started({
     required String tableId,
     required List<CartItem<InventoryItem>> inventoryItems,
-    required List<CartItem<FoodPackage>> packages,
+    required List<CartItem<FoodPackageItem>> packages,
   }) = _Started;
 }
