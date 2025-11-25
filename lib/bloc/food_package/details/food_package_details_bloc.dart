@@ -13,7 +13,7 @@ class FoodPackageDetailsBloc
   FoodPackageDetailsBloc({
     required PackageRepository packageRepository,
     required InventoryRepository inventoryRepository,
-    required FoodPackage package,
+    required FoodPackageItem package,
   }) : _packageRepository = packageRepository,
        _inventoryRepository = inventoryRepository,
        super(FoodPackageDetailsInitial(package: package)) {

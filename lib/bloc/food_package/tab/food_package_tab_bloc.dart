@@ -5,9 +5,7 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
 part 'food_package_tab_event.dart';
-
 part 'food_package_tab_state.dart';
-
 part 'food_package_tab_bloc.freezed.dart';
 
 class FoodPackageTabBloc
@@ -37,28 +35,10 @@ class FoodPackageTabBloc
         limit: _pageSize,
       );
 
-      final iItems = <FoodPackageFull>[];
-
-      for (final i in items) {
-        final item = await _inventoryRepository.fetchItems(itemIds: i.menuIds);
-
-        iItems.add(
-          FoodPackageFull(
-            name: i.name,
-            description: i.description,
-            price: i.price,
-            timeLimit: i.timeLimit,
-            createdAt: i.createdAt,
-            menuIds: i.menuIds,
-            items: item,
-          ),
-        );
-      }
-
       emit(
         state.copyWith(
           status: FoodPackageTabStatus.success,
-          items: items,
+          items: await _mapToFoodPackageFullList(items),
           hasReachedMax: items.length < _pageSize,
         ),
       );
@@ -86,10 +66,11 @@ class FoodPackageTabBloc
     try {
       emit(state.copyWith(status: FoodPackageTabStatus.loading));
       final items = await _repo.fetchPackages(limit: _pageSize);
+
       emit(
         state.copyWith(
           status: FoodPackageTabStatus.success,
-          items: items,
+          items: await _mapToFoodPackageFullList(items),
           hasReachedMax: items.length < _pageSize,
         ),
       );
@@ -123,10 +104,12 @@ class FoodPackageTabBloc
         limit: _pageSize,
         cursor: state.items.isNotEmpty ? state.items.last.id : null,
       );
+
       emit(
         state.copyWith(
           status: FoodPackageTabStatus.success,
-          items: List.of(state.items)..addAll(items),
+          items: List.of(state.items)
+            ..addAll(await _mapToFoodPackageFullList(items)),
           hasReachedMax: items.isEmpty,
         ),
       );
@@ -145,5 +128,33 @@ class FoodPackageTabBloc
         ),
       );
     }
+  }
+
+  Future<List<FoodPackageFull>> _mapToFoodPackageFullList(
+    List<FoodPackage> packages,
+  ) async {
+    final iItems = <FoodPackageFull>[];
+
+    for (final i in packages) {
+      final item = await _inventoryRepository.fetchItems(
+        itemIds: i.menuIds,
+        includeBatches: true,
+      );
+
+      iItems.add(
+        FoodPackageFull(
+          id: i.id,
+          name: i.name,
+          description: i.description,
+          price: i.price,
+          timeLimit: i.timeLimit,
+          createdAt: i.createdAt,
+          menuIds: i.menuIds,
+          items: item,
+        ),
+      );
+    }
+
+    return iItems;
   }
 }

@@ -35,7 +35,7 @@ abstract class FoodPackageEditState with _$FoodPackageEditState {
     required Description description,
     required Price price,
     required TimeLimit timeLimit,
-    required FoodPackage package,
+    required FoodPackageItem package,
     File? image,
   }) = FoodPackageEditSuccess;
   const factory FoodPackageEditState.failure({
