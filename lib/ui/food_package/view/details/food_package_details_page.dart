@@ -19,7 +19,7 @@ class FoodPackageDetailsPage extends StatelessWidget
     this.onChange,
   });
 
-  final FoodPackage package;
+  final FoodPackageItem package;
   final void Function()? onChange;
 
   @override
