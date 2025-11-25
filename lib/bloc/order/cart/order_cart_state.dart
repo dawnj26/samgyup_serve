@@ -7,7 +7,7 @@ abstract class OrderCartState with _$OrderCartState {
   const factory OrderCartState.initial({
     @Default(OrderCartStatus.initial) OrderCartStatus status,
     @Default([]) List<CartItem<InventoryItem>> menuItems,
-    @Default([]) List<CartItem<FoodPackage>> packages,
+    @Default([]) List<CartItem<FoodPackageItem>> packages,
     @Default(0) double totalPrice,
   }) = _Initial;
 }

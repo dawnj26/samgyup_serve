@@ -27,7 +27,7 @@ abstract class FoodPackageCreateState with _$FoodPackageCreateState {
   }) = FoodPackageCreateCreating;
 
   const factory FoodPackageCreateState.success({
-    required FoodPackage foodPackage,
+    required FoodPackageItem foodPackage,
     @Default(Name.pure()) Name name,
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,

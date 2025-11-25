@@ -55,7 +55,10 @@ class FoodPackageScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _handleCreate(BuildContext context, FoodPackage package) async {
+  Future<void> _handleCreate(
+    BuildContext context,
+    FoodPackageItem package,
+  ) async {
     await context.router.replace(
       FoodPackageDetailsRoute(
         package: package,
@@ -145,7 +148,7 @@ class _PackageList extends StatelessWidget {
     );
   }
 
-  Future<void> _handleTap(BuildContext context, FoodPackage package) async {
+  Future<void> _handleTap(BuildContext context, FoodPackageItem package) async {
     await context.router.push(
       FoodPackageDetailsRoute(
         package: package,

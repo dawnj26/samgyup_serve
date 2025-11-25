@@ -12,7 +12,7 @@ class FoodPackageCreatePage extends StatelessWidget
     implements AutoRouteWrapper {
   const FoodPackageCreatePage({super.key, this.onCreated});
 
-  final void Function(FoodPackage package)? onCreated;
+  final void Function(FoodPackageItem package)? onCreated;
 
   @override
   Widget build(BuildContext context) {

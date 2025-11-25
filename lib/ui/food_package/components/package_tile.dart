@@ -10,9 +10,11 @@ class PackageTile extends StatelessWidget {
     super.key,
     this.onTap,
     this.onLongPress,
+    this.isAvailable,
   });
 
   final FoodPackage package;
+  final bool? isAvailable;
   final void Function()? onTap;
   final void Function()? onLongPress;
 
@@ -41,7 +43,9 @@ class PackageTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    package.name,
+                    isAvailable == null || isAvailable!
+                        ? package.name
+                        : '${package.name} (Unavailable)',
                     style: textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
