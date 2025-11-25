@@ -64,6 +64,7 @@ abstract class FoodPackage with _$FoodPackage {
     /// List of menu item IDs included in this package
     required List<String> menuIds,
 
+    /// List of detailed inventory items included in this package
     required List<InventoryItem> items,
 
     /// Unique identifier for the package, defaults to empty string
