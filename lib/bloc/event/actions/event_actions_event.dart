@@ -3,9 +3,9 @@ part of 'event_actions_bloc.dart';
 @freezed
 abstract class EventActionsEvent with _$EventActionsEvent {
   const factory EventActionsEvent.completed({
-    required String eventId,
+    required Event event,
   }) = _Completed;
   const factory EventActionsEvent.canceled({
-    required String eventId,
+    required Event event,
   }) = _Canceled;
 }
