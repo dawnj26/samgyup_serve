@@ -131,7 +131,7 @@ class _Item extends StatelessWidget {
       name: item.name,
       description: item.description ?? 'No description available.',
       price: item.price,
-      maxQuantity: this.quantity,
+      maxQuantity: item.getAvailableStock().toInt(),
       imageId: item.imageId,
       initialValue: initialValue,
     );
