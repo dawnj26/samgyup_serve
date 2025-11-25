@@ -17,6 +17,8 @@ dependencies:
     sdk: flutter
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
+  log_repository:
+    path: ../log_repository
   order_repository:
     path: ../order_repository
 

@@ -19,6 +19,8 @@ dependencies:
   inventory_repository:
     path: ../inventory_repository
   json_annotation: ^4.9.0
+  log_repository:
+    path: ../log_repository
 
 dev_dependencies:
   build_runner: ^2.5.4
