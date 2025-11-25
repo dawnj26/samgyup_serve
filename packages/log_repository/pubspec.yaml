@@ -1,5 +1,5 @@
-name: package_repository
-description: A Very Good Project created by Very Good CLI.
+name: log_repository
+description: Log repositor
 version: 0.1.0+1
 publish_to: none
 
@@ -16,8 +16,6 @@ dependencies:
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0
-  inventory_repository:
-    path: ../inventory_repository
   json_annotation: ^4.9.0
 
 dev_dependencies:
