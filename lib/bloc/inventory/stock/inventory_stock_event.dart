@@ -4,7 +4,7 @@ part of 'inventory_stock_bloc.dart';
 class InventoryStockEvent with _$InventoryStockEvent {
   const factory InventoryStockEvent.submitted({
     required String userId,
-}) = _Submitted;
+  }) = _Submitted;
   const factory InventoryStockEvent.stockChanged({
     required String stock,
   }) = _StockChanged;

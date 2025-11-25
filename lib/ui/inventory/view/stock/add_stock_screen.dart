@@ -42,9 +42,7 @@ class AddStockScreen extends StatelessWidget {
                       final userId = context.read<AppBloc>().state.user!.id;
 
                       context.read<InventoryStockBloc>().add(
-                         InventoryStockEvent.submitted(
-                           userId: userId
-                         ),
+                        InventoryStockEvent.submitted(userId: userId),
                       );
                     },
                     child: const Text('Add'),
