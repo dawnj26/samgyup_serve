@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
@@ -52,6 +53,7 @@ class PackageRepository {
     int limit = 20,
     List<String>? ids,
     String? cursor,
+    bool includeDeleted = false,
   }) async {
     try {
       if (ids != null && ids.isEmpty) {
@@ -65,6 +67,7 @@ class PackageRepository {
           Query.limit(limit),
           if (cursor != null) Query.cursorAfter(cursor),
           if (ids != null && ids.isNotEmpty) Query.equal(r'$id', ids),
+          if (!includeDeleted) Query.isNull('deletedAt'),
           Query.orderDesc(r'$createdAt'),
         ],
       );
@@ -78,7 +81,10 @@ class PackageRepository {
   }
 
   /// Fetches a specific food package by its ID.
-  Future<FoodPackageItem> fetchPackage(String id) async {
+  Future<FoodPackageItem> fetchPackage(
+    String id, {
+    bool includeDeleted = false,
+  }) async {
     try {
       final row = await _appwrite.databases.getRow(
         databaseId: _projectInfo.databaseId,
@@ -88,6 +94,7 @@ class PackageRepository {
 
       return FoodPackageItem.fromJson(_appwrite.rowToJson(row));
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'PackageRepository.fetchPackage');
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
@@ -100,6 +107,7 @@ class PackageRepository {
         tableId: _projectInfo.packageCollectionId,
         queries: [
           Query.limit(500),
+          Query.isNull('deletedAt'),
         ],
       );
 
@@ -131,10 +139,13 @@ class PackageRepository {
   /// Deletes a food package by its ID.
   Future<void> deletePackage(String id) async {
     try {
-      await _appwrite.databases.deleteRow(
+      await _appwrite.databases.updateRow(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.packageCollectionId,
         rowId: id,
+        data: {
+          'deletedAt': DateTime.now().toUtc().toIso8601String(),
+        },
       );
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
@@ -156,11 +167,13 @@ class PackageRepository {
         imageFilename: imageFileName,
       );
 
+      final json = p.toJson()..remove('runtimeType');
+
       final row = await _appwrite.databases.updateRow(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.packageCollectionId,
         rowId: p.id,
-        data: p.toJson(),
+        data: json,
       );
       return FoodPackageItem.fromJson(_appwrite.rowToJson(row));
     } on AppwriteException catch (e) {

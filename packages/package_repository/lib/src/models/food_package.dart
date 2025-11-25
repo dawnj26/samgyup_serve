@@ -75,6 +75,7 @@ abstract class FoodPackage with _$FoodPackage {
 
     /// When this package was last modified
     DateTime? updatedAt,
+    DateTime? deletedAt,
   }) = FoodPackageFull;
 
   /// Creates a [FoodPackage] from a JSON map.

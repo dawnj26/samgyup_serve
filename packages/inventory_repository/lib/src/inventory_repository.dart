@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:isolate';
 import 'dart:math' as math;
 
@@ -133,6 +134,7 @@ class InventoryRepository {
     List<String>? itemIds,
     List<String>? subcategoryIds,
     bool includeBatches = false,
+    bool includeDeleted = false,
   }) async {
     try {
       String? statusQuery;
@@ -151,6 +153,7 @@ class InventoryRepository {
         if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
         if (subcategoryIds != null && subcategoryIds.isNotEmpty)
           Query.equal('tagId', subcategoryIds),
+        if (!includeDeleted) Query.isNull('deletedAt'),
         Query.limit(limit ?? 500),
       ];
 
@@ -178,6 +181,7 @@ class InventoryRepository {
 
       return items;
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'InventoryRepository.fetchItems');
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
       throw Exception('Failed to fetch inventory items: $e');
@@ -256,6 +260,7 @@ class InventoryRepository {
 
   /// Fetches a list of expired inventory items.
   Future<List<InventoryItem>> fetchExpiredItems({
+    bool includeDeleted = false,
     String? lastDocumentId,
     int? limit,
   }) async {
@@ -266,6 +271,7 @@ class InventoryRepository {
           'expirationDate',
           DateTime.now().toIso8601String(),
         ),
+        if (!includeDeleted) Query.isNull('deletedAt'),
         Query.limit(limit ?? 2000),
       ];
       final response = await _appwrite.databases.listRows(
@@ -305,9 +311,8 @@ class InventoryRepository {
 
       return InventoryItem.fromJson(json);
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'InventoryRepository.syncItem');
       throw ResponseException.fromCode(e.code ?? 500);
-    } on Exception catch (e) {
-      throw Exception('Failed to sync inventory item: $e');
     }
   }
 
@@ -341,6 +346,7 @@ class InventoryRepository {
   Future<InventoryItem> fetchItemById(
     String itemId, {
     bool includeBatch = false,
+    bool includeDeleted = false,
   }) async {
     try {
       final document = await _appwrite.databases.getRow(
@@ -350,7 +356,6 @@ class InventoryRepository {
       );
 
       final json = _appwrite.rowToJson(document);
-
       final item = InventoryItem.fromJson(json);
 
       if (includeBatch) {
@@ -363,8 +368,10 @@ class InventoryRepository {
 
       return item;
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'InventoryRepository.fetchItemById');
       throw ResponseException.fromCode(e.code ?? 500);
     } on Exception catch (e) {
+      log(e.toString(), name: 'InventoryRepository.fetchItemById');
       throw Exception('Failed to fetch inventory item: $e');
     }
   }
@@ -422,10 +429,13 @@ class InventoryRepository {
   /// Deletes an inventory item by its ID.
   Future<void> deleteItem(String itemId) async {
     try {
-      await _appwrite.databases.deleteRow(
+      await _appwrite.databases.updateRow(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.inventoryCollectionId,
         rowId: itemId,
+        data: {
+          'deletedAt': DateTime.now().toUtc().toIso8601String(),
+        },
       );
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
@@ -504,9 +514,8 @@ class InventoryRepository {
       final item = await fetchItemById(itemId, includeBatch: true);
       await syncItem(item);
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'InventoryRepository.decrementStock');
       throw ResponseException.fromCode(e.code ?? 500);
-    } on Exception catch (e) {
-      throw Exception('Failed to decrement stock: $e');
     }
   }
 

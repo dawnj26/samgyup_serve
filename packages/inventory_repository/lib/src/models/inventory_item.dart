@@ -29,6 +29,7 @@ abstract class InventoryItem with _$InventoryItem {
     String? tagId,
     String? imageId,
     DateTime? updatedAt,
+    DateTime? deletedAt,
     String? description,
   }) = _InventoryItem;
 
