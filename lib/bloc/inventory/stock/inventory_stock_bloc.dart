@@ -86,6 +86,7 @@ class InventoryStockBloc
         quantity: parsedQuantity,
         baseQuantity: parsedQuantity,
         expirationDate: state.expiration,
+        userId: event.userId,
       );
 
       final newBatch = await _inventoryRepository.addBatch(batch);

@@ -37,7 +37,7 @@ class FoodPackageDetailsPage extends StatelessWidget
         onPopInvokedWithResult: (didPop, _) {
           final isDirty = context.read<FoodPackageDetailsBloc>().state.isDirty;
 
-          if (didPop && isDirty) {
+          if (isDirty) {
             onChange?.call();
           }
         },

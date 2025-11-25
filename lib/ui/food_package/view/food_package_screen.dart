@@ -113,7 +113,7 @@ class _PackageList extends StatelessWidget {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                crossAxisCount: 1,
+                crossAxisCount: kIsWeb ? 2 : 1,
               ),
               itemCount: packages.length,
               itemBuilder: (ctx, i) {
