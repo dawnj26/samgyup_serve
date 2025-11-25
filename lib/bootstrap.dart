@@ -36,6 +36,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       settingsCollectionId: '68df7c51000abfa3ec62',
       batchCollectionId: '690078f2000499afefa5',
       subcategoryCollectionId: '6912be97000025ebf6cb',
+      logCollectionId: '69251cda000b6f93712e',
     ),
   );
 

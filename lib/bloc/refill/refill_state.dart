@@ -6,7 +6,7 @@ enum RefillStatus { initial, loading, success, failure }
 abstract class RefillState with _$RefillState {
   const factory RefillState.initial({
     @Default(RefillStatus.initial) RefillStatus status,
-    @Default([]) List<CartItem<MenuItem>> orders,
+    @Default([]) List<CartItem<InventoryItem>> orders,
     String? errorMessage,
   }) = _Initial;
 }

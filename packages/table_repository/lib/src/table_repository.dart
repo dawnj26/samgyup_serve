@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:table_repository/src/enums/enums.dart';
@@ -112,6 +114,7 @@ class TableRepository {
 
       return Table.fromJson(_appwrite.rowToJson(response));
     } on AppwriteException catch (e) {
+      log(e.toString(), name: 'TableRepository.updateTableStatus');
       throw ResponseException.fromCode(e.code ?? 500);
     }
   }

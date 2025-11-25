@@ -152,10 +152,10 @@ class _Item extends StatelessWidget {
     );
     final cartIndex = cartItems.indexWhere((e) => e.item.id == package.id);
     final unavailableItems = package.items
-        .where((item) => item.isAvailable)
+        .where((item) => !item.isAvailable)
         .toList();
 
-    final isAvailable = unavailableItems.length == package.items.length;
+    final isAvailable = unavailableItems.length != package.items.length;
 
     if (cartIndex == -1) {
       return PackageTile(

@@ -30,7 +30,7 @@ class EventPaymentPage extends StatelessWidget implements AutoRouteWrapper {
         if (state.paymentStatus == PaymentStatus.completed) {
           context.router.pop();
           context.read<EventActionsBloc>().add(
-            EventActionsEvent.completed(eventId: event.id),
+            EventActionsEvent.completed(event: event),
           );
         }
 

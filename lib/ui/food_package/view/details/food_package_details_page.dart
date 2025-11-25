@@ -105,9 +105,7 @@ class FoodPackageDetailsPage extends StatelessWidget
       case FoodPackageDeleteSuccess():
         context.router.pop();
         goToPreviousRoute(context);
-        context.read<FoodPackageDetailsBloc>().add(
-          const FoodPackageDetailsEvent.changed(),
-        );
+        onChange?.call();
       case FoodPackageDeleteFailure(:final errorMessage):
         context.router.pop();
         showErrorDialog(

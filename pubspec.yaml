@@ -32,6 +32,7 @@ dependencies:
   inventory_repository: any
   json_annotation: ^4.9.0
   just_audio: ^0.10.5
+  log_repository: any
   menu_repository: any
   order_repository: any
   package_repository: any

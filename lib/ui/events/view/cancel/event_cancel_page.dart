@@ -30,7 +30,7 @@ class EventCancelPage extends StatelessWidget implements AutoRouteWrapper {
         if (state.status == CancelStatus.success) {
           context.router.pop();
           context.read<EventActionsBloc>().add(
-            EventActionsEvent.completed(eventId: event.id),
+            EventActionsEvent.completed(event: event),
           );
         }
 

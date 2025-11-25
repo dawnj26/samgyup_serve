@@ -80,10 +80,14 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
       await _reservationRepository.updateReservation(
         reservation: reservation.copyWith(status: ReservationStatus.completed),
       );
-      await _tableRepository.updateTableStatus(
-        tableId: reservation.tableId,
-        status: TableStatus.available,
-      );
+      try {
+        await _tableRepository.updateTableStatus(
+          tableId: reservation.tableId,
+          status: TableStatus.available,
+        );
+      } on Exception {
+        //
+      }
 
       emit(
         state.copyWith(

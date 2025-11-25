@@ -32,6 +32,11 @@ class BatchDeleteBloc extends Bloc<BatchDeleteEvent, BatchDeleteState> {
       );
 
       await _inventoryRepository.syncItem(item);
+      // await LogRepository.instance.logAction(
+      //   action: LogAction.delete,
+      //   message: 'Batch deleted from ${item.name}',
+      //   resourceId: event.batch.id,
+      // );
 
       emit(state.copyWith(status: LoadingStatus.success));
     } on ResponseException catch (e) {

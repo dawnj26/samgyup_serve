@@ -24,7 +24,13 @@ class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
   ) async {
     emit(state.copyWith(status: EventActionsStatus.loading));
     try {
-      await _repo.completeEvent(event.eventId);
+      await _repo.completeEvent(event.event.id);
+      // await LogRepository.instance.logAction(
+      //   action: LogAction.update,
+      //   message: 'Event marked as completed',
+      //   resourceId: event.event.id,
+      //   details: 'Event ID: ${event.event.id}',
+      // );
       emit(
         state.copyWith(
           status: EventActionsStatus.success,
@@ -54,7 +60,7 @@ class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
   ) async {
     emit(state.copyWith(status: EventActionsStatus.loading));
     try {
-      await _repo.cancelEvent(event.eventId);
+      await _repo.cancelEvent(event.event.id);
       emit(
         state.copyWith(
           status: EventActionsStatus.success,

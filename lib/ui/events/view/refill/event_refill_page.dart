@@ -4,7 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:event_repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/refill/refill_bloc.dart';
 import 'package:samgyup_serve/data/models/refill_data.dart';
 import 'package:samgyup_serve/ui/events/view/refill/event_refill_screen.dart';
@@ -25,7 +25,7 @@ class EventRefillPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => MenuRepository(),
+      create: (context) => InventoryRepository(),
       child: BlocProvider(
         create: (context) {
           final payload = jsonDecode(event.payload) as Map<String, dynamic>;
@@ -37,7 +37,7 @@ class EventRefillPage extends StatelessWidget implements AutoRouteWrapper {
               .toList();
 
           return RefillBloc(
-            menuRepository: context.read(),
+            inventoryRepository: context.read(),
           )..add(
             RefillEvent.started(data: refillData),
           );
