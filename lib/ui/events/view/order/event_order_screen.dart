@@ -58,7 +58,7 @@ class EventOrderScreen extends StatelessWidget {
         child: FilledButton(
           onPressed: () {
             context.read<EventActionsBloc>().add(
-              EventActionsEvent.completed(eventId: event.id),
+              EventActionsEvent.completed(event: event),
             );
           },
           child: const Text('Mark as done'),
