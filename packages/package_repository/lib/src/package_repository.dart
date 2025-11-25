@@ -18,8 +18,8 @@ class PackageRepository {
   ProjectInfo get _projectInfo => _appwrite.getProjectInfo();
 
   /// Creates a new food package.
-  Future<FoodPackage> createPackage({
-    required FoodPackage package,
+  Future<FoodPackageItem> createPackage({
+    required FoodPackageItem package,
     File? image,
   }) async {
     try {
@@ -32,20 +32,23 @@ class PackageRepository {
         id: ID.unique(),
         imageFilename: imageFileName,
       );
+
+      final json = p.toJson()..remove('runtimeType');
+
       final row = await _appwrite.databases.createRow(
         databaseId: _projectInfo.databaseId,
         tableId: _projectInfo.packageCollectionId,
         rowId: p.id,
-        data: p.toJson(),
+        data: json,
       );
-      return FoodPackage.fromJson(_appwrite.rowToJson(row));
+      return FoodPackageItem.fromJson(_appwrite.rowToJson(row));
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
   }
 
   /// Fetches a list of food packages with pagination support.
-  Future<List<FoodPackage>> fetchPackages({
+  Future<List<FoodPackageItem>> fetchPackages({
     int limit = 20,
     List<String>? ids,
     String? cursor,
@@ -67,7 +70,7 @@ class PackageRepository {
       );
 
       return result.rows
-          .map((row) => FoodPackage.fromJson(_appwrite.rowToJson(row)))
+          .map((row) => FoodPackageItem.fromJson(_appwrite.rowToJson(row)))
           .toList();
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
@@ -75,7 +78,7 @@ class PackageRepository {
   }
 
   /// Fetches a specific food package by its ID.
-  Future<FoodPackage> fetchPackage(String id) async {
+  Future<FoodPackageItem> fetchPackage(String id) async {
     try {
       final row = await _appwrite.databases.getRow(
         databaseId: _projectInfo.databaseId,
@@ -83,7 +86,7 @@ class PackageRepository {
         rowId: id,
       );
 
-      return FoodPackage.fromJson(_appwrite.rowToJson(row));
+      return FoodPackageItem.fromJson(_appwrite.rowToJson(row));
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
@@ -139,8 +142,8 @@ class PackageRepository {
   }
 
   /// Updates an existing food package.
-  Future<FoodPackage> updatePackage({
-    required FoodPackage package,
+  Future<FoodPackageItem> updatePackage({
+    required FoodPackageItem package,
     File? image,
   }) async {
     try {
@@ -159,7 +162,7 @@ class PackageRepository {
         rowId: p.id,
         data: p.toJson(),
       );
-      return FoodPackage.fromJson(_appwrite.rowToJson(row));
+      return FoodPackageItem.fromJson(_appwrite.rowToJson(row));
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? -1);
     }
