@@ -151,6 +151,7 @@ class FoodPackageTabBloc
           createdAt: i.createdAt,
           menuIds: i.menuIds,
           items: item,
+          imageFilename: i.imageFilename,
         ),
       );
     }
