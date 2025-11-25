@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/stock/inventory_stock_bloc.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
@@ -38,8 +39,10 @@ class AddStockScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: FilledButton(
                     onPressed: () {
+                      final userId = context.read<AppBloc>().state.user!.id;
+
                       context.read<InventoryStockBloc>().add(
-                        const InventoryStockEvent.submitted(),
+                        InventoryStockEvent.submitted(userId: userId),
                       );
                     },
                     child: const Text('Add'),

@@ -15,44 +15,43 @@ class FoodPackageCreateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormScaffold(
-      body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            pinned: true,
-            expandedHeight: 200,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text('Create Package'),
-            ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: kIsWeb ? 1200 : double.infinity,
           ),
-          SliverToBoxAdapter(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: kIsWeb ? 1200 : double.infinity,
-                ),
-                child: SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      const _Name(),
-                      const SizedBox(height: 16),
-                      const _Description(),
-                      const SizedBox(height: 16),
-                      const _Price(),
-                      const SizedBox(height: 16),
-                      const _TimeLimit(),
-                      const SizedBox(height: 16),
-                      const _Picker(),
-                    ]),
-                  ),
+          child: CustomScrollView(
+            slivers: [
+              const SliverAppBar(
+                pinned: true,
+                expandedHeight: 200,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text('Create Package'),
                 ),
               ),
-            ),
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const _Name(),
+                    const SizedBox(height: 16),
+                    const _Description(),
+                    const SizedBox(height: 16),
+                    const _Price(),
+                    const SizedBox(height: 16),
+                    const _TimeLimit(),
+                    const SizedBox(height: 16),
+                    const _Picker(),
+                    const SizedBox(height: 16),
+                    SavePackageButton(
+                      onPressed: () => _handleSave(context),
+                    ),
+                  ]),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      bottomNavigationBar: SavePackageButton(
-        onPressed: () => _handleSave(context),
+        ),
       ),
     );
   }
