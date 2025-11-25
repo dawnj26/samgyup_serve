@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
@@ -20,6 +21,7 @@ class PackageTab extends StatelessWidget {
     return BlocProvider(
       create: (context) => FoodPackageTabBloc(
         packageRepository: context.read<PackageRepository>(),
+        inventoryRepository: context.read<InventoryRepository>(),
       )..add(const FoodPackageTabEvent.started()),
       child: const _Tab(),
     );

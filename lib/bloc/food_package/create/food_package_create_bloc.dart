@@ -11,7 +11,9 @@ import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/shared/form/time_limit.dart';
 
 part 'food_package_create_bloc.freezed.dart';
+
 part 'food_package_create_event.dart';
+
 part 'food_package_create_state.dart';
 
 class FoodPackageCreateBloc
@@ -148,7 +150,7 @@ class FoodPackageCreateBloc
     );
 
     try {
-      final package = FoodPackage(
+      final package = FoodPackageItem(
         name: name.value,
         description: description.value,
         price: double.parse(price.value),
