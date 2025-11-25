@@ -45,7 +45,7 @@ class OrderRepository {
   }
 
   /// Creates a new package order from the given cart item.
-  Future<Order> createPackageOrder(CartItem<FoodPackage> cart) async {
+  Future<Order> createPackageOrder(CartItem<FoodPackageItem> cart) async {
     try {
       final order = Order(
         id: ID.unique(),
@@ -70,17 +70,19 @@ class OrderRepository {
   /// Creates orders for all menu and package items in the cart.
   Future<List<Order>> createOrders({
     required List<CartItem<InventoryItem>> inventoryItems,
-    required List<CartItem<FoodPackage>> packageItems,
+    required List<CartItem<FoodPackageItem>> packageItems,
   }) async {
     final orders = <Order>[];
     for (final cart in inventoryItems) {
       final order = await createMenuOrder(cart);
       orders.add(order);
     }
+
     for (final cart in packageItems) {
       final order = await createPackageOrder(cart);
       orders.add(order);
     }
+
     return orders;
   }
 
