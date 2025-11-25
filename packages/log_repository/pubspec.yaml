@@ -13,6 +13,8 @@ dependencies:
   appwrite: ^20.0.0
   appwrite_repository:
     path: ../appwrite_repository
+  authentication_repository:
+    path: ../authentication_repository
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0
