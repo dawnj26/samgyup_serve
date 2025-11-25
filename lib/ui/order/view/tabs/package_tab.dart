@@ -143,7 +143,7 @@ class _BottomLoader extends StatelessWidget {
 class _Item extends StatelessWidget {
   const _Item({required this.package});
 
-  final FoodPackage package;
+  final FoodPackageFull package;
 
   @override
   Widget build(BuildContext context) {
