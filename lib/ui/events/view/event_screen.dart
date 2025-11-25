@@ -160,7 +160,7 @@ class _List extends StatelessWidget {
                   onMoreTap: (option) => _handleMoreOption(
                     context,
                     option,
-                    event.id,
+                    event,
                   ),
                 );
               },
@@ -180,7 +180,7 @@ class _List extends StatelessWidget {
   Future<void> _handleMoreOption(
     BuildContext context,
     EventMoreOption option,
-    String eventId,
+    Event event,
   ) async {
     switch (option) {
       case EventMoreOption.markAsDone:
@@ -193,7 +193,7 @@ class _List extends StatelessWidget {
         if (!context.mounted || !confirmed) return;
 
         context.read<EventActionsBloc>().add(
-          EventActionsEvent.completed(eventId: eventId),
+          EventActionsEvent.completed(event: event),
         );
     }
   }
