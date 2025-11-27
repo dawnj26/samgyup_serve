@@ -22,6 +22,7 @@ import 'package:samgyup_serve/ui/food_package/food_package.dart';
 import 'package:samgyup_serve/ui/home/home.dart';
 import 'package:samgyup_serve/ui/inventory/inventory.dart';
 import 'package:samgyup_serve/ui/login/login.dart';
+import 'package:samgyup_serve/ui/logs/logs.dart';
 import 'package:samgyup_serve/ui/management/management.dart';
 import 'package:samgyup_serve/ui/menu/menu.dart';
 import 'package:samgyup_serve/ui/order/order.dart';
@@ -187,6 +188,12 @@ class AppRouter extends RootStackRouter {
             ),
             AutoRoute(
               page: ReportsRoute.page,
+            ),
+            AutoRoute(
+              page: LogsRoute.page,
+              children: [
+                AutoRoute(page: LogsListRoute.page, initial: true),
+              ],
             ),
           ],
         ),
