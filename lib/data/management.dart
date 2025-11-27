@@ -34,4 +34,9 @@ final List<ManagementItem> managementItems = [
     icon: Icons.people,
     route: UsersRoute(),
   ),
+  const ManagementItem(
+    title: 'Logs',
+    icon: Icons.history_rounded,
+    route: LogsRoute(),
+  ),
 ];
