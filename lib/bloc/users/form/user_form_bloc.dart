@@ -4,6 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/form/email.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
 import 'package:samgyup_serve/shared/form/password_input.dart';
@@ -110,13 +111,25 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
           User(id: _user!.id, name: name.value, email: email.value),
           password: password.value.isNotEmpty ? password.value : null,
         );
-      } else {
-        await _authenticationRepository.createUser(
-          email: email.value,
-          password: password.value,
-          name: name.value,
+
+        await LogRepository.instance.logAction(
+          action: LogAction.update,
+          message: 'User updated: ${_user.id}',
+          resourceId: _user.id,
+          details:
+              'User ID: ${_user.id}, Name: ${name.value}, '
+              'Email: ${email.value}',
         );
+
+        emit(state.copyWith(status: FormzSubmissionStatus.success));
+        return;
       }
+      await _authenticationRepository.createUser(
+        email: email.value,
+        password: password.value,
+        name: name.value,
+      );
+
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on Exception catch (e) {
       emit(

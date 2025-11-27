@@ -1,6 +1,7 @@
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:package_repository/package_repository.dart';
 
 part 'food_package_delete_event.dart';
@@ -25,7 +26,16 @@ class FoodPackageDeleteBloc
     emit(const FoodPackageDeleteDeleting());
 
     try {
+      final p = await _repo.fetchPackage(event.packageId);
       await _repo.deletePackage(event.packageId);
+
+      await LogRepository.instance.logAction(
+        action: LogAction.delete,
+        message: 'Food package deleted: ${p.name}',
+        resourceId: event.packageId,
+        details: 'Food package ID: ${p.id}, Name: ${p.name}',
+      );
+
       emit(const FoodPackageDeleteSuccess());
     } on ResponseException catch (e) {
       emit(FoodPackageDeleteFailure(errorMessage: e.message));

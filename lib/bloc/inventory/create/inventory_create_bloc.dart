@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
@@ -150,6 +151,17 @@ class InventoryCreateBloc
           tagId: state.subcategory?.id,
         ),
       );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.create,
+        message: 'Inventory item created: ${name.value}',
+        resourceId: name.value,
+        details:
+            'Inventory Item Name: ${name.value}, '
+            'Category: ${category.value}, '
+            'Subcategory: ${state.subcategory?.name ?? 'N/A'}',
+      );
+
       emit(
         const InventoryCreateSuccess(),
       );

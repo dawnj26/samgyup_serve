@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 import 'package:settings_repository/settings_repository.dart';
 
@@ -46,6 +47,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       await _settingsRepository.updateSettings(updatedSettings);
 
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Business name updated to ${event.name}',
+        resourceId: updatedSettings.id,
+      );
+
       emit(
         state.copyWith(
           status: LoadingStatus.success,
@@ -86,6 +93,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         state.settings.copyWith(
           businessLogo: fileId,
         ),
+      );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Business logo updated',
+        resourceId: settings.id,
       );
 
       emit(
@@ -131,6 +144,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       );
 
       await _settingsRepository.updateSettings(settings);
+
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Business QR code updated',
+        resourceId: settings.id,
+      );
 
       emit(
         state.copyWith(

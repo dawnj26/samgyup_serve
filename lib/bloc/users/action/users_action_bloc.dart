@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 
 part 'users_action_event.dart';
@@ -26,6 +27,13 @@ class UsersActionBloc extends Bloc<UsersActionEvent, UsersActionState> {
     emit(state.copyWith(status: LoadingStatus.loading));
     try {
       await _authenticationRepository.deleteUser(event.userId);
+
+      await LogRepository.instance.logAction(
+        action: LogAction.delete,
+        message: 'User deleted: ${event.userId}',
+        resourceId: event.userId,
+      );
+
       emit(
         state.copyWith(
           status: LoadingStatus.success,

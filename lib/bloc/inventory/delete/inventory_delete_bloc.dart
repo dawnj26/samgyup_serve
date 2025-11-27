@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:log_repository/log_repository.dart';
 
 part 'inventory_delete_event.dart';
 part 'inventory_delete_state.dart';
@@ -33,6 +34,14 @@ class InventoryDeleteBloc
     try {
       await _inventoryRepository.deleteItem(event.item.id);
       await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      await LogRepository.instance.logAction(
+        action: LogAction.delete,
+        message: 'Inventory item deleted: ${item.name}',
+        resourceId: item.id,
+        details: 'Inventory Item ID: ${item.id}, Name: ${item.name}',
+      );
+
       emit(
         InventoryDeleteSuccess(
           item: item,

@@ -1,6 +1,7 @@
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
 
 part 'cancel_event.dart';
@@ -25,7 +26,18 @@ class CancelBloc extends Bloc<CancelEvent, CancelState> {
     emit(state.copyWith(status: CancelStatus.accepting));
 
     try {
+      final reservation = await _reservationRepository.getReservationById(
+        event.reservationId,
+      );
       await _reservationRepository.cancelReservation(event.reservationId);
+
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Reservation canceled',
+        resourceId: reservation.id,
+        details: 'Reservation ID: ${reservation.id}',
+      );
+
       emit(
         state.copyWith(
           status: CancelStatus.success,

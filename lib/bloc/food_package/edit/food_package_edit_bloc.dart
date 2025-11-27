@@ -4,6 +4,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
@@ -180,6 +181,15 @@ class FoodPackageEditBloc
       final updatedPackage = await _repo.updatePackage(
         package: p,
         image: state.image,
+      );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Food package updated: ${updatedPackage.name}',
+        resourceId: updatedPackage.id,
+        details:
+            'Food package ID: ${updatedPackage.id}, '
+            'Name: ${updatedPackage.name}',
       );
 
       emit(
