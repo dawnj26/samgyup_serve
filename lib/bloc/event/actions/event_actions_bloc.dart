@@ -2,6 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:event_repository/event_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 
 part 'event_actions_event.dart';
 part 'event_actions_state.dart';
@@ -25,12 +26,12 @@ class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
     emit(state.copyWith(status: EventActionsStatus.loading));
     try {
       await _repo.completeEvent(event.event.id);
-      // await LogRepository.instance.logAction(
-      //   action: LogAction.update,
-      //   message: 'Event marked as completed',
-      //   resourceId: event.event.id,
-      //   details: 'Event ID: ${event.event.id}',
-      // );
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Event marked as completed',
+        resourceId: event.event.id,
+        details: 'Event ID: ${event.event.id}, ${event.event.type.label}',
+      );
       emit(
         state.copyWith(
           status: EventActionsStatus.success,
@@ -61,6 +62,12 @@ class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
     emit(state.copyWith(status: EventActionsStatus.loading));
     try {
       await _repo.cancelEvent(event.event.id);
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Event canceled',
+        resourceId: event.event.id,
+        details: 'Event ID: ${event.event.id}, ${event.event.type.label}',
+      );
       emit(
         state.copyWith(
           status: EventActionsStatus.success,

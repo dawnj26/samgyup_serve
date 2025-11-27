@@ -2,6 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:billing_repository/billing_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart';
 import 'package:table_repository/table_repository.dart';
 
@@ -88,6 +89,13 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
       } on Exception {
         //
       }
+
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Invoice marked as paid: ${invoice.id}',
+        resourceId: invoice.id,
+        details: 'Invoice ID: ${invoice.id}, Amount: ${invoice.totalAmount}',
+      );
 
       emit(
         state.copyWith(

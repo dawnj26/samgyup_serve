@@ -4,6 +4,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 
 part 'subcategory_action_event.dart';
@@ -34,9 +35,15 @@ class SubcategoryActionBloc
     );
 
     try {
-      await _inventoryRepository.addSubcategory(
+      final sub = await _inventoryRepository.addSubcategory(
         category: event.category,
         subcategory: event.name,
+      );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.create,
+        message: 'Subcategory ${event.name} created',
+        resourceId: sub.id,
       );
 
       emit(
@@ -66,8 +73,20 @@ class SubcategoryActionBloc
     );
 
     try {
+      final sub = await _inventoryRepository.fetchSubcategory(id: event.id);
       await _inventoryRepository.removeSubcategory(
         subcategoryId: event.id,
+      );
+
+      final message = sub != null
+          ? 'Subcategory ${sub.name} removed'
+          : 'Subcategory removed';
+
+      await LogRepository.instance.logAction(
+        action: LogAction.delete,
+        message: message,
+        resourceId: event.id,
+        details: sub != null ? 'Subcategory ID: ${sub.id}' : null,
       );
 
       emit(

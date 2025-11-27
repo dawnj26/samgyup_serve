@@ -72,13 +72,40 @@ class LogRepository {
       details: details,
     );
 
+    final json = log.toJson()..remove('runtimeType');
+
     try {
       await _appwrite.databases.createRow(
         databaseId: _databaseId,
         tableId: _logCollectionId,
         rowId: log.id,
-        data: log.toJson(),
+        data: json,
       );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Fetches logs with pagination.
+  Future<List<LogBase>> fetchLogs({
+    int limit = 10,
+    String? lastId,
+    LogAction? action,
+  }) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _databaseId,
+        tableId: _logCollectionId,
+        queries: [
+          Query.limit(limit),
+          if (lastId != null) Query.cursorAfter(lastId),
+          if (action != null) Query.equal('action', action.name),
+        ],
+      );
+
+      return response.rows
+          .map((e) => LogBase.fromJson(e.data))
+          .toList(growable: false);
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }

@@ -2,6 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/form/table/capacity.dart';
 import 'package:samgyup_serve/shared/form/table/table_number.dart';
 import 'package:samgyup_serve/shared/form/table/table_status_input.dart';
@@ -103,6 +104,17 @@ class TableFormBloc extends Bloc<TableFormEvent, TableFormState> {
         }
 
         await _repo.updateTable(updatedTable);
+
+        await LogRepository.instance.logAction(
+          action: LogAction.update,
+          message: 'Table ${updatedTable.number} updated',
+          resourceId: updatedTable.id,
+          details:
+              'Table ID: ${updatedTable.id}, Number: ${updatedTable.number}, '
+              'Capacity: ${updatedTable.capacity}, '
+              'Status: ${updatedTable.status.label}',
+        );
+
         return emit(state.copyWith(status: FormzSubmissionStatus.success));
       }
 

@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 import 'package:samgyup_serve/shared/form/inventory/stock.dart';
 
@@ -91,6 +92,18 @@ class InventoryStockBloc
       final newBatch = await _inventoryRepository.addBatch(batch);
       final updatedItem = state.item.copyWith(
         stockBatches: [...state.item.stockBatches, newBatch],
+      );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.create,
+        message:
+            'Stock batch added: ${newBatch.quantity} '
+            'units to ${updatedItem.name}',
+        resourceId: newBatch.id,
+        details:
+            'Stock Batch ID: ${newBatch.id}, Item ID: ${updatedItem.id}, '
+            'Quantity: ${newBatch.quantity}, '
+            'Expiration Date: ${newBatch.expirationDate}',
       );
 
       await _inventoryRepository.syncItem(updatedItem);

@@ -2,6 +2,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 
 part 'batch_delete_event.dart';
@@ -32,11 +33,11 @@ class BatchDeleteBloc extends Bloc<BatchDeleteEvent, BatchDeleteState> {
       );
 
       await _inventoryRepository.syncItem(item);
-      // await LogRepository.instance.logAction(
-      //   action: LogAction.delete,
-      //   message: 'Batch deleted from ${item.name}',
-      //   resourceId: event.batch.id,
-      // );
+      await LogRepository.instance.logAction(
+        action: LogAction.delete,
+        message: 'Batch deleted from ${item.name}',
+        resourceId: event.batch.id,
+      );
 
       emit(state.copyWith(status: LoadingStatus.success));
     } on ResponseException catch (e) {

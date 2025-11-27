@@ -5,6 +5,7 @@ import 'package:billing_repository/billing_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 import 'package:samgyup_serve/shared/formatter.dart';
 
@@ -91,6 +92,16 @@ class PaymentFormBloc extends Bloc<PaymentFormEvent, PaymentFormState> {
         method: state.method,
         transactionRef: state.transactionRef,
       );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.create,
+        message: 'Payment created: ${payment.id}',
+        resourceId: payment.id,
+        details:
+            'Payment ID: ${payment.id}, Amount: ${payment.amount}, '
+            'Method: ${payment.method}',
+      );
+
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.success,

@@ -1,50 +1,52 @@
 import 'dart:async';
 
+import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 
-part 'users_action_event.dart';
-part 'users_action_state.dart';
-part 'users_action_bloc.freezed.dart';
+part 'user_event.dart';
+part 'user_state.dart';
+part 'user_bloc.freezed.dart';
 
-class UsersActionBloc extends Bloc<UsersActionEvent, UsersActionState> {
-  UsersActionBloc({
+class UserBloc extends Bloc<UserEvent, UserState> {
+  UserBloc({
     required AuthenticationRepository authenticationRepository,
   }) : _authenticationRepository = authenticationRepository,
-       super(const _Initial()) {
-    on<_Deleted>(_onDeleted);
+       super(
+         _Initial(
+           user: User.empty(),
+         ),
+       ) {
+    on<_Started>(_onStarted);
   }
 
   final AuthenticationRepository _authenticationRepository;
 
-  FutureOr<void> _onDeleted(
-    _Deleted event,
-    Emitter<UsersActionState> emit,
-  ) async {
+  FutureOr<void> _onStarted(_Started event, Emitter<UserState> emit) async {
     emit(state.copyWith(status: LoadingStatus.loading));
-    try {
-      await _authenticationRepository.deleteUser(event.userId);
 
-      await LogRepository.instance.logAction(
-        action: LogAction.delete,
-        message: 'User deleted: ${event.userId}',
-        resourceId: event.userId,
-      );
+    try {
+      final user = await _authenticationRepository.fetchUserById(event.userId);
 
       emit(
         state.copyWith(
+          user: user,
           status: LoadingStatus.success,
-          action: UserAction.delete,
+        ),
+      );
+    } on ResponseException catch (e) {
+      emit(
+        state.copyWith(
+          status: LoadingStatus.failure,
+          errorMessage: e.message,
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           status: LoadingStatus.failure,
-          action: UserAction.delete,
           errorMessage: e.toString(),
         ),
       );

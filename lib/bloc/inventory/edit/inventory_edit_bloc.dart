@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/category.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
@@ -166,6 +167,16 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       }
 
       await _inventoryRepository.updateItem(updatedItem);
+
+      await LogRepository.instance.logAction(
+        action: LogAction.update,
+        message: 'Inventory item updated: ${updatedItem.name}',
+        resourceId: updatedItem.id,
+        details:
+            'Inventory Item ID: ${updatedItem.id}, '
+            'Name: ${updatedItem.name}',
+      );
+
       emit(
         InventoryEditSuccess(item: updatedItem),
       );

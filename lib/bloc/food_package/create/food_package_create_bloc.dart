@@ -4,6 +4,7 @@ import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:log_repository/log_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
@@ -161,6 +162,13 @@ class FoodPackageCreateBloc
       final newPackage = await _packageRepository.createPackage(
         package: package,
         image: state.image,
+      );
+
+      await LogRepository.instance.logAction(
+        action: LogAction.create,
+        message: 'Food package created: ${newPackage.name}',
+        resourceId: newPackage.id,
+        details: 'Food package ID: ${newPackage.id}, Name: ${newPackage.name}',
       );
 
       emit(FoodPackageCreateSuccess(foodPackage: newPackage));
