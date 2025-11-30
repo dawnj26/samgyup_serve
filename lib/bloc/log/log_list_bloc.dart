@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:log_repository/log_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
+import 'package:samgyup_serve/shared/stream.dart';
 
 part 'log_list_event.dart';
 part 'log_list_state.dart';
@@ -15,7 +16,10 @@ class LogListBloc extends Bloc<LogListEvent, LogListState> {
     : _logRepository = LogRepository.instance,
       super(const _Initial()) {
     on<_Started>(_onStarted);
-    on<_LoadMore>(_onLoadMore);
+    on<_LoadMore>(
+      _onLoadMore,
+      transformer: throttleDroppable(const Duration(milliseconds: 500)),
+    );
     on<_Refresh>(_onRefresh);
     on<_FilterByAction>(_onFilterByAction);
   }
