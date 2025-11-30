@@ -98,6 +98,7 @@ class LogRepository {
         tableId: _logCollectionId,
         queries: [
           Query.limit(limit),
+          Query.orderDesc(r'$createdAt'),
           if (lastId != null) Query.cursorAfter(lastId),
           if (action != null) Query.equal('action', action.name),
         ],
