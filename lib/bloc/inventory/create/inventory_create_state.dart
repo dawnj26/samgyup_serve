@@ -10,6 +10,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,
     @Default(<Subcategory>[]) List<Subcategory> subcategories,
+    @Default(PerHead.pure()) PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateInitial;
@@ -22,6 +23,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required Description description,
     required Price price,
     required List<Subcategory> subcategories,
+    required PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateDirty;
@@ -34,6 +36,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required Description description,
     required Price price,
     required List<Subcategory> subcategories,
+    required PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateLoading;
@@ -46,6 +49,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,
     @Default(<Subcategory>[]) List<Subcategory> subcategories,
+    @Default(PerHead.pure()) PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateSuccess;
@@ -59,6 +63,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required String message,
     required Price price,
     required List<Subcategory> subcategories,
+    required PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateFailure;
@@ -71,6 +76,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required Description description,
     required Price price,
     required List<Subcategory> subcategories,
+    required PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateLoadingSubcategories;
@@ -83,6 +89,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required Description description,
     required Price price,
     required List<Subcategory> subcategories,
+    required PerHead perHead,
     Subcategory? subcategory,
     File? imageFile,
   }) = InventoryCreateLoadedSubcategories;

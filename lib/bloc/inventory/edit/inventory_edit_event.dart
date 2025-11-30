@@ -29,4 +29,7 @@ class InventoryEditEvent with _$InventoryEditEvent {
   const factory InventoryEditEvent.imageChanged({
     required File? imageFile,
   }) = _ImageChanged;
+  const factory InventoryEditEvent.perHeadChanged({
+    required String perHead,
+  }) = _PerHeadChanged;
 }
