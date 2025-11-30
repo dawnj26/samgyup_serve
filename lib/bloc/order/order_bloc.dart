@@ -52,9 +52,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       for (final menu in event.inventoryItems) {
         if (!menu.item.isAvailable) continue;
 
+        final decrementCount = menu.quantity * menu.item.perHead;
+
         await _inventoryRepository.decrementStock(
           itemId: menu.item.id,
-          quantity: menu.quantity.toDouble(),
+          quantity: decrementCount,
         );
       }
 

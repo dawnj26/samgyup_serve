@@ -111,6 +111,7 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
 
               return HomeBloc(
                 eventRepo: context.read<EventRepository>(),
+                billingRepo: context.read<BillingRepository>(),
                 reservationRepo: context.read<ReservationRepository>(),
               )..add(HomeEvent.started(table: table));
             },

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:billing_repository/billing_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:event_repository/event_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -15,9 +16,11 @@ part 'home_bloc.freezed.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required ReservationRepository reservationRepo,
+    required BillingRepository billingRepo,
     required EventRepository eventRepo,
   }) : _reservationRepo = reservationRepo,
        _eventRepo = eventRepo,
+       _billingRepo = billingRepo,
        super(const _Initial()) {
     on<_StatusChanged>(_onStatusChanged);
     on<_Started>(_onStarted);
@@ -34,6 +37,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final ReservationRepository _reservationRepo;
   final EventRepository _eventRepo;
+  final BillingRepository _billingRepo;
 
   Future<void> _onReservationCreated(
     _ReservationCreated event,
@@ -89,13 +93,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         event.table!.number,
       );
 
-      if (invoiceId != null) {
+      if (invoiceId == null) {
+        emit(
+          state.copyWith(
+            status: HomeStatus.success,
+            session: SessionStatus.reservation,
+            reservationId: reservation.id,
+          ),
+        );
+        return;
+      }
+
+      final invoice = await _billingRepo.getInvoiceById(invoiceId);
+
+      if (invoice.status == InvoiceStatus.pending) {
         emit(
           state.copyWith(
             status: HomeStatus.success,
             session: SessionStatus.payment,
             reservationId: reservation.id,
-            invoiceId: invoiceId,
+            invoiceId: invoice.id,
           ),
         );
         return;
@@ -104,8 +121,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         state.copyWith(
           status: HomeStatus.success,
-          session: SessionStatus.reservation,
-          reservationId: reservation.id,
+          session: SessionStatus.initial,
         ),
       );
     } on ResponseException catch (e) {

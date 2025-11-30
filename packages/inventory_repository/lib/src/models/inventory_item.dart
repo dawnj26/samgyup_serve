@@ -24,6 +24,7 @@ abstract class InventoryItem with _$InventoryItem {
     required double lowStockThreshold,
     required DateTime createdAt,
     required double price,
+    required double perHead,
     @Default(InventoryItemStatus.inStock) InventoryItemStatus status,
     @JsonKey(includeToJson: false) @Default([]) List<StockBatch> stockBatches,
     String? tagId,
@@ -46,6 +47,7 @@ abstract class InventoryItem with _$InventoryItem {
     category: InventoryCategory.unknown,
     lowStockThreshold: 0,
     createdAt: DateTime.now(),
+    perHead: 1,
   );
 
   const InventoryItem._();
@@ -59,13 +61,33 @@ abstract class InventoryItem with _$InventoryItem {
   /// Returns the available stock quantity, excluding expired batches.
   double getAvailableStock() {
     final now = DateTime.now();
-    return stockBatches
+    final total = stockBatches
         .where(
           (batch) =>
               batch.expirationDate == null ||
               batch.expirationDate!.isAfter(now),
         )
-        .fold(0, (sum, batch) => sum + batch.quantity);
+        .fold<double>(0, (sum, batch) => sum + batch.quantity);
+    final head = perHead == 0 ? 1 : perHead;
+
+    if (head > total) {
+      return 0;
+    }
+
+    return total / head;
+  }
+
+  /// Returns the total available quantity without dividing by perHead.
+  double getTotalAvailableQuantity() {
+    final now = DateTime.now();
+    final total = stockBatches
+        .where(
+          (batch) =>
+              batch.expirationDate == null ||
+              batch.expirationDate!.isAfter(now),
+        )
+        .fold<double>(0, (sum, batch) => sum + batch.quantity);
+    return total;
   }
 
   /// Indicates whether the item is currently available for use or sale.

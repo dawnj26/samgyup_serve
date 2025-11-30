@@ -14,6 +14,7 @@ export 'item_more_option_button.dart';
 export 'item_tile.dart';
 export 'low_stock_threshold_input.dart';
 export 'measurement_unit_input.dart';
+export 'per_head_input.dart';
 export 'save_button.dart';
 export 'status_list_app_bar.dart';
 export 'status_section.dart';

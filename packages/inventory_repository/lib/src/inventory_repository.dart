@@ -589,7 +589,7 @@ class InventoryRepository {
   }
 
   InventoryItemStatus _getInventoryStatus(InventoryItem item) {
-    final totalStock = item.getAvailableStock();
+    final totalStock = item.getTotalAvailableQuantity();
 
     if (totalStock <= 0) {
       return InventoryItemStatus.outOfStock;

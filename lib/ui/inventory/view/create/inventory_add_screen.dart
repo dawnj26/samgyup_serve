@@ -78,6 +78,8 @@ class _InventoryAddScreenState extends State<InventoryAddScreen> {
                           const SizedBox(height: 16),
                           const _Price(),
                           const SizedBox(height: 16),
+                          const _PerHead(),
+                          const SizedBox(height: 16),
                           const _Image(),
                           const SizedBox(height: 16),
                           const AddButton(),
@@ -91,6 +93,26 @@ class _InventoryAddScreenState extends State<InventoryAddScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PerHead extends StatelessWidget {
+  const _PerHead();
+
+  @override
+  Widget build(BuildContext context) {
+    final perHead = context.select(
+      (InventoryCreateBloc bloc) => bloc.state.perHead,
+    );
+
+    return PerHeadInput(
+      errorText: perHead.displayError?.message,
+      onChanged: (value) {
+        context.read<InventoryCreateBloc>().add(
+          InventoryCreateEvent.perHeadChanged(perHead: value),
+        );
+      },
     );
   }
 }

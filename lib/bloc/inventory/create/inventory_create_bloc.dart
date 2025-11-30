@@ -12,6 +12,7 @@ import 'package:samgyup_serve/shared/form/inventory/description.dart';
 import 'package:samgyup_serve/shared/form/inventory/low_stock_threshold.dart';
 import 'package:samgyup_serve/shared/form/inventory/measurement_unit.dart';
 import 'package:samgyup_serve/shared/form/name.dart';
+import 'package:samgyup_serve/shared/form/per_head.dart';
 import 'package:samgyup_serve/shared/form/price.dart';
 
 part 'inventory_create_bloc.freezed.dart';
@@ -33,6 +34,7 @@ class InventoryCreateBloc
     on<_PriceChanged>(_onPriceChanged);
     on<_ImageChanged>(_onImageChanged);
     on<_SubcategoryChanged>(_onSubcategoryChanged);
+    on<_PerHeadChanged>(_onPerHeadChanged);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -43,6 +45,7 @@ class InventoryCreateBloc
   ) {
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
@@ -63,6 +66,7 @@ class InventoryCreateBloc
     final price = Price.dirty(event.price);
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
@@ -90,7 +94,7 @@ class InventoryCreateBloc
       state.measurementUnit.value,
     );
     final price = Price.dirty(state.price.value);
-
+    final perHead = PerHead.dirty(state.perHead.value);
     final isValid = Formz.validate([
       name,
       description,
@@ -98,11 +102,13 @@ class InventoryCreateBloc
       lowStockThreshold,
       measurementUnit,
       price,
+      perHead,
     ]);
 
     if (!isValid) {
       emit(
         InventoryCreateDirty(
+          perHead: perHead,
           subcategory: state.subcategory,
           subcategories: state.subcategories,
           measurementUnit: measurementUnit,
@@ -119,6 +125,7 @@ class InventoryCreateBloc
 
     emit(
       InventoryCreateLoading(
+        perHead: perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: measurementUnit,
@@ -139,6 +146,7 @@ class InventoryCreateBloc
 
       await _inventoryRepository.addItem(
         InventoryItem(
+          perHead: double.parse(perHead.value),
           id: '',
           name: name.value,
           description: description.value,
@@ -168,6 +176,7 @@ class InventoryCreateBloc
     } on Exception catch (e) {
       emit(
         InventoryCreateFailure(
+          perHead: perHead,
           subcategory: state.subcategory,
           subcategories: state.subcategories,
           measurementUnit: measurementUnit,
@@ -187,6 +196,7 @@ class InventoryCreateBloc
     final name = Name.dirty(event.name);
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
@@ -207,6 +217,7 @@ class InventoryCreateBloc
     final description = Description.dirty(event.description);
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
@@ -228,6 +239,7 @@ class InventoryCreateBloc
 
     emit(
       InventoryCreateLoadingSubcategories(
+        perHead: state.perHead,
         subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
         category: category,
@@ -246,6 +258,7 @@ class InventoryCreateBloc
 
       emit(
         InventoryCreateLoadedSubcategories(
+          perHead: state.perHead,
           subcategories: subcategories,
           measurementUnit: state.measurementUnit,
           category: category,
@@ -259,6 +272,7 @@ class InventoryCreateBloc
     } on ResponseException catch (e) {
       emit(
         InventoryCreateFailure(
+          perHead: state.perHead,
           message: e.message,
           subcategories: state.subcategories,
           measurementUnit: state.measurementUnit,
@@ -274,6 +288,7 @@ class InventoryCreateBloc
     } on Exception catch (e) {
       emit(
         InventoryCreateFailure(
+          perHead: state.perHead,
           message: e.toString(),
           subcategories: state.subcategories,
           measurementUnit: state.measurementUnit,
@@ -298,6 +313,7 @@ class InventoryCreateBloc
     );
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: state.measurementUnit,
@@ -318,6 +334,7 @@ class InventoryCreateBloc
     final measurementUnit = MeasurementUnitInput.dirty(event.measurementUnit);
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         subcategory: state.subcategory,
         subcategories: state.subcategories,
         measurementUnit: measurementUnit,
@@ -337,6 +354,7 @@ class InventoryCreateBloc
   ) {
     emit(
       InventoryCreateDirty(
+        perHead: state.perHead,
         measurementUnit: state.measurementUnit,
         category: state.category,
         name: state.name,
@@ -345,6 +363,27 @@ class InventoryCreateBloc
         price: state.price,
         subcategories: state.subcategories,
         subcategory: event.subcategory,
+      ),
+    );
+  }
+
+  FutureOr<void> _onPerHeadChanged(
+    _PerHeadChanged event,
+    Emitter<InventoryCreateState> emit,
+  ) async {
+    final perHead = PerHead.dirty(event.perHead);
+    emit(
+      InventoryCreateDirty(
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: state.price,
+        perHead: perHead,
+        imageFile: state.imageFile,
       ),
     );
   }

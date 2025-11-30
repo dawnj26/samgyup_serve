@@ -188,7 +188,9 @@ class _Item extends StatelessWidget {
     final quantity = await showAddCartItemDialog(
       context: context,
       name: item.name,
-      description: item.description ?? 'No description available.',
+      description: item.description == null || item.description!.isEmpty
+          ? 'No description available.'
+          : item.description!,
       price: item.price,
       maxQuantity: item.getAvailableStock().toInt(),
       imageId: item.imageId,

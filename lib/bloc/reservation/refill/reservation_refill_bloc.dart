@@ -43,9 +43,11 @@ class ReservationRefillBloc
       for (final cartItem in event.cartItems) {
         if (!cartItem.item.isAvailable) continue;
 
+        final decrementCount = cartItem.quantity * cartItem.item.perHead;
+
         await _inventoryRepository.decrementStock(
           itemId: cartItem.item.id,
-          quantity: cartItem.quantity.toDouble(),
+          quantity: decrementCount,
         );
       }
 

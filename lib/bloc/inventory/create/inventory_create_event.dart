@@ -28,4 +28,7 @@ class InventoryCreateEvent with _$InventoryCreateEvent {
   const factory InventoryCreateEvent.imageChanged({
     required File? imageFile,
   }) = _ImageChanged;
+  const factory InventoryCreateEvent.perHeadChanged({
+    required String perHead,
+  }) = _PerHeadChanged;
 }

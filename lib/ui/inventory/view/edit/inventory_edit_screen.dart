@@ -138,11 +138,40 @@ class _Form extends StatelessWidget {
             initialValue: item.price,
           ),
           const SizedBox(height: 16),
+          _PerHead(
+            initialValue: item.perHead,
+          ),
+          const SizedBox(height: 16),
           const _Picker(),
           const SizedBox(height: 16),
           const SaveButton(),
         ],
       ),
+    );
+  }
+}
+
+class _PerHead extends StatelessWidget {
+  const _PerHead({
+    required this.initialValue,
+  });
+
+  final double initialValue;
+
+  @override
+  Widget build(BuildContext context) {
+    final perHead = context.select(
+      (InventoryEditBloc bloc) => bloc.state.perHead,
+    );
+
+    return PerHeadInput(
+      initialValue: initialValue.toString(),
+      errorText: perHead.displayError?.message,
+      onChanged: (value) {
+        context.read<InventoryEditBloc>().add(
+          InventoryEditEvent.perHeadChanged(perHead: value),
+        );
+      },
     );
   }
 }

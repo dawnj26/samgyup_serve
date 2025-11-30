@@ -143,7 +143,9 @@ class _Header extends StatelessWidget {
       (InventoryDetailsBloc bloc) => bloc.state.item,
     );
 
-    final description = item.description ?? 'No description available.';
+    final description = item.description == null || item.description!.isEmpty
+        ? 'No description available.'
+        : item.description!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,9 +177,9 @@ class _Header extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.inventory_2_outlined),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 Text(
-                  '${formatNumber(item.getAvailableStock())} '
+                  '${formatNumber(item.getTotalAvailableQuantity())} '
                   '${item.unit.shorthand}',
                 ),
               ],
@@ -186,9 +188,20 @@ class _Header extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.warning_amber_rounded),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 Text(
                   '${formatNumber(item.lowStockThreshold)} '
+                  '${item.unit.shorthand}',
+                ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Row(
+              children: [
+                const Icon(Icons.people_outline),
+                const SizedBox(width: 4),
+                Text(
+                  '${formatNumber(item.perHead)} '
                   '${item.unit.shorthand}',
                 ),
               ],

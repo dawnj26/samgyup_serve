@@ -45,10 +45,13 @@ class ReservationOrderBloc
         packageItems: [],
       );
 
-      for (final order in orders) {
+      for (final cart in event.items) {
+        if (!cart.item.isAvailable) continue;
+        final decrementCount = cart.quantity * cart.item.perHead;
+
         await _inventoryRepository.decrementStock(
-          itemId: order.cartId,
-          quantity: order.quantity.toDouble(),
+          itemId: cart.item.id,
+          quantity: decrementCount,
         );
       }
 
