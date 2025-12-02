@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +11,7 @@ class ImagePicker extends StatefulWidget {
     this.enabled = true,
   });
 
-  final void Function(File? image)? onChange;
+  final void Function(PlatformFile? image)? onChange;
   final String? initialFileName;
   final String? hintText;
   final String? labelText;
@@ -46,7 +44,7 @@ class _ImagePickerState extends State<ImagePicker> {
     );
 
     if (result != null && result.files.single.path != null) {
-      final file = File(result.files.single.path!);
+      final file = result.files.single;
       setState(() {
         _controller.text = result.files.single.name;
       });

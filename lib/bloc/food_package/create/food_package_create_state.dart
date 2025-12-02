@@ -7,7 +7,7 @@ abstract class FoodPackageCreateState with _$FoodPackageCreateState {
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,
     @Default(TimeLimit.pure()) TimeLimit timeLimit,
-    File? image,
+    PlatformFile? image,
   }) = FoodPackageCreateInitial;
 
   const factory FoodPackageCreateState.changed({
@@ -15,7 +15,7 @@ abstract class FoodPackageCreateState with _$FoodPackageCreateState {
     required Description description,
     required Price price,
     required TimeLimit timeLimit,
-    File? image,
+    PlatformFile? image,
   }) = FoodPackageCreateChanged;
 
   const factory FoodPackageCreateState.creating({
@@ -23,7 +23,7 @@ abstract class FoodPackageCreateState with _$FoodPackageCreateState {
     required Description description,
     required Price price,
     required TimeLimit timeLimit,
-    File? image,
+    PlatformFile? image,
   }) = FoodPackageCreateCreating;
 
   const factory FoodPackageCreateState.success({
@@ -32,7 +32,7 @@ abstract class FoodPackageCreateState with _$FoodPackageCreateState {
     @Default(Description.pure()) Description description,
     @Default(Price.pure()) Price price,
     @Default(TimeLimit.pure()) TimeLimit timeLimit,
-    File? image,
+    PlatformFile? image,
   }) = FoodPackageCreateSuccess;
 
   const factory FoodPackageCreateState.failure({
@@ -41,6 +41,6 @@ abstract class FoodPackageCreateState with _$FoodPackageCreateState {
     required Description description,
     required Price price,
     required TimeLimit timeLimit,
-    File? image,
+    PlatformFile? image,
   }) = FoodPackageCreateFailure;
 }

@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:settings_repository/src/models/models.dart';
 
 /// {@template settings_repository}
@@ -50,7 +50,7 @@ class SettingsRepository {
   }
 
   /// Uploads the business logo file to the backend and returns its file ID.
-  Future<String> uploadQr(File file) async {
+  Future<String> uploadQr(PlatformFile file) async {
     try {
       final fileId = await _appwrite.uploadFile(file);
       return fileId;
@@ -60,7 +60,7 @@ class SettingsRepository {
   }
 
   /// Uploads the QR code file to the backend and returns its file ID.
-  Future<String> uploadBusinessLogo(File file) async {
+  Future<String> uploadBusinessLogo(PlatformFile file) async {
     try {
       final fileId = await _appwrite.uploadFile(file);
       return fileId;

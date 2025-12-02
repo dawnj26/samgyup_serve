@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:device_repository/device_repository.dart';
 import 'package:event_repository/event_repository.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:menu_repository/menu_repository.dart';

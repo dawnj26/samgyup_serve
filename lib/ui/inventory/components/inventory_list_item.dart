@@ -149,11 +149,7 @@ class _InventoryImage extends StatelessWidget {
                   variant: AppLogoIconVariant.blackAndWhite,
                   useFallback: true,
                 )
-              : child ??
-                    const AppLogoIcon(
-                      variant: AppLogoIconVariant.blackAndWhite,
-                      useFallback: true,
-                    ),
+              : child ?? BucketImage(fileId: imageId),
         ),
       ),
     );

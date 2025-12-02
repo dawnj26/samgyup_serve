@@ -12,7 +12,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     @Default(<Subcategory>[]) List<Subcategory> subcategories,
     @Default(PerHead.pure()) PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateInitial;
 
   const factory InventoryCreateState.dirty({
@@ -25,7 +25,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required List<Subcategory> subcategories,
     required PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateDirty;
 
   const factory InventoryCreateState.loading({
@@ -38,7 +38,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required List<Subcategory> subcategories,
     required PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateLoading;
 
   const factory InventoryCreateState.success({
@@ -51,7 +51,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     @Default(<Subcategory>[]) List<Subcategory> subcategories,
     @Default(PerHead.pure()) PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateSuccess;
 
   const factory InventoryCreateState.failure({
@@ -65,7 +65,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required List<Subcategory> subcategories,
     required PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateFailure;
 
   const factory InventoryCreateState.loadingSubcategories({
@@ -78,7 +78,7 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required List<Subcategory> subcategories,
     required PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateLoadingSubcategories;
 
   const factory InventoryCreateState.loadedSubcategories({
@@ -91,6 +91,6 @@ abstract class InventoryCreateState with _$InventoryCreateState {
     required List<Subcategory> subcategories,
     required PerHead perHead,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryCreateLoadedSubcategories;
 }

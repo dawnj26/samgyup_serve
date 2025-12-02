@@ -13,6 +13,7 @@ dependencies:
   appwrite: ^20.0.0
   appwrite_repository:
     path: ../appwrite_repository
+  file_picker: ^10.3.2
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0

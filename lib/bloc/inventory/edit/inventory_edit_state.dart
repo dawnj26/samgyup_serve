@@ -12,7 +12,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditInitial;
 
   const factory InventoryEditState.initializing({
@@ -25,7 +25,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditInitializing;
 
   const factory InventoryEditState.initialized({
@@ -38,7 +38,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditInitialized;
 
   const factory InventoryEditState.dirty({
@@ -51,7 +51,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     required List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditDirty;
 
   const factory InventoryEditState.loading({
@@ -64,7 +64,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     required List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditLoading;
 
   const factory InventoryEditState.success({
@@ -78,7 +78,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     @Default(PerHead.pure()) PerHead perHead,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditSuccess;
 
   const factory InventoryEditState.noChanges({
@@ -91,7 +91,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     @Default(PerHead.pure()) PerHead perHead,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditNoChanges;
 
   const factory InventoryEditState.failure({
@@ -105,7 +105,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     required List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditFailure;
 
   const factory InventoryEditState.loadingSubcategories({
@@ -118,7 +118,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     required List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditLoadingSubcategories;
 
   const factory InventoryEditState.loadedSubcategories({
@@ -131,6 +131,6 @@ abstract class InventoryEditState with _$InventoryEditState {
     required PerHead perHead,
     required List<Subcategory> subcategories,
     Subcategory? subcategory,
-    File? imageFile,
+    PlatformFile? imageFile,
   }) = InventoryEditLoadedSubcategories;
 }

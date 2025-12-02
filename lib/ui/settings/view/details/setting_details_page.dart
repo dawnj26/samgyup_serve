@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/settings/view/details/setting_details_screen.dart';
 
@@ -15,7 +14,7 @@ class SettingDetailsPage extends StatelessWidget {
 
   final String name;
   final String? fileId;
-  final void Function(File? file)? onSave;
+  final void Function(PlatformFile? file)? onSave;
 
   @override
   Widget build(BuildContext context) {

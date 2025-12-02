@@ -8,6 +8,7 @@ class FoodPackageEditEvent with _$FoodPackageEditEvent {
   const factory FoodPackageEditEvent.priceChanged(String price) = _PriceChanged;
   const factory FoodPackageEditEvent.timeLimitChanged(String timeLimit) =
       _TimeLimitChanged;
-  const factory FoodPackageEditEvent.imageChanged(File? image) = _ImageChanged;
+  const factory FoodPackageEditEvent.imageChanged(PlatformFile? image) =
+      _ImageChanged;
   const factory FoodPackageEditEvent.submitted() = _Submitted;
 }
