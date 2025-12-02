@@ -9,7 +9,7 @@ class FoodPackageCreateEvent with _$FoodPackageCreateEvent {
       _PriceChanged;
   const factory FoodPackageCreateEvent.timeLimitChanged(String timeLimit) =
       _TimeLimitChanged;
-  const factory FoodPackageCreateEvent.imageChanged(File? image) =
+  const factory FoodPackageCreateEvent.imageChanged(PlatformFile? image) =
       _ImageChanged;
   const factory FoodPackageCreateEvent.submitted() = _Submitted;
 }

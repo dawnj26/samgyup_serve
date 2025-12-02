@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/ui/components/image_picker.dart';
 
@@ -11,7 +10,7 @@ class QrPicker extends StatefulWidget {
 }
 
 class _QrPickerState extends State<QrPicker> {
-  File? _image;
+  PlatformFile? _image;
 
   @override
   Widget build(BuildContext context) {

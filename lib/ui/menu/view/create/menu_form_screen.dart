@@ -49,9 +49,9 @@ class _Image extends StatelessWidget {
   Widget build(BuildContext context) {
     return ImagePicker(
       onChange: (image) {
-        context.read<MenuCreateBloc>().add(
-          MenuCreateEvent.imageChanged(image),
-        );
+        // context.read<MenuCreateBloc>().add(
+        //   MenuCreateEvent.imageChanged(image),
+        // );
       },
     );
   }

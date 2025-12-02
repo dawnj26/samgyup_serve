@@ -27,7 +27,7 @@ class InventoryEditEvent with _$InventoryEditEvent {
     required String price,
   }) = _PriceChanged;
   const factory InventoryEditEvent.imageChanged({
-    required File? imageFile,
+    required PlatformFile? imageFile,
   }) = _ImageChanged;
   const factory InventoryEditEvent.perHeadChanged({
     required String perHead,

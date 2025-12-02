@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwrite_models;
 import 'package:appwrite_repository/src/models/models.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -174,12 +174,19 @@ class AppwriteRepository {
   }
 
   /// Uploads a file to Appwrite Storage and returns its unique file ID.
-  Future<String> uploadFile(File file) async {
+  Future<String> uploadFile(PlatformFile file) async {
     final filename = _getFilename(file);
+
+    final f = kIsWeb
+        ? InputFile.fromBytes(
+            bytes: file.bytes!,
+            filename: filename,
+          )
+        : InputFile.fromPath(path: file.path!, filename: filename);
     final response = await _storage.createFile(
       bucketId: environment.storageBucketId,
       fileId: ID.unique(),
-      file: InputFile.fromPath(path: file.path, filename: filename),
+      file: f,
     );
 
     return response.$id;
@@ -229,7 +236,7 @@ class AppwriteRepository {
     return response.body;
   }
 
-  String _getFilename(File file) {
-    return file.path.split(Platform.pathSeparator).last;
+  String _getFilename(PlatformFile file) {
+    return file.name;
   }
 }

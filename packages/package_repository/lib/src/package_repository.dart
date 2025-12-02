@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:package_repository/src/models/models.dart';
 
 /// {@template package_repository}
@@ -21,7 +21,7 @@ class PackageRepository {
   /// Creates a new food package.
   Future<FoodPackageItem> createPackage({
     required FoodPackageItem package,
-    File? image,
+    PlatformFile? image,
   }) async {
     try {
       String? imageFileName;
@@ -155,7 +155,7 @@ class PackageRepository {
   /// Updates an existing food package.
   Future<FoodPackageItem> updatePackage({
     required FoodPackageItem package,
-    File? image,
+    PlatformFile? image,
   }) async {
     try {
       var imageFileName = package.imageFilename;

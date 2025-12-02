@@ -31,9 +31,9 @@ class MenuRepository {
   }) async {
     try {
       String? imageFileName;
-      if (imageFile != null) {
-        imageFileName = await _appwrite.uploadFile(imageFile);
-      }
+      // if (imageFile != null) {
+      //   imageFileName = await _appwrite.uploadFile(imageFile);
+      // }
 
       final m = menu.copyWith(
         id: ID.unique(),
@@ -198,10 +198,10 @@ class MenuRepository {
     File? imageFile,
   }) async {
     try {
-      var imageFileName = menu.imageFileName;
-      if (imageFile != null) {
-        imageFileName = await _appwrite.uploadFile(imageFile);
-      }
+      final imageFileName = menu.imageFileName;
+      // if (imageFile != null) {
+      //   imageFileName = await _appwrite.uploadFile(imageFile);
+      // }
 
       final m = menu.copyWith(
         imageFileName: imageFileName,
