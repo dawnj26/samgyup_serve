@@ -10,7 +10,7 @@ dependencies:
   appwrite: ^20.0.0
   appwrite_repository: any
   authentication_repository: any
-  auto_route: ^10.1.2
+  auto_route: ^11.0.0
   billing_repository: any
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
