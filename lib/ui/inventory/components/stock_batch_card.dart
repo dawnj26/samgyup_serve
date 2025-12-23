@@ -24,6 +24,11 @@ class StockBatchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
+    final supplier =
+        batch.supplierName != null && batch.supplierName!.isNotEmpty
+        ? '(${batch.supplierName})'
+        : '';
+
     return Card(
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
@@ -31,7 +36,7 @@ class StockBatchCard extends StatelessWidget {
           children: [
             Text(
               '${formatNumber(batch.quantity)} '
-              '${unit.shorthand}',
+              '${unit.shorthand} $supplier',
               style: textTheme.bodyMedium,
             ),
             if (batch.expirationDate != null) ...[

@@ -15,7 +15,9 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
     required InventoryRepository inventoryRepository,
     List<InventoryCategory> categories = const [],
     List<String>? itemIds,
+    List<String>? excludeItemIds,
   }) : _inventoryRepository = inventoryRepository,
+       _excludeItemIds = excludeItemIds,
        _itemIds = itemIds,
        super(_Initial(categories: categories)) {
     on<_Started>(_onStarted);
@@ -35,6 +37,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
   final InventoryRepository _inventoryRepository;
   final int _pageSize = 25;
   final List<String>? _itemIds;
+  final List<String>? _excludeItemIds;
 
   Future<void> _onStarted(
     _Started event,
@@ -52,6 +55,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
         categories: state.categories,
         includeBatches: true,
         itemIds: _itemIds,
+        excludeItemIds: _excludeItemIds,
       );
 
       emit(
@@ -85,6 +89,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
         limit: _pageSize,
         includeBatches: true,
         itemIds: _itemIds,
+        excludeItemIds: _excludeItemIds,
       );
 
       emit(
@@ -123,6 +128,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
         categories: state.categories,
         includeBatches: true,
         itemIds: _itemIds,
+        excludeItemIds: _excludeItemIds,
       );
 
       emit(

@@ -7,7 +7,8 @@ import 'package:samgyup_serve/shared/formatter.dart';
 enum ChartPeriod {
   weekly,
   monthly,
-  yearly;
+  yearly
+  ;
 
   String get label {
     switch (this) {

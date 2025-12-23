@@ -4,7 +4,8 @@ enum PaymentMethod {
   cash,
 
   /// GCash digital wallet payment method
-  gcash;
+  gcash
+  ;
 
   /// Returns a human-readable label for the payment method.
   String get label {

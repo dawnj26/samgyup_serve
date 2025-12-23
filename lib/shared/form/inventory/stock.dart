@@ -3,7 +3,8 @@ import 'package:formz/formz.dart';
 enum StockValidationError {
   empty,
   invalid,
-  negative;
+  negative
+  ;
 
   String get message {
     switch (this) {

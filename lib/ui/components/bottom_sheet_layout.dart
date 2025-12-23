@@ -20,22 +20,18 @@ class BottomSheetLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (fullscreen) {
-      return Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Icon(Icons.drag_handle_rounded)],
+      return Padding(
+        padding: const EdgeInsets.only(top: 40),
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: padding ?? EdgeInsets.zero,
+                child: child,
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: padding ?? EdgeInsets.zero,
-              child: child,
-            ),
-          ),
-        ],
+          ],
+        ),
       );
     }
 

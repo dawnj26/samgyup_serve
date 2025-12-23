@@ -132,6 +132,7 @@ class InventoryRepository {
     InventoryItemStatus? status,
     List<InventoryCategory>? categories,
     List<String>? itemIds,
+    List<String>? excludeItemIds,
     List<String>? subcategoryIds,
     bool includeBatches = false,
     bool includeDeleted = false,
@@ -142,6 +143,16 @@ class InventoryRepository {
         statusQuery = Query.equal('status', status.name);
       }
 
+      log(
+        'Fetching items with excludeItemIds: $excludeItemIds',
+        name: 'InventoryRepository.fetchItems',
+      );
+
+      final excludeQueryIds =
+          excludeItemIds != null && excludeItemIds.isNotEmpty
+          ? excludeItemIds.map((e) => Query.notEqual(r'$id', e)).toList()
+          : null;
+
       final queries = [
         if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
         ?statusQuery,
@@ -151,6 +162,8 @@ class InventoryRepository {
             categories.map((e) => e.name).toList(),
           ),
         if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
+        if (excludeQueryIds != null && excludeQueryIds.isNotEmpty)
+          ...excludeQueryIds,
         if (subcategoryIds != null && subcategoryIds.isNotEmpty)
           Query.equal('tagId', subcategoryIds),
         if (!includeDeleted) Query.isNull('deletedAt'),
@@ -544,28 +557,6 @@ class InventoryRepository {
 
     return availableBatches;
   }
-
-  // /// Increments the stock of an inventory item by a specified quantity.
-  // Future<void> incrementStock({
-  //   required String itemId,
-  //   required int quantity,
-  // }) async {
-  //   // TODO(stock): implement increment stock using FEFO
-
-  //   try {
-  //     await _appwrite.databases.incrementRowColumn(
-  //       databaseId: _appwrite.environment.databaseId,
-  //       tableId: _projectInfo.inventoryCollectionId,
-  //       rowId: itemId,
-  //       column: 'stock',
-  //       value: quantity.toDouble(),
-  //     );
-  //   } on AppwriteException catch (e) {
-  //     throw ResponseException.fromCode(e.code ?? 500);
-  //   } on Exception catch (e) {
-  //     throw Exception('Failed to increment stock: $e');
-  //   }
-  // }
 
   InventoryInfo _queryInventoryInfo(List<InventoryItem> items) {
     final totalItems = items.length;

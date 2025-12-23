@@ -10,6 +10,7 @@ import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:settings_repository/settings_repository.dart';
 import 'package:table_repository/table_repository.dart';
+import 'package:toastification/toastification.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -75,14 +76,17 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Samgyup Serve',
-      routerConfig: router.config(),
-      theme: ThemeData(
-        colorSchemeSeed: Colors.red,
+    return ToastificationWrapper(
+      child: MaterialApp.router(
+        title: 'Samgyup Serve',
+        routerConfig: router.config(),
+        theme: ThemeData(
+          colorSchemeSeed: Colors.red,
+          brightness: Brightness.dark,
+        ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

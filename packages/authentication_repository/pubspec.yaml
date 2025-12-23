@@ -6,9 +6,9 @@ publish_to: none
 resolution: workspace
 
 environment:
-  sdk: ^3.9.0
-  flutter: ^3.35.0
-
+  sdk: ^3.10.0
+  flutter: ^3.38.0
+  
 dependencies:
   appwrite: ^20.0.0
   appwrite_repository:

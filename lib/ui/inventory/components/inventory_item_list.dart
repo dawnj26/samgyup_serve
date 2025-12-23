@@ -33,7 +33,8 @@ class InventoryItemList extends StatelessWidget {
       );
     }
 
-    return SliverList.builder(
+    return SliverList.separated(
+      separatorBuilder: (context, index) => const Divider(height: 0),
       itemBuilder: (ctx, index) {
         return index >= items.length
             ? const BottomLoader()

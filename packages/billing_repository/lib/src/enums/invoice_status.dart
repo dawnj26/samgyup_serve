@@ -7,7 +7,8 @@ enum InvoiceStatus {
   paid,
 
   /// Invoice has been cancelled or voided
-  voided;
+  voided
+  ;
 
   /// Returns a human-readable label for the invoice status.
   String get label {

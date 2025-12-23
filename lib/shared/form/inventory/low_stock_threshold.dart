@@ -3,7 +3,8 @@ import 'package:formz/formz.dart';
 enum LowStockThresholdValidationError {
   empty,
   negative,
-  invalid;
+  invalid
+  ;
 
   String get message {
     switch (this) {

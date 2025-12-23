@@ -11,4 +11,7 @@ class InventoryStockEvent with _$InventoryStockEvent {
   const factory InventoryStockEvent.expirationChanged({
     required DateTime? expiration,
   }) = _ExpirationChanged;
+  const factory InventoryStockEvent.supplierNameChanged({
+    required String supplierName,
+  }) = _SupplierNameChanged;
 }

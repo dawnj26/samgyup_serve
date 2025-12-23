@@ -2,7 +2,8 @@ import 'package:formz/formz.dart';
 
 enum PasswordInputValidationError {
   empty,
-  tooShort;
+  tooShort
+  ;
 
   String get message => switch (this) {
     PasswordInputValidationError.empty => 'Password cannot be empty.',

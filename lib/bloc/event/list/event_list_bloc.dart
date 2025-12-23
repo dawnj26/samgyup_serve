@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
@@ -28,7 +27,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
       if (event.event.status != EventStatus.pending) return;
 
       final events = [...state.events, event.event];
-      emit(state.copyWith(events: events));
+      emit(state.copyWith(events: events, latestEvent: event.event));
 
       unawaited(HapticFeedback.vibrate());
       await _playNotificationSound();
@@ -45,7 +44,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
       final events = state.events.map((e) {
         return e.id == event.event.id ? event.event : e;
       }).toList();
-      emit(state.copyWith(events: events));
+      emit(state.copyWith(events: events, latestEvent: event.event));
     });
     on<_Deleted>((event, emit) {
       final events = state.events.where((e) => e.id != event.event.id).toList();
@@ -164,12 +163,6 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
 
     _subscription = _repo.eventState;
     _subscription?.stream.listen((response) {
-      log(
-        'EventListBloc:\nEvents: ${response.events}\n'
-        'Payload: ${response.payload}',
-        name: 'EventListBloc',
-      );
-
       final event = Event.fromJson(response.payload);
 
       if (response.events.contains('databases.*.tables.*.rows.*.create')) {

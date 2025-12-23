@@ -40,7 +40,7 @@ class StatusSection extends StatelessWidget {
                 Expanded(
                   child: StatusCard(
                     title: 'All',
-                    color: Colors.blue.shade100,
+                    color: Colors.blue.shade700,
                     count: isLoading ? null : inventoryInfo.totalItems,
                     onTap: () => _handleNavigation(context),
                   ),
@@ -49,7 +49,7 @@ class StatusSection extends StatelessWidget {
                 Expanded(
                   child: StatusCard(
                     title: 'In Stock',
-                    color: InventoryItemStatus.inStock.color.shade100,
+                    color: InventoryItemStatus.inStock.color.shade700,
                     count: isLoading ? null : inventoryInfo.inStockItems,
                     onTap: () => _handleNavigation(
                       context,
@@ -65,7 +65,7 @@ class StatusSection extends StatelessWidget {
                 Expanded(
                   child: StatusCard(
                     title: 'Low Stock',
-                    color: InventoryItemStatus.lowStock.color.shade100,
+                    color: InventoryItemStatus.lowStock.color.shade700,
                     count: isLoading ? null : inventoryInfo.lowStockItems,
                     onTap: () => _handleNavigation(
                       context,
@@ -77,7 +77,7 @@ class StatusSection extends StatelessWidget {
                 Expanded(
                   child: StatusCard(
                     title: 'Out of Stock',
-                    color: InventoryItemStatus.outOfStock.color.shade100,
+                    color: InventoryItemStatus.outOfStock.color.shade700,
                     count: isLoading ? null : inventoryInfo.outOfStockItems,
                     onTap: () => _handleNavigation(
                       context,
