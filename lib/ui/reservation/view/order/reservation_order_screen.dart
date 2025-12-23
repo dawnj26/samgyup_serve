@@ -8,6 +8,7 @@ import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart'
     show Reservation;
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
+import 'package:samgyup_serve/bloc/order/list/order_list_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
@@ -35,37 +36,60 @@ class ReservationOrderScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: ReservationHeader(),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
-            child: _OrdersHeader(
-              onTap: () => _handleTap(context),
-            ),
-          ),
-          const Expanded(child: _Orders()),
-        ],
+      body: BlocBuilder<ReservationBloc, ReservationState>(
+        builder: (context, state) {
+          if (state.status == ReservationStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                child: ReservationHeader(),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+                child: _OrdersHeader(
+                  onTap: () => _handleTap(context),
+                ),
+              ),
+              const Expanded(child: _Orders()),
+            ],
+          );
+        },
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: FilledButton(
-          onPressed: () => _handlePressed(context),
-          child: const Text('Proceed to billing'),
-        ),
+      bottomNavigationBar: BlocBuilder<ReservationBloc, ReservationState>(
+        builder: (context, state) {
+          if (state.status == ReservationStatus.loading) {
+            return const SizedBox.shrink();
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: FilledButton(
+              onPressed: () => _handlePressed(context),
+              child: const Text('Proceed to billing'),
+            ),
+          );
+        },
       ),
     );
   }
 
   void _handleTap(BuildContext context) {
+    final packages = context.read<OrderListBloc>().state.packages;
+    final uniqueMenuIds = packages
+        .expand((e) => e.item.menuIds)
+        .toSet()
+        .toList();
+
     unawaited(
       context.router.push(
         ReservationAddOrderRoute(
+          excludeItemIds: uniqueMenuIds,
           onSuccess: () {
             context.read<ReservationBloc>().add(
               const ReservationEvent.refreshed(),
@@ -161,7 +185,7 @@ class _Orders extends StatelessWidget {
                   state.table.number,
                 );
               },
-              child: const Text('Request'),
+              child: const Text('Refill'),
             );
           },
         );
