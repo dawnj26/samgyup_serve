@@ -46,6 +46,7 @@ dependencies:
   table_repository: any
   talker_bloc_logger: ^5.0.2
   timeago: ^3.7.1
+  toastification: ^3.0.3
 
 dev_dependencies:
   auto_route_generator: ^10.1.0
@@ -91,7 +92,6 @@ workspace:
 melos:
   useRootAsPackage: true
   scripts:
-
     generate:packages:
       name: Generate code for all packages
       run: melos exec --order-dependents --depends-on="build_runner"
