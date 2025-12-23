@@ -28,44 +28,47 @@ class OrderTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  clipBehavior: Clip.hardEdge,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: BucketImage(fileId: imageId),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: textTheme.titleSmall,
-                    ),
-                    Text(
-                      formatToPHP(price),
-                      style: textTheme.titleSmall?.copyWith(
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      'Quantity: $quantity',
-                      style: textTheme.labelMedium,
-                    ),
-                  ],
-                ),
-              ],
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: BucketImage(fileId: imageId),
+              ),
             ),
-            trailing ?? const SizedBox.shrink(),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    formatToPHP(price),
+                    style: textTheme.titleSmall?.copyWith(
+                      color: colorScheme.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Quantity: $quantity',
+                    style: textTheme.labelMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            if (trailing != null) ...[
+              const SizedBox(width: 16),
+              trailing!,
+            ],
           ],
         ),
       ),
