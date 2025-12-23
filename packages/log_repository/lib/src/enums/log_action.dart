@@ -9,7 +9,8 @@ enum LogAction {
   update,
 
   /// Deletion of a resource.
-  delete;
+  delete
+  ;
 
   /// Returns the human-readable label for this log action.
   String get label {

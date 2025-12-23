@@ -1,6 +1,7 @@
 enum InventoryItemOption {
   edit,
-  delete;
+  delete
+  ;
 
   String get label {
     switch (this) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 enum EventMoreOption {
-  markAsDone;
+  markAsDone
+  ;
 
   String get label {
     switch (this) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 enum BatchOption {
-  remove;
+  remove
+  ;
 
   String get label {
     switch (this) {

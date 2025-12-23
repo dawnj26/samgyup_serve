@@ -3,7 +3,8 @@ part of 'users_action_bloc.dart';
 enum UserAction {
   delete,
   update,
-  passwordChange;
+  passwordChange
+  ;
 
   String get loadingMessage {
     switch (this) {

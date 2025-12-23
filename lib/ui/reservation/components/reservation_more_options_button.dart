@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 enum ReservationMoreOptionsButtonType {
-  cancel;
+  cancel
+  ;
 
   String get label {
     switch (this) {
