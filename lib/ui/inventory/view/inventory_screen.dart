@@ -77,7 +77,8 @@ class InventoryScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Add Item'),
         onPressed: () async {
           final isItemCreated =
               (await context.router.push<bool>(
@@ -91,7 +92,7 @@ class InventoryScreen extends StatelessWidget {
             context.read<InventoryBloc>().add(const InventoryEvent.reload());
           }
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
       ),
     );
   }
