@@ -8,6 +8,7 @@ abstract class EventListState with _$EventListState {
     @Default(EventListStatus.initial) EventListStatus status,
     @Default([]) List<Event> events,
     @Default(EventStatus.pending) EventStatus filter,
+    Event? latestEvent,
     String? errorMessage,
   }) = _Initial;
 }
