@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/stock/inventory_stock_bloc.dart';
+import 'package:samgyup_serve/ui/components/components.dart';
 import 'package:samgyup_serve/ui/inventory/components/components.dart';
 
 class AddStockScreen extends StatelessWidget {
@@ -32,6 +33,12 @@ class AddStockScreen extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: _Expire(),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: _Supplier(),
                 ),
               ),
               SliverToBoxAdapter(
@@ -103,6 +110,20 @@ class _Stock extends StatelessWidget {
           InventoryStockEvent.stockChanged(stock: value),
         );
       },
+    );
+  }
+}
+
+class _Supplier extends StatelessWidget {
+  const _Supplier();
+
+  @override
+  Widget build(BuildContext context) {
+    return NameInput(
+      labelText: 'Supplier (Optional)',
+      onChanged: (name) => context.read<InventoryStockBloc>().add(
+        InventoryStockEvent.supplierNameChanged(supplierName: name),
+      ),
     );
   }
 }
