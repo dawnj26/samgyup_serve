@@ -1,5 +1,4 @@
 export 'shell/event_details_shell_page.dart';
-export 'shell/event_shell_page.dart';
 export 'view/cancel/event_cancel_page.dart';
 export 'view/event_page.dart';
 export 'view/order/event_order_page.dart';
