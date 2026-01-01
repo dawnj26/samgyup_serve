@@ -3,16 +3,19 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart'
     show Reservation;
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
 import 'package:samgyup_serve/bloc/order/list/order_list_bloc.dart';
+import 'package:samgyup_serve/bloc/order/status/order_status_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/app_logo_icon.dart';
+import 'package:samgyup_serve/ui/order/components/components.dart';
 import 'package:samgyup_serve/ui/reservation/components/components.dart';
 
 class ReservationOrderScreen extends StatelessWidget {
@@ -164,28 +167,52 @@ class _Orders extends StatelessWidget {
 
         return ReservationOrderList(
           packageTrailing: (context, cart) {
-            return RefillButton(
-              key: ValueKey('refillButton_${cart.id}'),
-              startTime: state.reservation.startTime,
-              durationMinutes: cart.item.timeLimit,
-              onPressed: () {
-                final endTime = state.reservation.startTime.add(
-                  Duration(
-                    minutes: cart.item.timeLimit,
+            return BlocProvider(
+              create: (context) => OrderStatusBloc(
+                orderRepository: context.read<OrderRepository>(),
+                initialStatus: cart.status,
+                orderId: cart.id,
+              )..add(const OrderStatusEvent.started()),
+              child:
+                  BlocSelector<OrderStatusBloc, OrderStatusState, OrderStatus>(
+                    selector: (state) {
+                      return state.status;
+                    },
+                    builder: (context, status) {
+                      final enabled = status == OrderStatus.completed;
+                      final label = enabled ? 'Refill' : status.label;
+
+                      return RefillButton(
+                        key: ValueKey('refillButton_${cart.id}'),
+                        startTime: state.reservation.startTime,
+                        durationMinutes: cart.item.timeLimit,
+                        enabled: enabled,
+                        onPressed: () {
+                          final endTime = state.reservation.startTime.add(
+                            Duration(
+                              minutes: cart.item.timeLimit,
+                            ),
+                          );
+                          final diff = endTime.difference(DateTime.now());
+
+                          if (diff.isNegative) return;
+
+                          _handlePressed(
+                            context,
+                            cart,
+                            state.reservation,
+                            state.table.number,
+                          );
+                        },
+                        child: Text(label),
+                      );
+                    },
                   ),
-                );
-                final diff = endTime.difference(DateTime.now());
-
-                if (diff.isNegative) return;
-
-                _handlePressed(
-                  context,
-                  cart,
-                  state.reservation,
-                  state.table.number,
-                );
-              },
-              child: const Text('Refill'),
+            );
+          },
+          menuTrailing: (ctx, cart) {
+            return _Status(
+              cart: cart,
             );
           },
         );
@@ -213,10 +240,41 @@ class _Orders extends StatelessWidget {
                 reservationId: reservation.id,
                 tableNumber: tableNumber,
                 items: items,
+                orderPackageId: cart.id,
               ),
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _Status extends StatelessWidget {
+  const _Status({
+    required this.cart,
+  });
+
+  final CartItem<InventoryItem> cart;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => OrderStatusBloc(
+        orderRepository: context.read<OrderRepository>(),
+        initialStatus: cart.status,
+        orderId: cart.id,
+      )..add(const OrderStatusEvent.started()),
+      child: Builder(
+        builder: (context) {
+          final status = context.select(
+            (OrderStatusBloc bloc) => bloc.state.status,
+          );
+
+          return OrderStatusBadge(
+            status: status,
+          );
+        },
       ),
     );
   }
