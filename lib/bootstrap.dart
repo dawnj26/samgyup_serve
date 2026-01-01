@@ -10,7 +10,11 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
+    log(
+      details.exceptionAsString(),
+      stackTrace: details.stack,
+      name: 'FlutterError',
+    );
   };
 
   Bloc.observer = TalkerBlocObserver();
