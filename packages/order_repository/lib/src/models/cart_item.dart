@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:order_repository/src/enums/enums.dart';
 
 part 'cart_item.freezed.dart';
 
@@ -15,5 +16,6 @@ abstract class CartItem<T> with _$CartItem<T> {
     required T item,
     @Default('') String id,
     @Default(1) int quantity,
+    @Default(OrderStatus.pending) OrderStatus status,
   }) = _CartItem;
 }
