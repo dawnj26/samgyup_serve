@@ -21,6 +21,7 @@ abstract class EventEvent with _$EventEvent {
     required String reservationId,
     required int tableNumber,
     required List<CartItem<InventoryItem>> items,
+    required String orderPackageId,
   }) = _RefillRequested;
   const factory EventEvent.paymentRequested({
     required String reservationId,

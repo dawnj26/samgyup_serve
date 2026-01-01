@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:billing_repository/billing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,8 +32,25 @@ class PaymentBottomSheet extends StatelessWidget {
           ),
         ),
       ],
-      child: _Sheet(
-        amount: totalAmount,
+      child: BlocListener<PaymentFormBloc, PaymentFormState>(
+        listener: (context, state) {
+          final status = state.status;
+
+          if (status == FormzSubmissionStatus.success) {
+            onSuccess?.call(state.payment!);
+            context.router.pop();
+          }
+
+          if (status == FormzSubmissionStatus.failure) {
+            showErrorDialog(
+              context: context,
+              message: state.errorMessage ?? 'Payment failed',
+            );
+          }
+        },
+        child: _Sheet(
+          amount: totalAmount,
+        ),
       ),
     );
   }

@@ -110,9 +110,7 @@ class _List extends StatelessWidget {
                   event: event,
                   padding: padding,
                   onTap: (data) {
-                    final router = context.router
-                        .parent<TabsRouter>()
-                        ?.parent<StackRouter>();
+                    final router = context.router;
 
                     if (event.type == EventType.orderCreated ||
                         event.type == EventType.itemsAdded) {
@@ -122,7 +120,7 @@ class _List extends StatelessWidget {
                           .toList();
 
                       unawaited(
-                        router?.push(
+                        router.push(
                           EventOrderRoute(orders: eventOrders, event: event),
                         ),
                       );
@@ -130,7 +128,7 @@ class _List extends StatelessWidget {
 
                     if (event.type == EventType.refillRequested) {
                       unawaited(
-                        router?.push(
+                        router.push(
                           EventRefillRoute(event: event),
                         ),
                       );
@@ -140,7 +138,7 @@ class _List extends StatelessWidget {
                       final invoiceId = data['invoiceId'] as String? ?? '';
 
                       unawaited(
-                        router?.push(
+                        router.push(
                           EventPaymentRoute(
                             invoiceId: invoiceId,
                             event: event,
@@ -151,7 +149,7 @@ class _List extends StatelessWidget {
 
                     if (event.type == EventType.orderCancelled) {
                       unawaited(
-                        router?.push(
+                        router.push(
                           EventCancelRoute(event: event),
                         ),
                       );

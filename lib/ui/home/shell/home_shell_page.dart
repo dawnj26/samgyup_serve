@@ -103,6 +103,7 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
           BlocProvider(
             create: (context) => EventBloc(
               eventRepository: context.read<EventRepository>(),
+              orderRepository: context.read<OrderRepository>(),
             ),
           ),
           BlocProvider(

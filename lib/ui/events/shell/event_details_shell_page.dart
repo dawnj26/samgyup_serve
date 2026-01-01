@@ -30,6 +30,7 @@ class EventDetailsShellPage extends AutoRouter implements AutoRouteWrapper {
       child: BlocProvider(
         create: (context) => EventActionsBloc(
           eventRepository: context.read(),
+          orderRepository: context.read(),
         ),
         child: BlocListener<EventActionsBloc, EventActionsState>(
           listener: (context, state) {

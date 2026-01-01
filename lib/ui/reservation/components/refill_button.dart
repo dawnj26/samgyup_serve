@@ -9,12 +9,14 @@ class RefillButton extends StatelessWidget {
     required this.durationMinutes,
     super.key,
     this.onPressed,
+    this.enabled = true,
   });
 
   final VoidCallback? onPressed;
   final Widget child;
   final DateTime startTime;
   final int durationMinutes;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +32,23 @@ class RefillButton extends StatelessWidget {
       child: _Button(
         onPressed,
         child,
+
+        enabled: enabled,
       ),
     );
   }
 }
 
 class _Button extends StatelessWidget {
-  const _Button(this.onPressed, this.child);
+  const _Button(
+    this.onPressed,
+    this.child, {
+    required this.enabled,
+  });
 
   final VoidCallback? onPressed;
   final Widget child;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +71,7 @@ class _Button extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             OutlinedButton(
-              onPressed: state.isFinished ? null : onPressed,
+              onPressed: state.isFinished || !enabled ? null : onPressed,
               child: child,
             ),
             Text(

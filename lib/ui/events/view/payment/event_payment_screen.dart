@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:event_repository/event_repository.dart';
@@ -70,6 +71,10 @@ class EventPaymentScreen extends StatelessWidget {
                       .invoices
                       .totalAmount,
                   onSuccess: (payment) {
+                    log(
+                      'Payment successful: $payment',
+                      name: 'EventPaymentScreen',
+                    );
                     context.read<InvoiceBloc>().add(
                       InvoiceEvent.paid(payment: payment),
                     );

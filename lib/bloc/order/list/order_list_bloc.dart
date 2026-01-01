@@ -59,6 +59,7 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
             id: order.id,
             item: package,
             quantity: order.quantity,
+            status: order.status,
           );
         },
       ).toList();
@@ -72,6 +73,7 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
             id: order.id,
             item: menuItem,
             quantity: order.quantity,
+            status: order.status,
           );
         },
       ).toList();
