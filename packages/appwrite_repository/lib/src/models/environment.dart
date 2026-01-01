@@ -25,6 +25,7 @@ class Environment {
     required this.batchCollectionId,
     required this.subcategoryCollectionId,
     required this.logCollectionId,
+    required this.categoriesCollectionId,
   });
 
   /// The public endpoint of the Appwrite server.
@@ -86,4 +87,7 @@ class Environment {
 
   /// The ID of log collection.
   final String logCollectionId;
+
+  /// The ID of categories collection.
+  final String categoriesCollectionId;
 }
