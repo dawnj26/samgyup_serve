@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:event_repository/event_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:log_repository/log_repository.dart';
+import 'package:order_repository/order_repository.dart';
 
 part 'event_actions_event.dart';
 part 'event_actions_state.dart';
@@ -11,13 +14,16 @@ part 'event_actions_bloc.freezed.dart';
 class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
   EventActionsBloc({
     required EventRepository eventRepository,
+    required OrderRepository orderRepository,
   }) : _repo = eventRepository,
+       _orderRepository = orderRepository,
        super(const _Initial()) {
     on<_Completed>(_onCompleted);
     on<_Canceled>(_onCanceled);
   }
 
   final EventRepository _repo;
+  final OrderRepository _orderRepository;
 
   Future<void> _onCompleted(
     _Completed event,
@@ -32,6 +38,14 @@ class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
         resourceId: event.event.id,
         details: 'Event ID: ${event.event.id}, ${event.event.type.label}',
       );
+      final data = jsonDecode(event.event.payload) as Map<String, dynamic>;
+      final orderId = data['orderId'] as String;
+
+      await _orderRepository.updateStatus(
+        orderId: orderId,
+        newStatus: OrderStatus.completed,
+      );
+
       emit(
         state.copyWith(
           status: EventActionsStatus.success,
