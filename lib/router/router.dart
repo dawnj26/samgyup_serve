@@ -104,12 +104,7 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: DashboardRoute.page, initial: true),
                 AutoRoute(
-                  page: EventShellRoute.page,
-                  children: [
-                    AutoRoute(
-                      page: EventRoute.page,
-                    ),
-                  ],
+                  page: EventRoute.page,
                 ),
                 AutoRoute(page: ManagementRoute.page),
               ],
