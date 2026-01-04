@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:inventory_repository/inventory_repository.dart';
 
 class CategoryInput extends StatelessWidget {
   const CategoryInput({
@@ -7,26 +6,28 @@ class CategoryInput extends StatelessWidget {
     this.value,
     this.errorText,
     this.onSelected,
+    this.categories = const [],
   });
 
-  final InventoryCategory? value;
+  final String? value;
   final String? errorText;
-  final ValueChanged<InventoryCategory?>? onSelected;
+  final ValueChanged<String?>? onSelected;
+  final List<String> categories;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     const padding = 16.0;
-    final entries = InventoryCategory.values
+    final entries = categories
         .map(
-          (category) => DropdownMenuEntry<InventoryCategory>(
+          (category) => DropdownMenuEntry<String>(
             value: category,
-            label: category.label,
+            label: category,
           ),
         )
         .toList();
 
-    return DropdownMenu<InventoryCategory>(
+    return DropdownMenu<String>(
       key: const Key('inventoryCreate_categoryInput_dropdownMenu'),
       leadingIcon: const Icon(Icons.category_outlined),
       label: const Text('Category'),
