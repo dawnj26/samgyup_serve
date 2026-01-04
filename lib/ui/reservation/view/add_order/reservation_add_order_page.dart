@@ -91,13 +91,6 @@ class ReservationAddOrderPage extends StatelessWidget
                 .toList(),
           )..add(const InventoryListEvent.started()),
         ),
-        BlocProvider(
-          create: (context) => ReservationOrderBloc(
-            billingRepository: context.read(),
-            inventoryRepository: context.read(),
-            orderRepository: context.read(),
-          ),
-        ),
       ],
       child: this,
     );
