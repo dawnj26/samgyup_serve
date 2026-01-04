@@ -20,7 +20,7 @@ class DetailDrawer extends StatelessWidget {
       ),
       DrawerTileProps(
         title: 'Category',
-        value: item.category.label,
+        value: item.categoryLabel,
       ),
       DrawerTileProps(
         title: 'Status',

@@ -25,6 +25,7 @@ class InventoryCreateBloc
     required InventoryRepository inventoryRepository,
   }) : _inventoryRepository = inventoryRepository,
        super(const InventoryCreateInitial()) {
+    on<_Started>(_onStarted);
     on<_NameChanged>(_onNameChanged);
     on<_DescriptionChanged>(_onDescriptionChanged);
     on<_CategoryChanged>(_onCategoryChanged);
@@ -55,6 +56,7 @@ class InventoryCreateBloc
         description: state.description,
         price: state.price,
         imageFile: event.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -76,6 +78,7 @@ class InventoryCreateBloc
         description: state.description,
         price: price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -118,6 +121,7 @@ class InventoryCreateBloc
           description: description,
           price: price,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
       return;
@@ -135,6 +139,7 @@ class InventoryCreateBloc
         description: description,
         price: price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
 
@@ -187,6 +192,7 @@ class InventoryCreateBloc
           price: price,
           message: e.toString(),
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     }
@@ -206,6 +212,7 @@ class InventoryCreateBloc
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -227,6 +234,7 @@ class InventoryCreateBloc
         description: description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -248,6 +256,7 @@ class InventoryCreateBloc
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
 
@@ -267,6 +276,7 @@ class InventoryCreateBloc
           description: state.description,
           price: state.price,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     } on ResponseException catch (e) {
@@ -283,6 +293,7 @@ class InventoryCreateBloc
           price: state.price,
           imageFile: state.imageFile,
           subcategory: state.subcategory,
+          categories: state.categories,
         ),
       );
     } on Exception catch (e) {
@@ -299,6 +310,7 @@ class InventoryCreateBloc
           price: state.price,
           imageFile: state.imageFile,
           subcategory: state.subcategory,
+          categories: state.categories,
         ),
       );
     }
@@ -323,6 +335,7 @@ class InventoryCreateBloc
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -344,6 +357,7 @@ class InventoryCreateBloc
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -363,6 +377,7 @@ class InventoryCreateBloc
         price: state.price,
         subcategories: state.subcategories,
         subcategory: event.subcategory,
+        categories: state.categories,
       ),
     );
   }
@@ -384,7 +399,71 @@ class InventoryCreateBloc
         price: state.price,
         perHead: perHead,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
+  }
+
+  FutureOr<void> _onStarted(
+    _Started event,
+    Emitter<InventoryCreateState> emit,
+  ) async {
+    emit(
+      InventoryCreateInitializing(
+        perHead: state.perHead,
+        subcategory: state.subcategory,
+        subcategories: state.subcategories,
+        measurementUnit: state.measurementUnit,
+        category: state.category,
+        name: state.name,
+        lowStockThreshold: state.lowStockThreshold,
+        description: state.description,
+        price: state.price,
+        imageFile: state.imageFile,
+        categories: state.categories,
+      ),
+    );
+
+    try {
+      final categories = [
+        ...InventoryCategory.values.map((e) => e.name),
+        ...(await _inventoryRepository.fetchCategories()).map(
+          (e) => e.name,
+        ),
+      ];
+
+      emit(
+        InventoryCreateInitialized(
+          perHead: state.perHead,
+          subcategory: state.subcategory,
+          subcategories: state.subcategories,
+          measurementUnit: state.measurementUnit,
+          category: state.category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+          categories: categories,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        InventoryCreateFailure(
+          perHead: state.perHead,
+          message: e.toString(),
+          subcategories: state.subcategories,
+          measurementUnit: state.measurementUnit,
+          category: state.category,
+          name: state.name,
+          lowStockThreshold: state.lowStockThreshold,
+          description: state.description,
+          price: state.price,
+          imageFile: state.imageFile,
+          subcategory: state.subcategory,
+          categories: state.categories,
+        ),
+      );
+    }
   }
 }

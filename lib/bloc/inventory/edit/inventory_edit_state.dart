@@ -10,6 +10,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Description description,
     required Price price,
     required PerHead perHead,
+    required List<String> categories,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
@@ -23,6 +24,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Description description,
     required Price price,
     required PerHead perHead,
+    required List<String> categories,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
@@ -36,6 +38,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Description description,
     required Price price,
     required PerHead perHead,
+    required List<String> categories,
     @Default([]) List<Subcategory> subcategories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
@@ -50,6 +53,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Price price,
     required PerHead perHead,
     required List<Subcategory> subcategories,
+    required List<String> categories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
   }) = InventoryEditDirty;
@@ -63,12 +67,14 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Price price,
     required PerHead perHead,
     required List<Subcategory> subcategories,
+    required List<String> categories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
   }) = InventoryEditLoading;
 
   const factory InventoryEditState.success({
     required InventoryItem item,
+    required List<String> categories,
     @Default(MeasurementUnitInput.pure()) MeasurementUnitInput measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
@@ -82,6 +88,7 @@ abstract class InventoryEditState with _$InventoryEditState {
   }) = InventoryEditSuccess;
 
   const factory InventoryEditState.noChanges({
+    required List<String> categories,
     @Default(MeasurementUnitInput.pure()) MeasurementUnitInput measurementUnit,
     @Default(Category.pure()) Category category,
     @Default(Name.pure()) Name name,
@@ -104,6 +111,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required String message,
     required PerHead perHead,
     required List<Subcategory> subcategories,
+    required List<String> categories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
   }) = InventoryEditFailure;
@@ -117,6 +125,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Price price,
     required PerHead perHead,
     required List<Subcategory> subcategories,
+    required List<String> categories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
   }) = InventoryEditLoadingSubcategories;
@@ -130,6 +139,7 @@ abstract class InventoryEditState with _$InventoryEditState {
     required Price price,
     required PerHead perHead,
     required List<Subcategory> subcategories,
+    required List<String> categories,
     Subcategory? subcategory,
     PlatformFile? imageFile,
   }) = InventoryEditLoadedSubcategories;

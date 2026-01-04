@@ -6,9 +6,9 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 import 'package:samgyup_serve/shared/stream.dart';
 
+part 'inventory_list_bloc.freezed.dart';
 part 'inventory_list_event.dart';
 part 'inventory_list_state.dart';
-part 'inventory_list_bloc.freezed.dart';
 
 class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
   InventoryListBloc({
@@ -52,7 +52,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
     try {
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
-        categories: state.categories,
+        categories: state.categories.map((e) => e.name).toList(),
         includeBatches: true,
         itemIds: _itemIds,
         excludeItemIds: _excludeItemIds,
@@ -85,7 +85,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
       final lastItem = state.items.isNotEmpty ? state.items.last : null;
       final items = await _inventoryRepository.fetchItems(
         lastDocumentId: lastItem?.id,
-        categories: state.categories,
+        categories: state.categories.map((e) => e.name).toList(),
         limit: _pageSize,
         includeBatches: true,
         itemIds: _itemIds,
@@ -125,7 +125,7 @@ class InventoryListBloc extends Bloc<InventoryListEvent, InventoryListState> {
     try {
       final items = await _inventoryRepository.fetchItems(
         limit: _pageSize,
-        categories: state.categories,
+        categories: state.categories.map((e) => e.name).toList(),
         includeBatches: true,
         itemIds: _itemIds,
         excludeItemIds: _excludeItemIds,

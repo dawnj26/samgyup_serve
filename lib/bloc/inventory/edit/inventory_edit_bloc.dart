@@ -36,6 +36,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
            ),
            description: Description.pure(item.description ?? ''),
            price: Price.pure(item.price.toString()),
+           categories: const [],
          ),
        ) {
     on<_NameChanged>(_onNameChanged);
@@ -70,6 +71,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: event.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -91,6 +93,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -134,6 +137,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           description: description,
           price: price,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
       return;
@@ -151,6 +155,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: description,
         price: price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
 
@@ -174,7 +179,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       );
 
       if (updatedItem == _item && state.imageFile == null) {
-        return emit(const InventoryEditNoChanges());
+        return emit(const InventoryEditNoChanges(categories: []));
       }
 
       await _inventoryRepository.updateItem(updatedItem);
@@ -189,7 +194,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       );
 
       emit(
-        InventoryEditSuccess(item: updatedItem),
+        InventoryEditSuccess(item: updatedItem, categories: state.categories),
       );
     } on Exception catch (e) {
       emit(
@@ -205,6 +210,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           price: price,
           message: e.toString(),
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     }
@@ -224,6 +230,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -245,6 +252,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -265,6 +273,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
 
@@ -284,6 +293,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           description: state.description,
           price: state.price,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     } on ResponseException catch (e) {
@@ -300,6 +310,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           price: state.price,
           message: e.message,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     } on Exception catch (e) {
@@ -316,6 +327,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           price: state.price,
           message: e.toString(),
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     }
@@ -340,6 +352,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -361,6 +374,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -381,6 +395,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }
@@ -401,6 +416,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           description: state.description,
           price: state.price,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
 
@@ -410,6 +426,13 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
       final subcategory = _item.tagId == null
           ? null
           : await _inventoryRepository.fetchSubcategory(id: _item.tagId!);
+
+      final categories = [
+        ...InventoryCategory.values.map((e) => e.name),
+        ...(await _inventoryRepository.fetchCategories()).map(
+          (e) => e.name,
+        ),
+      ];
 
       emit(
         InventoryEditInitialized(
@@ -423,6 +446,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           description: state.description,
           price: state.price,
           imageFile: state.imageFile,
+          categories: categories,
         ),
       );
     } on ResponseException catch (e) {
@@ -439,6 +463,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           price: state.price,
           message: e.message,
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     } on Exception catch (e) {
@@ -455,6 +480,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
           price: state.price,
           message: e.toString(),
           imageFile: state.imageFile,
+          categories: state.categories,
         ),
       );
     }
@@ -477,6 +503,7 @@ class InventoryEditBloc extends Bloc<InventoryEditEvent, InventoryEditState> {
         description: state.description,
         price: state.price,
         imageFile: state.imageFile,
+        categories: state.categories,
       ),
     );
   }

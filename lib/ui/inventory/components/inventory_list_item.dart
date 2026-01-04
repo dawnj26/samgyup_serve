@@ -53,7 +53,7 @@ class InventoryListItem extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              '$price · ${item.category.label}',
+                              '$price · ${item.categoryLabel}',
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
