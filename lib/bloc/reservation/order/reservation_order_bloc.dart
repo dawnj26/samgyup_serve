@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
+import 'package:package_repository/package_repository.dart';
 
 part 'reservation_order_event.dart';
 part 'reservation_order_state.dart';
@@ -30,7 +31,7 @@ class ReservationOrderBloc
     _Started event,
     Emitter<ReservationOrderState> emit,
   ) async {
-    if (event.items.isEmpty) {
+    if (event.items.isEmpty && event.packages.isEmpty) {
       return emit(
         state.copyWith(
           status: ReservationOrderStatus.pure,
@@ -42,7 +43,7 @@ class ReservationOrderBloc
       emit(state.copyWith(status: ReservationOrderStatus.loading));
       final orders = await _orderRepository.createOrders(
         inventoryItems: event.items,
-        packageItems: [],
+        packageItems: event.packages,
       );
 
       for (final cart in event.items) {
