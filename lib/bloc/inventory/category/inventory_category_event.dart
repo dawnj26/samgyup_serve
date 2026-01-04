@@ -14,4 +14,7 @@ class InventoryCategoryEvent with _$InventoryCategoryEvent {
   const factory InventoryCategoryEvent.subcategoryChanged({
     required List<Subcategory> subcategories,
   }) = _SubcategoryChanged;
+  const factory InventoryCategoryEvent.categoryChanged({
+    required String category,
+  }) = _CategoryChanged;
 }
