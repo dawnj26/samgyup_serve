@@ -19,7 +19,7 @@ class SubcategoriesScreen extends StatelessWidget {
             final category = context.select(
               (SubcategoryBloc bloc) => bloc.state.category,
             );
-            return Text('${category.label} categories');
+            return Text('$category categories');
           },
         ),
       ),
