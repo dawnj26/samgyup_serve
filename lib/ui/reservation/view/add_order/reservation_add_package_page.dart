@@ -2,25 +2,21 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
+import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/event/event_bloc.dart';
-import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
+import 'package:samgyup_serve/bloc/food_package/tab/food_package_tab_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/order/reservation_order_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/navigation.dart';
-import 'package:samgyup_serve/ui/reservation/view/add_order/reservation_add_order_screen.dart';
+import 'package:samgyup_serve/ui/reservation/view/add_order/reservation_add_package_screen.dart';
 
 @RoutePage()
-class ReservationAddOrderPage extends StatelessWidget
+class ReservationAddPackagePage extends StatelessWidget
     implements AutoRouteWrapper {
-  const ReservationAddOrderPage({
-    this.onSuccess,
-    this.excludeItemIds = const [],
-    super.key,
-  });
+  const ReservationAddPackagePage({super.key, this.onSuccess});
 
   final void Function()? onSuccess;
-  final List<String> excludeItemIds;
 
   @override
   Widget build(BuildContext context) {
@@ -70,28 +66,17 @@ class ReservationAddOrderPage extends StatelessWidget
           );
         }
       },
-      child: const ReservationAddOrderScreen(),
+      child: const ReservationAddPackageScreen(),
     );
   }
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => InventoryListBloc(
-            inventoryRepository: context.read(),
-            excludeItemIds: excludeItemIds,
-            categories: InventoryCategory.values
-                .where(
-                  (c) =>
-                      c != InventoryCategory.unknown ||
-                      c != InventoryCategory.storage,
-                )
-                .toList(),
-          )..add(const InventoryListEvent.started()),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => FoodPackageTabBloc(
+        inventoryRepository: context.read<InventoryRepository>(),
+        packageRepository: context.read<PackageRepository>(),
+      )..add(const FoodPackageTabEvent.started()),
       child: this,
     );
   }

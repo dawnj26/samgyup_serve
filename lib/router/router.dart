@@ -73,6 +73,9 @@ class AppRouter extends RootStackRouter {
                     AutoRoute(
                       page: ReservationAddOrderRoute.page,
                     ),
+                    AutoRoute(
+                      page: ReservationAddPackageRoute.page,
+                    ),
                     AutoRoute(page: OrderCartRoute.page),
                   ],
                 ),

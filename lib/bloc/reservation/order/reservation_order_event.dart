@@ -5,5 +5,6 @@ abstract class ReservationOrderEvent with _$ReservationOrderEvent {
   const factory ReservationOrderEvent.started({
     required List<CartItem<InventoryItem>> items,
     required Invoice invoice,
+    @Default([]) List<CartItem<FoodPackageItem>> packages,
   }) = _Started;
 }
