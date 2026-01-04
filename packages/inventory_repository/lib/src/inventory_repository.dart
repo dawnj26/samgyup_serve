@@ -24,15 +24,17 @@ class InventoryRepository {
   String get _batchCollectionId => _appwrite.environment.batchCollectionId;
   String get _subcategoryCollectionId =>
       _appwrite.environment.subcategoryCollectionId;
+  String get _categoryCollectionId =>
+      _appwrite.environment.categoriesCollectionId;
 
   /// Fetches a list of subcategories for a given inventory category.
   Future<List<Subcategory>> fetchSubcategories({
-    required InventoryCategory category,
+    required String category,
   }) async {
     try {
       final queries = [
         Query.orderDesc(r'$createdAt'),
-        Query.equal('parent', category.name),
+        Query.equal('parent', category),
         Query.limit(200),
       ];
 
@@ -74,7 +76,7 @@ class InventoryRepository {
 
   /// Adds a new subcategory to a given inventory category.
   Future<Subcategory> addSubcategory({
-    required InventoryCategory category,
+    required String category,
     required String subcategory,
   }) async {
     try {
@@ -87,7 +89,7 @@ class InventoryRepository {
         data: {
           'id': rowId,
           'name': subcategory,
-          'parent': category.name,
+          'parent': category,
         },
       );
 
@@ -130,7 +132,7 @@ class InventoryRepository {
     String? lastDocumentId,
     int? limit,
     InventoryItemStatus? status,
-    List<InventoryCategory>? categories,
+    List<String>? categories,
     List<String>? itemIds,
     List<String>? excludeItemIds,
     List<String>? subcategoryIds,
@@ -159,7 +161,7 @@ class InventoryRepository {
         if (categories != null && categories.isNotEmpty)
           Query.equal(
             'category',
-            categories.map((e) => e.name).toList(),
+            categories,
           ),
         if (itemIds != null && itemIds.isNotEmpty) Query.equal(r'$id', itemIds),
         if (excludeQueryIds != null && excludeQueryIds.isNotEmpty)
@@ -588,6 +590,114 @@ class InventoryRepository {
       return InventoryItemStatus.lowStock;
     } else {
       return InventoryItemStatus.inStock;
+    }
+  }
+
+  /// Fetches a list of categories.
+  Future<List<MainCategory>> fetchCategories({
+    String? lastDocumentId,
+    int? limit,
+  }) async {
+    try {
+      final queries = [
+        if (lastDocumentId != null) Query.cursorAfter(lastDocumentId),
+        Query.orderDesc(r'$createdAt'),
+        Query.limit(limit ?? 200),
+      ];
+
+      final response = await _appwrite.databases.listRows(
+        databaseId: _projectInfo.databaseId,
+        tableId: _categoryCollectionId,
+        queries: queries.isEmpty ? null : queries,
+      );
+
+      return response.rows.map((row) {
+        final json = _appwrite.rowToJson(row);
+        return MainCategory.fromJson(json);
+      }).toList();
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to fetch categories: $e');
+    }
+  }
+
+  /// Fetches a category by its ID.
+  Future<MainCategory?> fetchCategoryById(String id) async {
+    try {
+      final response = await _appwrite.databases.getRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _categoryCollectionId,
+        rowId: id,
+      );
+
+      final json = _appwrite.rowToJson(response);
+
+      return MainCategory.fromJson(json);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Creates a new category.
+  Future<MainCategory> createCategory({
+    required String name,
+  }) async {
+    try {
+      final rowId = ID.unique();
+
+      final row = await _appwrite.databases.createRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _categoryCollectionId,
+        rowId: rowId,
+        data: {
+          'id': rowId,
+          'name': name,
+        },
+      );
+
+      final json = _appwrite.rowToJson(row);
+
+      return MainCategory.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to create category: $e');
+    }
+  }
+
+  /// Updates an existing category.
+  Future<MainCategory> updateCategory(MainCategory category) async {
+    try {
+      final document = await _appwrite.databases.updateRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _categoryCollectionId,
+        rowId: category.id,
+        data: category.toJson(),
+      );
+
+      final json = _appwrite.rowToJson(document);
+
+      return MainCategory.fromJson(json);
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to update category: $e');
+    }
+  }
+
+  /// Deletes a category by its ID.
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+      await _appwrite.databases.deleteRow(
+        databaseId: _projectInfo.databaseId,
+        tableId: _categoryCollectionId,
+        rowId: categoryId,
+      );
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    } on Exception catch (e) {
+      throw Exception('Failed to delete category: $e');
     }
   }
 }

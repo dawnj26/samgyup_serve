@@ -20,7 +20,7 @@ abstract class InventoryItem with _$InventoryItem {
     required String id,
     required String name,
     required MeasurementUnit unit,
-    required InventoryCategory category,
+    required String category,
     required double lowStockThreshold,
     required DateTime createdAt,
     required double price,
@@ -44,7 +44,7 @@ abstract class InventoryItem with _$InventoryItem {
     name: '',
     unit: MeasurementUnit.unknown,
     price: 0,
-    category: InventoryCategory.unknown,
+    category: '',
     lowStockThreshold: 0,
     createdAt: DateTime.now(),
     perHead: 1,
@@ -57,6 +57,17 @@ abstract class InventoryItem with _$InventoryItem {
     0,
     (sum, batch) => sum + batch.quantity,
   );
+
+  /// Returns the human-readable label of the category.
+  String get categoryLabel {
+    for (final c in InventoryCategory.values) {
+      if (c.name == category) {
+        return c.label;
+      }
+    }
+
+    return category;
+  }
 
   /// Returns the available stock quantity, excluding expired batches.
   double getAvailableStock() {

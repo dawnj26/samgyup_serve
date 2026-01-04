@@ -13,7 +13,7 @@ import 'package:samgyup_serve/ui/inventory/components/subcategory_filters.dart';
 class MenuTab extends StatelessWidget {
   const MenuTab({required this.category, super.key});
 
-  final InventoryCategory category;
+  final String category;
 
   @override
   Widget build(BuildContext context) {
