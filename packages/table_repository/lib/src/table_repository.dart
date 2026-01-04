@@ -16,6 +16,8 @@ class TableRepository {
 
   final AppwriteRepository _appwrite;
   String get _collectionId => _appwrite.environment.tableCollectionId;
+  String get _reservationCollectionId =>
+      _appwrite.environment.reservationCollectionId;
 
   /// Creates a new table in the database.
   Future<Table> createTable(Table table) async {
@@ -181,6 +183,53 @@ class TableRepository {
         ],
       );
       return response.total;
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Gets the usage count of a table from reservations.
+  Future<int> getTableUsageCount(String tableId) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _reservationCollectionId,
+        queries: [
+          Query.equal('tableId', tableId),
+          Query.limit(500),
+        ],
+      );
+      return response.total;
+    } on AppwriteException catch (e) {
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Gets the average customer count for a specific table.
+  Future<int> getAverageCustomerCount(String tableId) async {
+    try {
+      final response = await _appwrite.databases.listRows(
+        databaseId: _appwrite.environment.databaseId,
+        tableId: _reservationCollectionId,
+        queries: [
+          Query.equal('tableId', tableId),
+          Query.limit(500),
+          Query.select(['customerCount']),
+        ],
+      );
+
+      if (response.total == 0) return 0;
+
+      final totalCustomers = response.rows.fold<int>(
+        0,
+        (previousValue, e) {
+          final count = e.data['customerCount'] as int?;
+
+          return previousValue + (count ?? 0);
+        },
+      );
+
+      return (totalCustomers / response.total).round();
     } on AppwriteException catch (e) {
       throw ResponseException.fromCode(e.code ?? 500);
     }

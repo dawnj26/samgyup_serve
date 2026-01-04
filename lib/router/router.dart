@@ -54,6 +54,7 @@ class AppRouter extends RootStackRouter {
             AutoRoute(
               page: HomeRoute.page,
             ),
+            AutoRoute(page: CustomerCountRoute.page),
             AutoRoute(path: 'login', page: LoginRoute.page),
             AutoRoute(
               path: 'order',

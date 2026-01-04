@@ -4,8 +4,8 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
-import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/tab/food_package_tab_bloc.dart';
+import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/ui/components/bottom_loader.dart';
@@ -195,7 +195,7 @@ class _Item extends StatelessWidget {
   ]) async {
     if (!isAvailable) return;
 
-    final tableSize = context.read<AppBloc>().state.deviceData!.table!.capacity;
+    final tableSize = context.read<HomeBloc>().state.customerCount;
     final timeLimit = package.timeLimit / 60;
 
     final quantity = await showAddCartItemDialog(

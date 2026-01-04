@@ -38,6 +38,12 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
               ];
             }
 
+            if (session == SessionStatus.count) {
+              return [
+                const CustomerCountRoute(),
+              ];
+            }
+
             if (session == SessionStatus.order) {
               return [const OrderShellRoute()];
             }
@@ -114,7 +120,8 @@ class HomeShellPage extends StatelessWidget implements AutoRouteWrapper {
                 eventRepo: context.read<EventRepository>(),
                 billingRepo: context.read<BillingRepository>(),
                 reservationRepo: context.read<ReservationRepository>(),
-              )..add(HomeEvent.started(table: table));
+                table: table,
+              )..add(const HomeEvent.started());
             },
           ),
         ],

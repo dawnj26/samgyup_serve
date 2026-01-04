@@ -18,10 +18,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required ReservationRepository reservationRepo,
     required BillingRepository billingRepo,
     required EventRepository eventRepo,
+    Table? table,
   }) : _reservationRepo = reservationRepo,
        _eventRepo = eventRepo,
        _billingRepo = billingRepo,
-       super(const _Initial()) {
+       super(
+         _Initial(
+           table: table,
+         ),
+       ) {
     on<_StatusChanged>(_onStatusChanged);
     on<_Started>(_onStarted);
     on<_ReservationCreated>(_onReservationCreated);
@@ -30,6 +35,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         state.copyWith(
           invoiceId: event.invoiceId,
           session: SessionStatus.payment,
+        ),
+      );
+    });
+    on<_CustomerCountChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          customerCount: event.customerCount,
         ),
       );
     });
@@ -64,7 +76,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(state.copyWith(status: HomeStatus.loading));
 
-    if (event.table == null) {
+    if (state.table == null) {
       emit(
         state.copyWith(
           status: HomeStatus.success,
@@ -76,7 +88,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     try {
       final reservation = await _reservationRepo.getCurrentReservation(
-        event.table!.id,
+        state.table!.id,
       );
 
       if (reservation == null) {
@@ -90,7 +102,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       final invoiceId = await _getInvoiceIdFromPaymentEvent(
-        event.table!.number,
+        state.table!.number,
       );
 
       if (invoiceId == null) {

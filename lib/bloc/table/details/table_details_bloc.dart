@@ -44,12 +44,20 @@ class TableDetailsBloc extends Bloc<TableDetailsEvent, TableDetailsState> {
       final reservation = await _reservationRepo.getCurrentReservation(
         state.table.id,
       );
+      final usage = await _tableRepo.getTableUsageCount(
+        state.table.id,
+      );
+      final averageCustomerCount = await _tableRepo.getAverageCustomerCount(
+        state.table.id,
+      );
 
       emit(
         state.copyWith(
           status: TableDetailsStatus.success,
           device: device,
           reservationId: reservation?.id,
+          usageCount: usage,
+          averageCustomerCount: averageCustomerCount,
         ),
       );
     } on ResponseException catch (e) {
