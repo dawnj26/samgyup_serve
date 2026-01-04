@@ -26,6 +26,9 @@ abstract class Order with _$Order {
     /// The total price of the order at the time of creation.
     required double totalPrice,
 
+    /// The current status of the order.
+    @Default(OrderStatus.pending) OrderStatus status,
+
     /// The unique identifier for this Order. Empty when not yet persisted.
     @Default('') String id,
 

@@ -3,7 +3,8 @@ import 'package:formz/formz.dart';
 enum PerHeadValidationError {
   empty,
   tooLow,
-  invalid;
+  invalid
+  ;
 
   String get message {
     switch (this) {

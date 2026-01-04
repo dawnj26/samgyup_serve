@@ -6,14 +6,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/stream.dart';
 
+part 'inventory_tab_bloc.freezed.dart';
 part 'inventory_tab_event.dart';
 part 'inventory_tab_state.dart';
-part 'inventory_tab_bloc.freezed.dart';
 
 class InventoryTabBloc extends Bloc<InventoryTabEvent, InventoryTabState> {
   InventoryTabBloc({
     required InventoryRepository inventoryRepository,
-    required InventoryCategory category,
+    required String category,
   }) : _inventoryRepo = inventoryRepository,
        _category = category,
        super(const _Initial()) {
@@ -28,7 +28,7 @@ class InventoryTabBloc extends Bloc<InventoryTabEvent, InventoryTabState> {
     );
   }
 
-  final InventoryCategory _category;
+  final String _category;
   final InventoryRepository _inventoryRepo;
   final int _pageSize = 20;
 

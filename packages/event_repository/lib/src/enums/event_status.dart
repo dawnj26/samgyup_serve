@@ -7,7 +7,8 @@ enum EventStatus {
   completed,
 
   /// Event was cancelled before completion
-  cancelled;
+  cancelled
+  ;
 
   /// Returns a human-readable label for the event type.
   String get label {

@@ -33,7 +33,7 @@ class InventoryAddPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider(
       create: (context) => InventoryCreateBloc(
         inventoryRepository: context.read(),
-      ),
+      )..add(const InventoryCreateEvent.started()),
       child: this,
     );
   }

@@ -10,7 +10,7 @@ import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/ui/reservation/view/order/reservation_order_screen.dart';
 
 @RoutePage()
-class ReservationOrderPage extends StatelessWidget implements AutoRouteWrapper {
+class ReservationOrderPage extends StatelessWidget {
   const ReservationOrderPage({super.key});
 
   @override
@@ -35,22 +35,6 @@ class ReservationOrderPage extends StatelessWidget implements AutoRouteWrapper {
         }
       },
       child: const ReservationOrderScreen(),
-    );
-  }
-
-  @override
-  Widget wrappedRoute(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => OrderListBloc(
-            orderRepository: context.read(),
-            inventoryRepository: context.read(),
-            packageRepository: context.read(),
-          ),
-        ),
-      ],
-      child: this,
     );
   }
 }

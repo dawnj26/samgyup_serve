@@ -13,7 +13,7 @@ import 'package:samgyup_serve/ui/inventory/view/subcategories/subcategories_scre
 class SubcategoriesPage extends StatelessWidget implements AutoRouteWrapper {
   const SubcategoriesPage({required this.category, super.key, this.onPop});
 
-  final InventoryCategory category;
+  final String category;
   final VoidCallback? onPop;
 
   @override

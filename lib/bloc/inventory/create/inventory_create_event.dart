@@ -3,6 +3,7 @@ part of 'inventory_create_bloc.dart';
 @freezed
 class InventoryCreateEvent with _$InventoryCreateEvent {
   const factory InventoryCreateEvent.saved() = _Saved;
+  const factory InventoryCreateEvent.started() = _Started;
 
   const factory InventoryCreateEvent.nameChanged({
     required String name,
@@ -11,7 +12,7 @@ class InventoryCreateEvent with _$InventoryCreateEvent {
     required String description,
   }) = _DescriptionChanged;
   const factory InventoryCreateEvent.categoryChanged({
-    required InventoryCategory category,
+    required String category,
   }) = _CategoryChanged;
   const factory InventoryCreateEvent.subcategoryChanged({
     required Subcategory? subcategory,

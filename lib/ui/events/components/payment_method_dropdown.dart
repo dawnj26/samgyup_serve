@@ -28,7 +28,7 @@ class PaymentMethodDropdown extends StatelessWidget {
 
     return DropdownMenu<PaymentMethod>(
       leadingIcon: const Icon(Icons.category_outlined),
-      label: const Text('Method'),
+      label: const Text('Mode'),
       width: screenWidth - padding * 2,
       initialSelection: initialValue,
       onSelected: onSelected,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
-import 'package:samgyup_serve/bloc/menu/menu_bloc.dart';
+import 'package:samgyup_serve/bloc/inventory/list/inventory_list_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/order/reservation_order_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/reservation_bloc.dart';
@@ -26,8 +26,8 @@ class ReservationAddOrderScreen extends StatelessWidget {
         title: const Text('Add Order'),
       ),
       body: InfiniteScrollLayout(
-        onLoadMore: () => context.read<MenuBloc>().add(
-          const MenuEvent.loadMore(),
+        onLoadMore: () => context.read<InventoryListBloc>().add(
+          const InventoryListEvent.loadMore(),
         ),
         slivers: [
           MenuItemList(

@@ -79,6 +79,7 @@ class _InventoryEditScreenState extends State<InventoryEditScreen> {
                           item: widget.item,
                           subcategoryController: _subcategoryController,
                           subcategory: state.subcategory,
+                          categories: state.categories,
                         );
                       },
                     ),
@@ -97,12 +98,14 @@ class _Form extends StatelessWidget {
   const _Form({
     required this.item,
     required this.subcategoryController,
+    required this.categories,
     this.subcategory,
   });
 
   final InventoryItem item;
   final TextEditingController subcategoryController;
   final Subcategory? subcategory;
+  final List<String> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +121,8 @@ class _Form extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _CategoryInputField(
-            item.category,
+            value: item.category,
+            categories: categories,
           ),
           const SizedBox(height: 16),
           _Subcategory(
@@ -319,9 +323,13 @@ class _DescriptionInputField extends StatelessWidget {
 }
 
 class _CategoryInputField extends StatelessWidget {
-  const _CategoryInputField(this.value);
+  const _CategoryInputField({
+    required this.value,
+    required this.categories,
+  });
 
-  final InventoryCategory? value;
+  final String? value;
+  final List<String> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -336,6 +344,7 @@ class _CategoryInputField extends StatelessWidget {
           errorText = 'Category is required';
         }
         return CategoryInput(
+          categories: categories,
           key: const Key('InventoryEdit_categoryInput_dropdown'),
           value: value,
           errorText: errorText,

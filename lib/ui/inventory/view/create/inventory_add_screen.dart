@@ -59,33 +59,55 @@ class _InventoryAddScreenState extends State<InventoryAddScreen> {
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.all(16),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          const _NameInputField(),
-                          const SizedBox(height: 16),
-                          const _DescriptionInputField(),
-                          const SizedBox(height: 16),
-                          _CategoryInputField(
-                            onChanged: _subcategoryController.clear,
-                          ),
-                          const SizedBox(height: 16),
-                          _Subcategory(controller: _subcategoryController),
-                          const SizedBox(height: 16),
-                          const _LowStockThresholdInputField(),
-                          const SizedBox(height: 16),
-                          const _MeasurementUnitInputField(),
-                          const SizedBox(height: 16),
-                          const _Price(),
-                          const SizedBox(height: 16),
-                          const _PerHead(),
-                          const SizedBox(height: 16),
-                          const _Image(),
-                          const SizedBox(height: 16),
-                          const AddButton(),
-                        ],
-                      ),
-                    ),
+                    sliver:
+                        BlocBuilder<InventoryCreateBloc, InventoryCreateState>(
+                          buildWhen: (previous, current) {
+                            return previous is InventoryCreateInitializing ||
+                                current is InventoryCreateInitialized;
+                          },
+                          builder: (context, state) {
+                            if (state is InventoryCreateInitializing ||
+                                state is InventoryCreateInitial) {
+                              return const SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
+                            return SliverList(
+                              delegate: SliverChildListDelegate(
+                                [
+                                  const _NameInputField(),
+                                  const SizedBox(height: 16),
+                                  const _DescriptionInputField(),
+                                  const SizedBox(height: 16),
+                                  _CategoryInputField(
+                                    categories: state.categories,
+                                    onChanged: _subcategoryController.clear,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _Subcategory(
+                                    controller: _subcategoryController,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const _LowStockThresholdInputField(),
+                                  const SizedBox(height: 16),
+                                  const _MeasurementUnitInputField(),
+                                  const SizedBox(height: 16),
+                                  const _Price(),
+                                  const SizedBox(height: 16),
+                                  const _PerHead(),
+                                  const SizedBox(height: 16),
+                                  const _Image(),
+                                  const SizedBox(height: 16),
+                                  const AddButton(),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                   ),
                 ],
               ),
@@ -221,9 +243,10 @@ class _DescriptionInputField extends StatelessWidget {
 }
 
 class _CategoryInputField extends StatelessWidget {
-  const _CategoryInputField({this.onChanged});
+  const _CategoryInputField({required this.categories, this.onChanged});
 
   final void Function()? onChanged;
+  final List<String> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +261,7 @@ class _CategoryInputField extends StatelessWidget {
           errorText = 'Category is required';
         }
         return CategoryInput(
+          categories: categories,
           key: const Key('inventoryCreate_categoryInput_dropdown'),
           errorText: errorText,
           onSelected: (value) {

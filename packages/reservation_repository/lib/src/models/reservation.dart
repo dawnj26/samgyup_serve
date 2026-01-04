@@ -23,6 +23,9 @@ abstract class Reservation with _$Reservation {
     /// The invoice ID associated with this reservation
     required String invoiceId,
 
+    /// Number of customers for the reservation
+    required int customerCount,
+
     /// Current status of the reservation
     @Default(ReservationStatus.active) ReservationStatus status,
 
@@ -44,6 +47,7 @@ abstract class Reservation with _$Reservation {
     tableId: '',
     startTime: DateTime.now(),
     invoiceId: '',
+    customerCount: 1,
   );
 
   /// Creates a Reservation from a JSON map.

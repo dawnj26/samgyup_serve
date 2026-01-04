@@ -69,6 +69,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         tableId: event.tableId,
         invoiceId: invoice.id,
         startTime: DateTime.now(),
+        customerCount: event.customerCount,
       );
 
       await _tableRepository.updateTableStatus(

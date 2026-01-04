@@ -15,10 +15,12 @@ class ReservationAddOrderPage extends StatelessWidget
     implements AutoRouteWrapper {
   const ReservationAddOrderPage({
     this.onSuccess,
+    this.excludeItemIds = const [],
     super.key,
   });
 
   final void Function()? onSuccess;
+  final List<String> excludeItemIds;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +81,7 @@ class ReservationAddOrderPage extends StatelessWidget
         BlocProvider(
           create: (context) => InventoryListBloc(
             inventoryRepository: context.read(),
+            excludeItemIds: excludeItemIds,
             categories: InventoryCategory.values
                 .where(
                   (c) =>
@@ -87,13 +90,6 @@ class ReservationAddOrderPage extends StatelessWidget
                 )
                 .toList(),
           )..add(const InventoryListEvent.started()),
-        ),
-        BlocProvider(
-          create: (context) => ReservationOrderBloc(
-            billingRepository: context.read(),
-            inventoryRepository: context.read(),
-            orderRepository: context.read(),
-          ),
         ),
       ],
       child: this,

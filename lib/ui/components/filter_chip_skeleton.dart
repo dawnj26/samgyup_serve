@@ -22,8 +22,8 @@ class FilterChipSkeleton extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(right: rightPadding),
             child: Shimmer.fromColors(
-              baseColor: Colors.grey[200]!,
-              highlightColor: Colors.grey[100]!,
+              baseColor: Colors.grey[800]!,
+              highlightColor: Colors.grey[700]!,
               child: Container(
                 height: 32,
                 width: 80 + (index * 10) % 40, // Varying widths

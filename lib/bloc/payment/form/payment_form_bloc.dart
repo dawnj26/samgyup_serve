@@ -18,8 +18,11 @@ class PaymentFormBloc extends Bloc<PaymentFormEvent, PaymentFormState> {
     required BillingRepository billingRepository,
     required double totalAmount,
   }) : _billingRepository = billingRepository,
-       _totalAmount = totalAmount,
-       super(const _Initial()) {
+       super(
+         _Initial(
+           amount: totalAmount,
+         ),
+       ) {
     on<_PriceChanged>((event, emit) {
       final price = Price.dirty(event.value);
       emit(
@@ -48,7 +51,6 @@ class PaymentFormBloc extends Bloc<PaymentFormEvent, PaymentFormState> {
   }
 
   final BillingRepository _billingRepository;
-  final double _totalAmount;
 
   Future<void> _onSubmitted(
     _Submitted event,
@@ -66,15 +68,15 @@ class PaymentFormBloc extends Bloc<PaymentFormEvent, PaymentFormState> {
     final amount = double.parse(price.value);
 
     log(
-      'Amount: $amount, Total Amount: $_totalAmount',
+      'Amount: $amount, Total Amount: ${state.amount}',
       name: 'PaymentFormBloc._onSubmitted',
     );
-    if (amount < _totalAmount) {
+    if (amount < state.amount) {
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
           errorMessage:
-              'The amount must be at least ${formatToPHP(_totalAmount)}',
+              'The amount must be at least ${formatToPHP(state.amount)}',
         ),
       );
       return;

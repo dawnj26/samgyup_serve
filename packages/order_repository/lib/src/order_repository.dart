@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:inventory_repository/inventory_repository.dart';
-import 'package:order_repository/src/enums/order_type.dart';
+import 'package:order_repository/src/enums/enums.dart';
 import 'package:order_repository/src/models/models.dart';
 import 'package:package_repository/package_repository.dart';
 
@@ -110,5 +110,41 @@ class OrderRepository {
       log(e.toString(), name: 'OrderRepository.fetchOrdersByIds');
       throw ResponseException.fromCode(e.code ?? 500);
     }
+  }
+
+  /// Updates the status of an order.
+  Future<Order> updateStatus({
+    required String orderId,
+    required OrderStatus newStatus,
+  }) async {
+    try {
+      final document = await _appwrite.databases.updateRow(
+        databaseId: _databaseId,
+        tableId: _collectionId,
+        rowId: orderId,
+        data: {
+          'status': newStatus.name,
+        },
+      );
+
+      log(
+        'Updated order $orderId to status ${newStatus.label}',
+        name: 'OrderRepository.updateStatus',
+      );
+
+      return Order.fromJson(_appwrite.rowToJson(document));
+    } on AppwriteException catch (e) {
+      log(e.toString(), name: 'OrderRepository.updateStatus');
+      throw ResponseException.fromCode(e.code ?? 500);
+    }
+  }
+
+  /// Subscribes to real-time updates for a specific order.
+  RealtimeSubscription orderState(String orderId) {
+    return _appwrite.realtime.subscribe([
+      //
+      // ignore: lines_longer_than_80_chars
+      'databases.${_appwrite.environment.databaseId}.tables.$_collectionId.rows.$orderId',
+    ]);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appwrite_repository/appwrite_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
@@ -25,6 +27,7 @@ class InventoryStockBloc
     on<_StockChanged>(_onStockChanged);
     on<_ExpirationChanged>(_onExpirationChanged);
     on<_Submitted>(_onSubmitted);
+    on<_SupplierNameChanged>(_onSupplierNameChanged);
   }
 
   final InventoryRepository _inventoryRepository;
@@ -87,6 +90,7 @@ class InventoryStockBloc
         quantity: parsedQuantity,
         baseQuantity: parsedQuantity,
         expirationDate: state.expiration,
+        supplierName: state.supplierName,
       );
 
       final newBatch = await _inventoryRepository.addBatch(batch);
@@ -128,5 +132,25 @@ class InventoryStockBloc
         ),
       );
     }
+  }
+
+  FutureOr<void> _onSupplierNameChanged(
+    _SupplierNameChanged event,
+    Emitter<InventoryStockState> emit,
+  ) async {
+    if (event.supplierName.isEmpty) {
+      emit(
+        state.copyWith(
+          supplierName: null,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        supplierName: event.supplierName,
+      ),
+    );
   }
 }

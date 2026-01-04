@@ -24,6 +24,7 @@ class ReservationRepository {
     required String tableId,
     required DateTime startTime,
     required String invoiceId,
+    required int customerCount,
   }) async {
     try {
       final reservation = Reservation(
@@ -31,6 +32,7 @@ class ReservationRepository {
         tableId: tableId,
         startTime: startTime.toUtc(),
         invoiceId: invoiceId,
+        customerCount: customerCount,
       );
 
       final doc = await _appwrite.databases.createRow(
@@ -50,6 +52,10 @@ class ReservationRepository {
   /// Retrieves the current active reservation for a given table.
   Future<Reservation?> getCurrentReservation(String tableId) async {
     try {
+      final now = DateTime.now();
+      final startOfDay = DateTime(now.year, now.month, now.day);
+      final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
       final result = await _appwrite.databases.listRows(
         databaseId: _databaseId,
         tableId: _collectionId,
@@ -60,6 +66,14 @@ class ReservationRepository {
               Query.equal('status', ReservationStatus.active.name),
               Query.equal('status', ReservationStatus.cancelling.name),
             ],
+          ),
+          Query.greaterThanEqual(
+            r'$createdAt',
+            startOfDay.toUtc().toIso8601String(),
+          ),
+          Query.lessThanEqual(
+            r'$createdAt',
+            endOfDay.toUtc().toIso8601String(),
           ),
           Query.limit(1),
         ],

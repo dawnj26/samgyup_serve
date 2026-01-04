@@ -54,6 +54,7 @@ class AppRouter extends RootStackRouter {
             AutoRoute(
               page: HomeRoute.page,
             ),
+            AutoRoute(page: CustomerCountRoute.page),
             AutoRoute(path: 'login', page: LoginRoute.page),
             AutoRoute(
               path: 'order',
@@ -72,6 +73,9 @@ class AppRouter extends RootStackRouter {
                   children: [
                     AutoRoute(
                       page: ReservationAddOrderRoute.page,
+                    ),
+                    AutoRoute(
+                      page: ReservationAddPackageRoute.page,
                     ),
                     AutoRoute(page: OrderCartRoute.page),
                   ],
@@ -104,12 +108,7 @@ class AppRouter extends RootStackRouter {
               children: [
                 AutoRoute(page: DashboardRoute.page, initial: true),
                 AutoRoute(
-                  page: EventShellRoute.page,
-                  children: [
-                    AutoRoute(
-                      page: EventRoute.page,
-                    ),
-                  ],
+                  page: EventRoute.page,
                 ),
                 AutoRoute(page: ManagementRoute.page),
               ],

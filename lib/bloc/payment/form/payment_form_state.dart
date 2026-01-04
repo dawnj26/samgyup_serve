@@ -6,6 +6,7 @@ abstract class PaymentFormState with _$PaymentFormState {
     @Default(Price.pure()) Price price,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
     @Default(PaymentMethod.cash) PaymentMethod method,
+    @Default(0.0) double amount,
     String? transactionRef,
     String? errorMessage,
     Payment? payment,

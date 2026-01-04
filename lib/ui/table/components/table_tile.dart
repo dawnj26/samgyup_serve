@@ -14,20 +14,28 @@ class TableTile extends StatelessWidget {
 
     return Card(
       clipBehavior: Clip.hardEdge,
-      child: ListTile(
-        title: Row(
-          children: [
-            Text(
-              'Table ${table.number}',
-              style: textTheme.titleMedium,
-            ),
-            const SizedBox(width: 8),
-            TableStatusBadge(status: table.status),
-          ],
-        ),
-        subtitle: Text('Capacity: ${table.capacity}'),
-        trailing: const Icon(Icons.chevron_right),
+      child: InkWell(
         onTap: () => onTap?.call(table),
+        child: GridTile(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Table ${table.number}',
+                  style: textTheme.titleMedium,
+                ),
+                Text(
+                  'Capacity: ${table.capacity}',
+                  style: textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 8),
+                TableStatusBadge(status: table.status),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

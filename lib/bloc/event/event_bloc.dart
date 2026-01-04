@@ -14,7 +14,9 @@ part 'event_bloc.freezed.dart';
 class EventBloc extends Bloc<EventEvent, EventState> {
   EventBloc({
     required EventRepository eventRepository,
+    required OrderRepository orderRepository,
   }) : _eventRepository = eventRepository,
+       _orderRepository = orderRepository,
        super(const _Initial()) {
     on<_OrderCreated>(_onOrderCreated);
     on<_ItemsAdded>(_onItemsAdded);
@@ -24,6 +26,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   }
 
   final EventRepository _eventRepository;
+  final OrderRepository _orderRepository;
 
   Future<void> _onOrderCancelled(
     _OrderCancelled event,
@@ -150,6 +153,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
               )
               .toList(),
         },
+        'orderId': event.orderPackageId,
       };
 
       final newEvent = Event(
@@ -159,6 +163,11 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         type: EventType.refillRequested,
         createdAt: DateTime.now().toUtc(),
       );
+      await _orderRepository.updateStatus(
+        orderId: event.orderPackageId,
+        newStatus: OrderStatus.pending,
+      );
+
       await _eventRepository.createEvent(newEvent);
       emit(state.copyWith(status: EventStatus.success));
     } on ResponseException catch (e) {

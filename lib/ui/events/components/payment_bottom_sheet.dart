@@ -34,25 +34,17 @@ class PaymentBottomSheet extends StatelessWidget {
       ],
       child: BlocListener<PaymentFormBloc, PaymentFormState>(
         listener: (context, state) {
-          if (state.status == FormzSubmissionStatus.success) {
-            final change = state.payment!.amount - totalAmount;
-            final message = 'Change: ${formatToPHP(change)}';
+          final status = state.status;
 
-            showInfoDialog(
-              context: context,
-              title: 'Payment Successful',
-              message: message,
-              onOk: () {
-                context.router.pop();
-                onSuccess?.call(state.payment!);
-              },
-            );
+          if (status == FormzSubmissionStatus.success) {
+            onSuccess?.call(state.payment!);
+            context.router.pop();
           }
 
-          if (state.status == FormzSubmissionStatus.failure) {
+          if (status == FormzSubmissionStatus.failure) {
             showErrorDialog(
               context: context,
-              message: state.errorMessage ?? 'Something went wrong',
+              message: state.errorMessage ?? 'Payment failed',
             );
           }
         },
@@ -73,14 +65,13 @@ class _Sheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.sizeOf(context).height;
     final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => FocusScope.of(context).unfocus(),
       child: BottomSheetLayout(
-        height: screenHeight * 0.75,
+        fullscreen: true,
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,31 +137,70 @@ class _Button extends StatelessWidget {
     );
     final colorScheme = Theme.of(context).colorScheme;
 
-    return FilledButton(
-      onPressed: isSubmitting
-          ? null
-          : () {
-              context.read<PaymentFormBloc>().add(
-                const PaymentFormEvent.submitted(),
-              );
-            },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('Submit Payment'),
-          if (isSubmitting) ...[
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: colorScheme.primary,
-              ),
-            ),
-          ],
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        const _Change(),
+        FilledButton(
+          onPressed: isSubmitting
+              ? null
+              : () {
+                  context.read<PaymentFormBloc>().add(
+                    const PaymentFormEvent.submitted(),
+                  );
+                },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Submit Payment'),
+              if (isSubmitting) ...[
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: colorScheme.primary,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Change extends StatelessWidget {
+  const _Change();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final total = context.select(
+      (PaymentFormBloc bloc) => bloc.state.amount,
+    );
+    final price = context.select(
+      (PaymentFormBloc bloc) => bloc.state.price,
+    );
+
+    if (!price.isValid) {
+      return Text('Change: ${formatToPHP(0)}', style: textTheme.labelLarge);
+    }
+
+    final change = double.parse(price.value) - total;
+
+    if (change < 0) {
+      return Text(
+        'Change: ${formatToPHP(0)}',
+        style: textTheme.labelLarge,
+      );
+    }
+
+    return Text(
+      'Change: ${formatToPHP(change)}',
+      style: textTheme.labelLarge,
     );
   }
 }

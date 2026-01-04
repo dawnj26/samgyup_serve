@@ -5,21 +5,24 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/stream.dart';
 
+part 'inventory_category_bloc.freezed.dart';
 part 'inventory_category_event.dart';
 part 'inventory_category_state.dart';
-part 'inventory_category_bloc.freezed.dart';
 
 class InventoryCategoryBloc
     extends Bloc<InventoryCategoryEvent, InventoryCategoryState> {
   InventoryCategoryBloc({
     required InventoryRepository inventoryRepository,
-    InventoryCategory category = InventoryCategory.meats,
+    String category = 'meats',
+    String? categoryId,
   }) : _inventoryRepository = inventoryRepository,
        super(
          InventoryCategoryInitial(
            category: category,
+           categoryId: categoryId,
          ),
        ) {
+    on<_CategoryChanged>(_onCategoryChanged);
     on<_Started>(_onStarted);
     on<_LoadMore>(
       _onLoadMore,
@@ -52,6 +55,7 @@ class InventoryCategoryBloc
         category: state.category,
         subcategories: state.subcategories,
         selectedSubcategories: state.selectedSubcategories,
+        categoryId: state.categoryId,
       ),
     );
 
@@ -72,6 +76,7 @@ class InventoryCategoryBloc
           category: state.category,
           subcategories: subcategories,
           selectedSubcategories: state.selectedSubcategories,
+          categoryId: state.categoryId,
         ),
       );
     } on Exception catch (e) {
@@ -83,6 +88,7 @@ class InventoryCategoryBloc
           category: state.category,
           subcategories: state.subcategories,
           selectedSubcategories: state.selectedSubcategories,
+          categoryId: state.categoryId,
         ),
       );
     }
@@ -111,6 +117,7 @@ class InventoryCategoryBloc
           category: state.category,
           subcategories: state.subcategories,
           selectedSubcategories: state.selectedSubcategories,
+          categoryId: state.categoryId,
         ),
       );
     } on Exception catch (e) {
@@ -122,6 +129,7 @@ class InventoryCategoryBloc
           category: state.category,
           subcategories: state.subcategories,
           selectedSubcategories: state.selectedSubcategories,
+          categoryId: state.categoryId,
         ),
       );
     }
@@ -138,6 +146,7 @@ class InventoryCategoryBloc
         category: state.category,
         subcategories: state.subcategories,
         selectedSubcategories: state.selectedSubcategories,
+        categoryId: state.categoryId,
       ),
     );
 
@@ -149,13 +158,16 @@ class InventoryCategoryBloc
         includeBatches: true,
       );
 
+      final category = await _getCategory(state.categoryId);
+
       emit(
         InventoryCategoryLoaded(
           items: items,
           hasReachedMax: items.length < _pageSize,
-          category: state.category,
+          category: category ?? state.category,
           subcategories: state.subcategories,
           selectedSubcategories: state.selectedSubcategories,
+          categoryId: state.categoryId,
         ),
       );
     } on Exception catch (e) {
@@ -167,6 +179,7 @@ class InventoryCategoryBloc
           category: state.category,
           subcategories: state.subcategories,
           selectedSubcategories: state.selectedSubcategories,
+          categoryId: state.categoryId,
         ),
       );
     }
@@ -186,6 +199,7 @@ class InventoryCategoryBloc
         category: state.category,
         subcategories: state.subcategories,
         selectedSubcategories: state.selectedSubcategories,
+        categoryId: state.categoryId,
       ),
     );
   }
@@ -204,6 +218,7 @@ class InventoryCategoryBloc
         category: state.category,
         subcategories: state.subcategories,
         selectedSubcategories: state.selectedSubcategories,
+        categoryId: state.categoryId,
       ),
     );
   }
@@ -219,8 +234,36 @@ class InventoryCategoryBloc
         category: state.category,
         subcategories: state.subcategories,
         selectedSubcategories: event.subcategories,
+        categoryId: state.categoryId,
       ),
     );
     add(const InventoryCategoryEvent.reload());
+  }
+
+  FutureOr<void> _onCategoryChanged(
+    _CategoryChanged event,
+    Emitter<InventoryCategoryState> emit,
+  ) async {
+    emit(
+      InventoryCategoryLoaded(
+        items: state.items,
+        hasReachedMax: state.hasReachedMax,
+        category: event.category,
+        subcategories: state.subcategories,
+        selectedSubcategories: state.subcategories,
+        categoryId: state.categoryId,
+      ),
+    );
+  }
+
+  Future<String?> _getCategory(String? categoryId) async {
+    if (categoryId != null) {
+      final category = await _inventoryRepository.fetchCategoryById(
+        categoryId,
+      );
+      return category?.name;
+    }
+
+    return null;
   }
 }

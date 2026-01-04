@@ -28,7 +28,8 @@ enum LogResource {
   reservation,
 
   /// Logs related to table management.
-  table;
+  table
+  ;
 
   /// Returns a human-readable label for this log resource.
   String get label {

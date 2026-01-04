@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/table/tables_bloc.dart';
@@ -48,9 +49,10 @@ class TableScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Add Table'),
         onPressed: () => _handlePressed(context),
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -104,7 +106,6 @@ class _TableList extends StatelessWidget {
             );
           case TablesStatus.success:
             final tables = state.tables;
-            final hasReachedMax = state.hasReachedMax;
 
             if (tables.isEmpty) {
               return const SliverFillRemaining(
@@ -115,13 +116,15 @@ class _TableList extends StatelessWidget {
               );
             }
 
-            return SliverList.builder(
-              itemCount: hasReachedMax ? tables.length : tables.length + 1,
+            return SliverGrid.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: kIsWeb ? 4 : 2,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                childAspectRatio: 3 / 2,
+              ),
+              itemCount: tables.length,
               itemBuilder: (context, index) {
-                if (index >= tables.length) {
-                  return const BottomLoader();
-                }
-
                 final table = tables[index];
                 return TableTile(
                   table: table,
@@ -160,7 +163,7 @@ class _Total extends StatelessWidget {
 
     return StatusCard(
       title: 'Total tables',
-      color: Colors.red.shade100,
+      color: Colors.red.shade700,
       count: total,
     );
   }

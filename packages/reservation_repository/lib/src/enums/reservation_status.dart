@@ -10,7 +10,8 @@ enum ReservationStatus {
   cancelling,
 
   /// Reservation has been cancelled
-  cancelled;
+  cancelled
+  ;
 
   /// Returns a human-readable label for the reservation status.
   String get label {

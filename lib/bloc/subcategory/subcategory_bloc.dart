@@ -4,13 +4,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/shared/enums/loading_status.dart';
 
+part 'subcategory_bloc.freezed.dart';
 part 'subcategory_event.dart';
 part 'subcategory_state.dart';
-part 'subcategory_bloc.freezed.dart';
 
 class SubcategoryBloc extends Bloc<SubcategoryEvent, SubcategoryState> {
   SubcategoryBloc({
-    required InventoryCategory category,
+    required String category,
     required InventoryRepository inventoryRepository,
   }) : _inventoryRepository = inventoryRepository,
        super(

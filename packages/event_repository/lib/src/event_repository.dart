@@ -50,6 +50,10 @@ class EventRepository {
       final now = DateTime.now().toUtc();
       final startOfDay = DateTime.utc(now.year, now.month, now.day);
 
+      log(
+        'start of day: ${startOfDay.year}/${startOfDay.day}/${startOfDay.month}',
+      );
+
       final queries = <String>[
         Query.orderAsc(r'$createdAt'),
         if (statuses != null && statuses.isNotEmpty)

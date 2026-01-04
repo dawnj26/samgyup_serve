@@ -21,10 +21,23 @@ abstract class Subcategory with _$Subcategory {
     required String name,
 
     /// ID of the parent category this subcategory belongs to.
-    required InventoryCategory parent,
+    required String parent,
   }) = _Subcategory;
 
   /// Converts a JSON map to a [Subcategory] instance.
   factory Subcategory.fromJson(Map<String, dynamic> json) =>
       _$SubcategoryFromJson(json);
+
+  const Subcategory._();
+
+  /// Returns the human-readable label of the parent category.
+  String get parentLabel {
+    for (final category in InventoryCategory.values) {
+      if (category.name == parent) {
+        return category.label;
+      }
+    }
+
+    return parent;
+  }
 }

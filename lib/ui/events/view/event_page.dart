@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order_repository/order_repository.dart';
 import 'package:samgyup_serve/bloc/event/actions/event_actions_bloc.dart';
-import 'package:samgyup_serve/bloc/event/list/event_list_bloc.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 import 'package:samgyup_serve/shared/snackbar.dart';
 import 'package:samgyup_serve/ui/events/view/event_screen.dart';
@@ -38,20 +38,19 @@ class EventPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => EventListBloc(
-            eventRepository: context.read(),
-          )..add(const EventListEvent.started()),
-        ),
-        BlocProvider(
-          create: (context) => EventActionsBloc(
-            eventRepository: context.read(),
+    return RepositoryProvider(
+      create: (context) => OrderRepository(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => EventActionsBloc(
+              eventRepository: context.read(),
+              orderRepository: context.read(),
+            ),
           ),
-        ),
-      ],
-      child: this,
+        ],
+        child: this,
+      ),
     );
   }
 }

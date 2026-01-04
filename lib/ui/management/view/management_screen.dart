@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:samgyup_serve/data/management.dart';
 import 'package:samgyup_serve/ui/components/components.dart';
@@ -32,7 +33,7 @@ class ManagementScreen extends StatelessWidget {
               );
             },
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: kIsWeb ? 4 : 2,
               childAspectRatio: 1.5,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,

@@ -14,7 +14,8 @@ enum EventType {
   orderCancelled,
 
   /// Triggered when a customer requests to pay for their order.
-  paymentRequested;
+  paymentRequested
+  ;
 
   /// Returns a human-readable label for the event type.
   String get label {
@@ -29,6 +30,22 @@ enum EventType {
         return 'Payment Requested';
       case EventType.orderCancelled:
         return 'Order Cancelled';
+    }
+  }
+
+  /// Returns a descriptive message for the event type.
+  String get message {
+    switch (this) {
+      case EventType.orderCreated:
+        return 'created a new order.';
+      case EventType.itemsAdded:
+        return 'added items to an existing order.';
+      case EventType.refillRequested:
+        return 'requested a refill.';
+      case EventType.paymentRequested:
+        return 'requested payment for an order.';
+      case EventType.orderCancelled:
+        return 'cancelled an order.';
     }
   }
 }

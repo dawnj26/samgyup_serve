@@ -42,7 +42,8 @@ class FoodPackageScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Add Package'),
         onPressed: () async {
           await context.router.push(
             FoodPackageCreateRoute(
@@ -50,7 +51,7 @@ class FoodPackageScreen extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
       ),
     );
   }

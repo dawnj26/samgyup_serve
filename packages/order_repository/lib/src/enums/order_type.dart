@@ -5,7 +5,8 @@ enum OrderType {
   menu,
 
   /// An order consisting of pre-defined packages.
-  package;
+  package
+  ;
 
   /// A human-readable label for this order type.
   String get label {

@@ -25,7 +25,8 @@ enum InventoryCategory {
   unknown,
 
   /// Vegetables, side dishes, and accompaniments
-  vegetables;
+  vegetables
+  ;
 
   /// Returns the human-readable display label for this category.
   String get label {
