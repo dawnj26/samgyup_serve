@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:samgyup_serve/bloc/category/delete/category_delete_bloc.dart';
 import 'package:samgyup_serve/bloc/category/form/category_form_bloc.dart';
 import 'package:samgyup_serve/bloc/inventory/category/inventory_category_bloc.dart';
-import 'package:samgyup_serve/bloc/inventory/delete/inventory_delete_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
 import 'package:samgyup_serve/shared/dialog.dart';
 
@@ -89,7 +88,8 @@ class CategoryListAppBar extends StatelessWidget {
                         return 'Category name cannot be empty';
                       }
                       if (cleanedValue.length < 3) {
-                        return 'Category name must be at least 3 characters long';
+                        return 'Category name must be at least 3 '
+                            'characters long';
                       }
 
                       return null;
