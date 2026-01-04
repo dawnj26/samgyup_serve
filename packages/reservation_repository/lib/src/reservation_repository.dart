@@ -24,6 +24,7 @@ class ReservationRepository {
     required String tableId,
     required DateTime startTime,
     required String invoiceId,
+    required int customerCount,
   }) async {
     try {
       final reservation = Reservation(
@@ -31,6 +32,7 @@ class ReservationRepository {
         tableId: tableId,
         startTime: startTime.toUtc(),
         invoiceId: invoiceId,
+        customerCount: customerCount,
       );
 
       final doc = await _appwrite.databases.createRow(

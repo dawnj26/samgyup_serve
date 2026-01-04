@@ -2,7 +2,7 @@ part of 'home_bloc.dart';
 
 @freezed
 class HomeEvent with _$HomeEvent {
-  const factory HomeEvent.started({Table? table}) = _Started;
+  const factory HomeEvent.started() = _Started;
   const factory HomeEvent.statusChanged(SessionStatus status) = _StatusChanged;
   const factory HomeEvent.reservationCreated(String reservationId) =
       _ReservationCreated;
@@ -12,4 +12,7 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.reservationCancelled({
     required String reservationId,
   }) = _ReservationCancelled;
+  const factory HomeEvent.customerCountChanged({
+    required int customerCount,
+  }) = _CustomerCountChanged;
 }

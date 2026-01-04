@@ -79,7 +79,7 @@ class _OrderButton extends StatelessWidget {
           onPressed: isRegistered
               ? () {
                   context.read<HomeBloc>().add(
-                    const HomeEvent.statusChanged(SessionStatus.order),
+                    const HomeEvent.statusChanged(SessionStatus.count),
                   );
                   context.read<ActivityBloc>().add(
                     const ActivityEvent.started(),

@@ -182,6 +182,12 @@ class _Header extends StatelessWidget {
     final status = context.select(
       (TableDetailsBloc bloc) => bloc.state.status,
     );
+    final usageCount = context.select(
+      (TableDetailsBloc bloc) => bloc.state.usageCount,
+    );
+    final averageCustomerCount = context.select(
+      (TableDetailsBloc bloc) => bloc.state.averageCustomerCount,
+    );
 
     final isLoading =
         status == TableDetailsStatus.loading ||
@@ -202,6 +208,17 @@ class _Header extends StatelessWidget {
             const SizedBox(width: 16),
             TableStatusBadge(status: table.status),
           ],
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Usage count: ${isLoading ? 'Loading...' : usageCount}',
+          style: textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Average customer count: '
+          '${isLoading ? 'Loading...' : averageCustomerCount}',
+          style: textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
         if (device == null)

@@ -23,6 +23,8 @@ abstract class TableDetailsState with _$TableDetailsState {
     @Default(TableAssignmentStatus.initial)
     TableAssignmentStatus assignmentStatus,
     @Default(TableDetailsStatus.initial) TableDetailsStatus status,
+    @Default(0) int usageCount,
+    @Default(0) int averageCustomerCount,
     String? reservationId,
     Device? device,
     String? errorMessage,

@@ -6,5 +6,6 @@ abstract class OrderEvent with _$OrderEvent {
     required String tableId,
     required List<CartItem<InventoryItem>> inventoryItems,
     required List<CartItem<FoodPackageItem>> packages,
+    required int customerCount,
   }) = _Started;
 }

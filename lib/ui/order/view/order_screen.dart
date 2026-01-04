@@ -7,6 +7,7 @@ import 'package:inventory_repository/inventory_repository.dart';
 import 'package:samgyup_serve/bloc/activity/activity_bloc.dart';
 import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/category/category_bloc.dart';
+import 'package:samgyup_serve/bloc/home/home_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/order/order_bloc.dart';
 import 'package:samgyup_serve/router/router.dart';
@@ -189,6 +190,7 @@ class _ViewCartButton extends StatelessWidget {
     final menuCart = context.read<OrderCartBloc>().state.menuItems;
     final packageCart = context.read<OrderCartBloc>().state.packages;
     final tableId = context.read<AppBloc>().state.deviceData!.table!.id;
+    final customerCount = context.read<HomeBloc>().state.customerCount;
 
     final confirm = await showConfirmationDialog(
       context: context,
@@ -205,6 +207,7 @@ class _ViewCartButton extends StatelessWidget {
         tableId: tableId,
         inventoryItems: menuCart,
         packages: packageCart,
+        customerCount: customerCount,
       ),
     );
   }

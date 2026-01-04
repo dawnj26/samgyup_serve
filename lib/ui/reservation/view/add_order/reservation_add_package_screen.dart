@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:package_repository/package_repository.dart';
-import 'package:samgyup_serve/bloc/app/app_bloc.dart';
 import 'package:samgyup_serve/bloc/food_package/tab/food_package_tab_bloc.dart';
 import 'package:samgyup_serve/bloc/order/cart/order_cart_bloc.dart';
 import 'package:samgyup_serve/bloc/reservation/order/reservation_order_bloc.dart';
@@ -243,7 +242,11 @@ class _Item extends StatelessWidget {
   ]) async {
     if (!isAvailable) return;
 
-    final tableSize = context.read<AppBloc>().state.deviceData!.table!.capacity;
+    final tableSize = context
+        .read<ReservationBloc>()
+        .state
+        .reservation
+        .customerCount;
     final timeLimit = package.timeLimit / 60;
 
     final quantity = await showAddCartItemDialog(
