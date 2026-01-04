@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_repository/inventory_repository.dart';
-import 'package:order_repository/order_repository.dart';
+import 'package:order_repository/order_repository.dart' hide OrderType;
 import 'package:package_repository/package_repository.dart';
 import 'package:reservation_repository/reservation_repository.dart'
     show Reservation;
@@ -82,25 +83,45 @@ class ReservationOrderScreen extends StatelessWidget {
     );
   }
 
-  void _handleTap(BuildContext context) {
-    final packages = context.read<OrderListBloc>().state.packages;
-    final uniqueMenuIds = packages
-        .expand((e) => e.item.menuIds)
-        .toSet()
-        .toList();
+  Future<void> _handleTap(BuildContext context) async {
+    final type = await SelectOrderSheet.show(context);
+    log('Selected order type: $type', name: '_handleTap');
 
-    unawaited(
-      context.router.push(
-        ReservationAddOrderRoute(
-          excludeItemIds: uniqueMenuIds,
-          onSuccess: () {
-            context.read<ReservationBloc>().add(
-              const ReservationEvent.refreshed(),
-            );
-          },
-        ),
-      ),
-    );
+    if (!context.mounted || type == null) return;
+
+    switch (type) {
+      case OrderType.item:
+        final packages = context.read<OrderListBloc>().state.packages;
+        final uniqueMenuIds = packages
+            .expand((e) => e.item.menuIds)
+            .toSet()
+            .toList();
+
+        unawaited(
+          context.router.push(
+            ReservationAddOrderRoute(
+              excludeItemIds: uniqueMenuIds,
+              onSuccess: () {
+                context.read<ReservationBloc>().add(
+                  const ReservationEvent.refreshed(),
+                );
+              },
+            ),
+          ),
+        );
+      case OrderType.package:
+        unawaited(
+          context.router.push(
+            ReservationAddPackageRoute(
+              onSuccess: () {
+                context.read<ReservationBloc>().add(
+                  const ReservationEvent.refreshed(),
+                );
+              },
+            ),
+          ),
+        );
+    }
   }
 
   Future<void> _handleMoreOptions(
