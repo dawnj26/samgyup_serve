@@ -12,7 +12,7 @@ class InventoryEditEvent with _$InventoryEditEvent {
     required String description,
   }) = _DescriptionChanged;
   const factory InventoryEditEvent.categoryChanged({
-    required InventoryCategory category,
+    required String category,
   }) = _CategoryChanged;
   const factory InventoryEditEvent.subcategoryChanged({
     required Subcategory? subcategory,
