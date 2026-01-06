@@ -39,12 +39,14 @@ class EventActionsBloc extends Bloc<EventActionsEvent, EventActionsState> {
         details: 'Event ID: ${event.event.id}, ${event.event.type.label}',
       );
       final data = jsonDecode(event.event.payload) as Map<String, dynamic>;
-      final orderId = data['orderId'] as String;
+      final orderId = data['orderId'] as String?;
 
-      await _orderRepository.updateStatus(
-        orderId: orderId,
-        newStatus: OrderStatus.completed,
-      );
+      if (orderId != null) {
+        await _orderRepository.updateStatus(
+          orderId: orderId,
+          newStatus: OrderStatus.completed,
+        );
+      }
 
       emit(
         state.copyWith(
